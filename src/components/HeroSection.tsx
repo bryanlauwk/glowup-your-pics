@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
+import { UserMenu } from "@/components/UserMenu";
 import heroBackground from "@/assets/hero-background.jpg";
 
 export const HeroSection = () => {
@@ -24,6 +25,11 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center">
+        {/* User Menu */}
+        <div className="absolute top-8 right-8">
+          <UserMenu />
+        </div>
+        
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Main Headline */}
           <div className="space-y-4">

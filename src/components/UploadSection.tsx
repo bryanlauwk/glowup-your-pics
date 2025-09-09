@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Upload, X, Image as ImageIcon, CheckCircle } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface UploadedFile {
@@ -13,6 +15,8 @@ interface UploadedFile {
 export const UploadSection = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -23,6 +27,11 @@ export const UploadSection = () => {
   }, []);
 
   const handleFiles = (files: File[]) => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    
     const imageFiles = files.filter(file => 
       file.type.startsWith('image/') && (file.type.includes('jpeg') || file.type.includes('png'))
     );
@@ -61,13 +70,26 @@ export const UploadSection = () => {
               Upload Your Best Photos
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Upload 1-3 of your favorite photos and let our AI give you that natural glow-up. 
-              JPEG and PNG formats supported.
+              {user 
+                ? "Upload 1-3 of your favorite photos and let our AI give you that natural glow-up. JPEG and PNG formats supported."
+                : "Sign in to upload and enhance your photos with AI magic."
+              }
             </p>
+            {!user && (
+              <Button 
+                variant="hero" 
+                size="lg"
+                onClick={() => navigate('/auth')}
+                className="mt-4"
+              >
+                Sign In to Get Started
+              </Button>
+            )}
           </div>
 
           {/* Upload Area */}
-          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+          {user ? (
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardContent className="p-8">
               <div
                 className={cn(
@@ -166,6 +188,7 @@ export const UploadSection = () => {
               )}
             </CardContent>
           </Card>
+          ) : null}
         </div>
       </div>
     </div>
