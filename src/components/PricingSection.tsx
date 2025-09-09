@@ -4,22 +4,64 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Zap, Star, Crown } from 'lucide-react';
 
-const pricingPlan = {
-  name: 'Unlock Your Transformation',
-  price: '$9.99',
-  period: 'one-time',
-  description: 'Everything you need to win the dating game',
-  features: [
-    'AI-enhanced photos in 4K quality',
-    'Watermark-free downloads',
-    'Ready for all dating apps',
-    'Lifetime access to your photos',
-    'Undetectable enhancements',
-    'Instant processing',
-    '30-day money-back guarantee'
-  ],
-  icon: Crown
-};
+const pricingPlans = [
+  {
+    id: 'basic',
+    name: 'Basic',
+    price: '$9.99',
+    period: 'month',
+    description: 'Perfect for casual dating',
+    photoLimit: '3 photos',
+    features: [
+      '3 photo enhancements per month',
+      'Standard quality processing',
+      'Basic AI enhancements',
+      'Watermark-free downloads',
+      'All dating apps compatibility',
+      '30-day money-back guarantee'
+    ],
+    icon: Zap,
+    popular: false
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: '$19.99',
+    period: 'month',
+    description: 'Most popular for serious daters',
+    photoLimit: '10 photos',
+    features: [
+      '10 photo enhancements per month',
+      'High quality (4K) processing',
+      'Advanced AI enhancements',
+      'Priority processing',
+      'Anti-detection technology',
+      'Multiple enhancement styles',
+      '30-day money-back guarantee'
+    ],
+    icon: Star,
+    popular: true
+  },
+  {
+    id: 'elite',
+    name: 'Elite',
+    price: '$39.99',
+    period: 'month',
+    description: 'Premium experience for power users',
+    photoLimit: '20 photos',
+    features: [
+      '20 photo enhancements per month',
+      'Ultra-high quality processing',
+      'Premium AI features',
+      'Instant processing',
+      'Advanced analytics',
+      'White-glove service',
+      '30-day money-back guarantee'
+    ],
+    icon: Crown,
+    popular: false
+  }
+];
 
 export const PricingSection = () => {
   const scrollToUpload = () => {
@@ -36,61 +78,75 @@ export const PricingSection = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
-              Choose Your Advantage
+              Choose Your Plan
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Start getting better matches today. No subscriptions, just results.
+              Get more matches with our AI-enhanced photos. Start your dating transformation today.
             </p>
           </div>
 
-          {/* Pricing Card */}
-          <div className="max-w-md mx-auto">
-            <Card className="relative group hover:shadow-glow-violet transition-all duration-300 border-violet-purple/50 bg-violet-purple/5 scale-105">
-              <Badge 
-                variant="secondary" 
-                className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground px-4 py-1 text-sm font-bold"
+          {/* Pricing Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan) => (
+              <Card 
+                key={plan.id}
+                className={`relative group hover:shadow-glow-violet transition-all duration-300 border-violet-purple/50 bg-violet-purple/5 ${
+                  plan.popular ? 'scale-105 border-violet-purple' : 'hover:scale-105'
+                }`}
               >
-                Best Value
-              </Badge>
-              
-              <CardHeader className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-primary">
-                  <pricingPlan.icon className="w-8 h-8 text-white" />
-                </div>
+                {plan.popular && (
+                  <Badge 
+                    variant="secondary" 
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground px-4 py-1 text-sm font-bold"
+                  >
+                    Most Popular
+                  </Badge>
+                )}
                 
-                <div className="space-y-2">
-                  <CardTitle className="text-2xl font-bold">{pricingPlan.name}</CardTitle>
-                  <p className="text-muted-foreground">{pricingPlan.description}</p>
-                </div>
-                
-                <div className="space-y-1">
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl font-black text-gradient-accent">{pricingPlan.price}</span>
-                    <span className="text-muted-foreground">/{pricingPlan.period}</span>
+                <CardHeader className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-primary">
+                    <plan.icon className="w-8 h-8 text-white" />
                   </div>
-                </div>
-              </CardHeader>
+                  
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                    <p className="text-muted-foreground text-sm">{plan.description}</p>
+                    <p className="text-violet-purple font-semibold">{plan.photoLimit}</p>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-4xl font-black text-gradient-accent">{plan.price}</span>
+                      <span className="text-muted-foreground">/{plan.period}</span>
+                    </div>
+                  </div>
+                </CardHeader>
 
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {pricingPlan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-violet-purple/20 flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3 h-3 text-violet-purple" />
-                      </div>
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <Button 
-                  onClick={scrollToUpload}
-                  className="w-full py-6 font-bold text-xl bg-gradient-primary hover:shadow-glow-violet transition-all duration-300 hover:scale-105"
-                >
-                  Unlock My Photos Now
-                </Button>
-              </CardContent>
-            </Card>
+                <CardContent className="space-y-6">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-violet-purple/20 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3 text-violet-purple" />
+                        </div>
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Button 
+                    onClick={scrollToUpload}
+                    className={`w-full py-6 font-bold text-lg transition-all duration-300 hover:scale-105 ${
+                      plan.popular 
+                        ? 'bg-gradient-primary hover:shadow-glow-violet' 
+                        : 'bg-gradient-secondary hover:shadow-glow-pink'
+                    }`}
+                  >
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {/* Bottom CTA */}
