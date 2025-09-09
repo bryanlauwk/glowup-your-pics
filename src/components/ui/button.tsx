@@ -17,7 +17,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         hero: "bg-gradient-primary text-primary-foreground shadow-glow-rose hover:shadow-glow-coral transition-all duration-300 hover:scale-105",
         romantic: "bg-gradient-sunset text-primary-foreground shadow-glow-coral hover:shadow-glow-rose transition-all duration-300",
-        glow: "bg-rose-gold/20 text-rose-gold border border-rose-gold/50 hover:bg-rose-gold hover:text-primary-foreground shadow-glow-rose transition-all duration-300",
+        glow: "bg-violet-purple/20 text-violet-purple border border-violet-purple/50 hover:bg-violet-purple hover:text-primary-foreground shadow-glow-violet transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Mock data for before/after examples with diverse representation
+// Diverse Asian representation in before/after examples
 const beforeAfterExamples = [
   {
     id: 1,
@@ -16,35 +16,43 @@ const beforeAfterExamples = [
   },
   {
     id: 2,
-    before: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=400&h=500&fit=crop&crop=face",
+    before: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
     improvement: "5x more likes",
-    testimonial: "Went from invisible to irresistible. This works!",
+    testimonial: "Finally getting matches with people who actually message back!",
     name: "Hiroshi, 29"
   },
   {
     id: 3,
-    before: "https://images.unsplash.com/photo-1544348817-5f2cf14b88c8?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1567515004624-219c11d31f2e?w=400&h=500&fit=crop&crop=face",
+    before: "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face",
     improvement: "4x more conversations",
-    testimonial: "Finally matching with people I'm actually excited about.",
-    name: "Chen, 24"
+    testimonial: "The changes are so natural. People say I look more approachable.",
+    name: "Chen Wei, 25"
   },
   {
     id: 4,
-    before: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face",
-    improvement: "2x more dates",
-    testimonial: "Subtle but powerful changes. People notice the confidence.",
-    name: "David, 31"
+    before: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=500&fit=crop&crop=face",
+    improvement: "6x more dates",
+    testimonial: "My confidence went through the roof. Getting dates with amazing women!",
+    name: "Ryu Tanaka, 28"
   },
   {
     id: 5,
-    before: "https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=400&h=500&fit=crop&crop=face",
-    improvement: "6x more swipes",
-    testimonial: "Never thought subtle changes could make such a difference!",
-    name: "Yuki, 27"
+    before: "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=400&h=500&fit=crop&crop=face",
+    improvement: "8x more swipes",
+    testimonial: "Went from zero matches to choosing who I want to date. Life changing!",
+    name: "Kim Min-jun, 26"
+  },
+  {
+    id: 6,
+    before: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face",
+    improvement: "4x more quality matches",
+    testimonial: "The AI made me look like the best version of myself. Incredible results!",
+    name: "Li Zhang, 30"
   }
 ];
 

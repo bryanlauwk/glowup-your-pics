@@ -2,39 +2,25 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Target, Zap, TrendingUp, Heart } from 'lucide-react';
+import { Zap } from 'lucide-react';
+import { 
+  TinderLogo, 
+  BumbleLogo, 
+  HingeLogo, 
+  CoffeeMeetsBagelLogo, 
+  OkCupidLogo, 
+  MatchLogo 
+} from './DatingAppLogos';
 
 const apps = [
-  { name: 'Tinder', color: 'text-red-500' },
-  { name: 'Bumble', color: 'text-yellow-500' },
-  { name: 'Hinge', color: 'text-purple-500' },
-  { name: 'Coffee Meets Bagel', color: 'text-orange-500' },
-  { name: 'OkCupid', color: 'text-blue-500' },
-  { name: 'Match', color: 'text-green-500' }
+  { name: 'Tinder', logo: TinderLogo },
+  { name: 'Bumble', logo: BumbleLogo },
+  { name: 'Hinge', logo: HingeLogo },
+  { name: 'Coffee Meets Bagel', logo: CoffeeMeetsBagelLogo },
+  { name: 'OkCupid', logo: OkCupidLogo },
+  { name: 'Match', logo: MatchLogo }
 ];
 
-const benefits = [
-  {
-    icon: Target,
-    title: 'Algorithmic Advantage',
-    description: 'Beat the app algorithms with photos that score higher'
-  },
-  {
-    icon: TrendingUp,
-    title: 'Instant Results',
-    description: 'See more matches within 24 hours of updating'
-  },
-  {
-    icon: Heart,
-    title: 'Natural Enhancement',
-    description: '100% undetectable improvements that look authentic'
-  },
-  {
-    icon: Zap,
-    title: 'Confidence Boost',
-    description: 'Feel amazing knowing you look your absolute best'
-  }
-];
 
 export const CheatAppsSection = () => {
   const scrollToUpload = () => {
@@ -75,10 +61,10 @@ export const CheatAppsSection = () => {
             {apps.map((app, index) => (
               <Card key={index} className="group hover:shadow-glow-violet transition-all duration-300 bg-card/50 backdrop-blur-sm border-border/50">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gradient-primary rounded-full flex items-center justify-center">
-                    <Heart className="w-6 h-6 text-white" />
+                  <div className="w-16 h-16 mx-auto mb-3 bg-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                    <app.logo className="w-10 h-10" />
                   </div>
-                  <h3 className={`font-bold text-sm ${app.color} group-hover:text-violet-purple transition-colors`}>
+                  <h3 className="font-bold text-sm text-foreground group-hover:text-violet-purple transition-colors">
                     {app.name}
                   </h3>
                 </CardContent>
@@ -86,26 +72,6 @@ export const CheatAppsSection = () => {
             ))}
           </div>
 
-          {/* Benefits Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="group hover:shadow-glow-pink transition-all duration-300 bg-card/30 backdrop-blur-sm border-border/30">
-                <CardContent className="p-6 text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto bg-gradient-accent rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <benefit.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-bold text-lg text-gradient-accent">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
 
           {/* CTA Section */}
           <div className="text-center space-y-6">
