@@ -3,22 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Zap } from 'lucide-react';
-import { 
-  TinderLogo, 
-  BumbleLogo, 
-  HingeLogo, 
-  CoffeeMeetsBagelLogo, 
-  OkCupidLogo, 
-  MatchLogo 
-} from './DatingAppLogos';
-
 const apps = [
-  { name: 'Tinder', logo: TinderLogo },
-  { name: 'Bumble', logo: BumbleLogo },
-  { name: 'Hinge', logo: HingeLogo },
-  { name: 'Coffee Meets Bagel', logo: CoffeeMeetsBagelLogo },
-  { name: 'OkCupid', logo: OkCupidLogo },
-  { name: 'Match', logo: MatchLogo }
+  { name: 'Tinder', color: 'from-red-500 to-pink-500' },
+  { name: 'Bumble', color: 'from-yellow-400 to-yellow-500' },
+  { name: 'Hinge', color: 'from-purple-500 to-purple-600' },
+  { name: 'Coffee Meets Bagel', color: 'from-amber-600 to-amber-700' },
+  { name: 'OkCupid', color: 'from-blue-500 to-blue-600' },
+  { name: 'Match', color: 'from-green-500 to-green-600' }
 ];
 
 
@@ -61,8 +52,10 @@ export const CheatAppsSection = () => {
             {apps.map((app, index) => (
               <Card key={index} className="group hover:shadow-glow-violet transition-all duration-300 bg-card/50 backdrop-blur-sm border-border/50">
                 <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 bg-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                    <app.logo className="w-10 h-10" />
+                  <div className={`w-16 h-16 mx-auto mb-3 bg-gradient-to-br ${app.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg`}>
+                    <span className="text-white font-black text-lg">
+                      {app.name.charAt(0)}
+                    </span>
                   </div>
                   <h3 className="font-bold text-sm text-foreground group-hover:text-violet-purple transition-colors">
                     {app.name}

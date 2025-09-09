@@ -4,55 +4,22 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Zap, Star, Crown } from 'lucide-react';
 
-const pricingPlans = [
-  {
-    name: 'Starter',
-    price: '$19',
-    period: 'one-time',
-    description: 'Perfect for getting started',
-    features: [
-      '5 photo enhancements',
-      'Basic AI improvements',
-      'Download high-res images',
-      '24/7 support'
-    ],
-    icon: Zap,
-    popular: false
-  },
-  {
-    name: 'Pro',
-    price: '$39',
-    period: 'one-time',
-    description: 'Most popular choice',
-    features: [
-      '15 photo enhancements',
-      'Advanced AI improvements',
-      'Premium filters & effects',
-      'Before/after comparisons',
-      'Priority processing',
-      '24/7 support'
-    ],
-    icon: Star,
-    popular: true
-  },
-  {
-    name: 'Elite',
-    price: '$79',
-    period: 'one-time',
-    description: 'For the ultimate advantage',
-    features: [
-      'Unlimited enhancements',
-      'Premium AI technology',
-      'Custom style preferences',
-      'Personal consultation call',
-      'Dating profile optimization',
-      'Instant processing',
-      'VIP support'
-    ],
-    icon: Crown,
-    popular: false
-  }
-];
+const pricingPlan = {
+  name: 'Unlock Your Transformation',
+  price: '$9.99',
+  period: 'one-time',
+  description: 'Everything you need to win the dating game',
+  features: [
+    'AI-enhanced photos in 4K quality',
+    'Watermark-free downloads',
+    'Ready for all dating apps',
+    'Lifetime access to your photos',
+    'Undetectable enhancements',
+    'Instant processing',
+    '30-day money-back guarantee'
+  ],
+  icon: Crown
+};
 
 export const PricingSection = () => {
   const scrollToUpload = () => {
@@ -76,71 +43,54 @@ export const PricingSection = () => {
             </p>
           </div>
 
-          {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {pricingPlans.map((plan, index) => (
-              <Card 
-                key={index} 
-                className={`relative group hover:shadow-glow-violet transition-all duration-300 ${
-                  plan.popular 
-                    ? 'border-violet-purple/50 bg-violet-purple/5 scale-105' 
-                    : 'bg-card/50 backdrop-blur-sm border-border/50'
-                }`}
+          {/* Pricing Card */}
+          <div className="max-w-md mx-auto">
+            <Card className="relative group hover:shadow-glow-violet transition-all duration-300 border-violet-purple/50 bg-violet-purple/5 scale-105">
+              <Badge 
+                variant="secondary" 
+                className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground px-4 py-1 text-sm font-bold"
               >
-                {plan.popular && (
-                  <Badge 
-                    variant="secondary" 
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-primary-foreground px-4 py-1 text-sm font-bold"
-                  >
-                    Most Popular
-                  </Badge>
-                )}
+                Best Value
+              </Badge>
+              
+              <CardHeader className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-primary">
+                  <pricingPlan.icon className="w-8 h-8 text-white" />
+                </div>
                 
-                <CardHeader className="text-center space-y-4">
-                  <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
-                    plan.popular ? 'bg-gradient-primary' : 'bg-gradient-accent'
-                  }`}>
-                    <plan.icon className="w-8 h-8 text-white" />
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl font-bold">{pricingPlan.name}</CardTitle>
+                  <p className="text-muted-foreground">{pricingPlan.description}</p>
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-4xl font-black text-gradient-accent">{pricingPlan.price}</span>
+                    <span className="text-muted-foreground">/{pricingPlan.period}</span>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                    <p className="text-muted-foreground">{plan.description}</p>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-4xl font-black text-gradient-accent">{plan.price}</span>
-                      <span className="text-muted-foreground">/{plan.period}</span>
-                    </div>
-                  </div>
-                </CardHeader>
+                </div>
+              </CardHeader>
 
-                <CardContent className="space-y-6">
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-violet-purple/20 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-3 h-3 text-violet-purple" />
-                        </div>
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button 
-                    onClick={scrollToUpload}
-                    className={`w-full py-6 font-bold ${
-                      plan.popular 
-                        ? 'bg-gradient-primary hover:shadow-glow-violet' 
-                        : 'bg-gradient-accent hover:shadow-glow-pink'
-                    } transition-all duration-300 hover:scale-105`}
-                  >
-                    Get Started Now
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+              <CardContent className="space-y-6">
+                <ul className="space-y-3">
+                  {pricingPlan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-full bg-violet-purple/20 flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 text-violet-purple" />
+                      </div>
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  onClick={scrollToUpload}
+                  className="w-full py-6 font-bold text-xl bg-gradient-primary hover:shadow-glow-violet transition-all duration-300 hover:scale-105"
+                >
+                  Unlock My Photos Now
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Bottom CTA */}
