@@ -72,17 +72,17 @@ export const HeroSection = () => {
           {/* Main Headline */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-black tracking-tight">
-              Turn Your Photos Into
+              Get More Quality Matches
               <span className="block text-gradient-primary">
-                Swipe-Right Magnets
+                (For Men)
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Get more matches on <span className="text-hot-pink font-semibold">Tinder</span>, <span className="text-bright-pink font-semibold">Bumble</span> & <span className="text-violet-purple font-semibold">Hinge</span> with invisible AI enhancement that makes you 
-              <span className="text-rose-gold font-semibold"> irresistibly attractive</span>
+              Stop getting ignored on <span className="text-hot-pink font-semibold">Tinder</span>, <span className="text-bright-pink font-semibold">Bumble</span> & <span className="text-violet-purple font-semibold">Hinge</span>. AI enhancement that gets you matches with women you 
+              <span className="text-rose-gold font-semibold"> actually want to date</span>
             </p>
             <p className="text-lg text-muted-foreground/80 italic">
-              Your secret dating advantage 😉
+              Your competitive advantage while others struggle 💪
             </p>
           </div>
 
@@ -98,7 +98,7 @@ export const HeroSection = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-hot-pink/20 to-violet-purple/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
               <Heart className="w-5 h-5 group-hover:animate-pulse text-hot-pink" />
-              Start My Dating Glow-Up
+              Get My Competitive Edge
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="outline" size="xl" className="border-rose-gold text-rose-gold hover:bg-rose-gold hover:text-primary-foreground group">
@@ -110,12 +110,12 @@ export const HeroSection = () => {
           {/* Social Proof */}
           <div className="pt-8 space-y-4">
             <p className="text-sm text-muted-foreground uppercase tracking-wide">
-              Join 50k+ people getting quality matches
+              Join 50k+ men getting quality matches
             </p>
             <div className="flex flex-wrap justify-center gap-8 items-center text-xl font-semibold text-gradient-accent">
               <span className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-hot-pink fill-current" />
-                97% Match Rate
+                3x More Quality Matches
               </span>
               <span>•</span>
               <span className="flex items-center gap-2">
@@ -125,7 +125,7 @@ export const HeroSection = () => {
               <span>•</span>
               <span className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-bright-pink fill-current" />
-                Instant Results
+                Instant Confidence Boost
               </span>
             </div>
           </div>

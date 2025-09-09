@@ -91,11 +91,11 @@ export const BeforeAfterCarousel = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-accent">
-              Stunning Transformations
+              Real Men, Real Results
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              See how our invisible AI enhancement helps real people get better matches.
-              Your confidence boost is just one upload away.
+              See how our AI enhancement helps men like you win the dating game.
+              From ignored to choosy - your transformation starts here.
             </p>
           </div>
 

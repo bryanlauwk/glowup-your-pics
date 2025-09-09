@@ -8,36 +8,36 @@ import {
 
 const faqs = [
   {
-    question: "Is this AI enhancement detectable?",
-    answer: "No! Our advanced AI makes subtle, natural improvements that enhance your best features without looking fake or overly edited. The changes are completely undetectable to dating app algorithms and real people."
+    question: "Will women notice the AI enhancement?",
+    answer: "No! Our advanced AI makes subtle, natural improvements that enhance your masculine features without looking fake or overly edited. The changes are completely undetectable to dating app algorithms and women - they'll just think you look amazing."
+  },
+  {
+    question: "How natural do the changes look?",
+    answer: "Extremely natural. We enhance your existing features rather than changing them. Think of it as your best self on your best day - more confidence, better lighting, sharper jawline - but still authentically you."
+  },
+  {
+    question: "Will I still look masculine and strong?",
+    answer: "Absolutely! Our AI is specifically designed to enhance masculine features like jawlines, facial structure, and confidence. We make you look more attractive while maintaining your natural masculine appeal."
+  },
+  {
+    question: "Does this work for Asian men and other ethnicities?",
+    answer: "Yes! Our AI is trained on diverse datasets and works exceptionally well for all ethnicities. We've helped thousands of Asian men, Black men, Latino men, and men of all backgrounds get better matches."
   },
   {
     question: "How long does it take to get my enhanced photos?",
     answer: "Most photos are processed within 5-10 minutes. Pro and Elite customers get priority processing for even faster results. You'll receive an email notification when your photos are ready for download."
   },
   {
-    question: "What if I don't like the results?",
-    answer: "We offer a 100% money-back guarantee. If you're not completely satisfied with your enhanced photos, we'll refund your purchase within 30 days, no questions asked."
-  },
-  {
     question: "Can I use these photos on all dating apps?",
     answer: "Absolutely! Your enhanced photos work perfectly on Tinder, Bumble, Hinge, Coffee Meets Bagel, Match, OkCupid, and any other dating platform. The improvements are designed to perform well across all apps."
   },
   {
-    question: "How does the AI enhancement work?",
-    answer: "Our AI analyzes facial features, lighting, skin tone, and facial structure to make subtle improvements like smoothing skin, enhancing jawlines, brightening eyes, and optimizing lighting - all while maintaining your natural appearance."
-  },
-  {
-    question: "What photo formats do you accept?",
-    answer: "We accept JPG, PNG, and HEIC formats. Photos should be at least 500x500 pixels for best results. Portrait orientation works best, but we can enhance landscape photos too."
+    question: "What if I don't get better results?",
+    answer: "We offer a 100% money-back guarantee. If you're not getting more quality matches within 30 days, we'll refund your purchase, no questions asked. Your success is our success."
   },
   {
     question: "Is my data and photos secure?",
     answer: "Yes, absolutely. We use enterprise-grade encryption to protect your photos and data. Your original photos are automatically deleted from our servers after 30 days, and we never share your images with third parties."
-  },
-  {
-    question: "Can I get multiple versions of the same photo?",
-    answer: "With our Pro and Elite plans, you can request different enhancement styles for the same photo. This lets you test which version performs better on your dating profiles."
   }
 ];
 

@@ -67,12 +67,12 @@ export const UploadSection = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
-              Upload Your Best Photos
+              Unlock Your Dating Potential
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {user 
-                ? "Upload 1-3 of your favorite photos and let our AI give you that natural glow-up. JPEG and PNG formats supported."
-                : "Sign in to upload and enhance your photos with AI magic."
+                ? "Upload your photos and discover your most attractive self. Show us your best shots - we'll make them irresistible to women."
+                : "Sign in to transform your dating game with AI that gets results."
               }
             </p>
             {!user && (
@@ -123,10 +123,10 @@ export const UploadSection = () => {
                     <h3 className="text-xl font-semibold">
                       {uploadedFiles.length >= 3 
                         ? "Maximum files reached" 
-                        : "Drop your photos here or click to browse"}
+                        : "Drop your best shots here and get ready to dominate"}
                     </h3>
                     <p className="text-muted-foreground">
-                      {3 - uploadedFiles.length} slots remaining • JPEG, PNG up to 10MB
+                      {3 - uploadedFiles.length} slots remaining • Transform your dating game in minutes
                     </p>
                   </div>
                   
@@ -180,7 +180,7 @@ export const UploadSection = () => {
                           document.getElementById('enhance')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                       >
-                        ✨ Transform My Photos
+                        🔥 Unlock My Dating Potential
                       </Button>
                     </div>
                   )}
