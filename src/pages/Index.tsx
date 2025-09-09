@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/HeroSection";
+import { UploadSection } from "@/components/UploadSection";
 import { BeforeAfterCarousel } from "@/components/BeforeAfterCarousel";
 import { CheatAppsSection } from "@/components/CheatAppsSection";
 import { PricingSection } from "@/components/PricingSection";
@@ -10,6 +11,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
+      <UploadSection />
       <BeforeAfterCarousel />
       <CheatAppsSection />
       <PricingSection />

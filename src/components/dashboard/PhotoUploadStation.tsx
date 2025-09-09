@@ -16,7 +16,7 @@ interface UploadedPhoto {
 interface PhotoUploadStationProps {
   uploadedPhotos: UploadedPhoto[];
   setUploadedPhotos: React.Dispatch<React.SetStateAction<UploadedPhoto[]>>;
-  onNext: () => void;
+  onNext: (photos: UploadedPhoto[]) => void;
 }
 
 export const PhotoUploadStation: React.FC<PhotoUploadStationProps> = ({
@@ -254,7 +254,7 @@ export const PhotoUploadStation: React.FC<PhotoUploadStationProps> = ({
           <Button 
             variant="glow" 
             size="xl"
-            onClick={onNext}
+            onClick={() => onNext(uploadedPhotos)}
             disabled={!canProceed}
             className="min-w-[250px] text-lg font-semibold"
           >
