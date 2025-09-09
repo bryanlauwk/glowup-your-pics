@@ -15,12 +15,15 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useGeminiAPI } from '@/hooks/useGeminiAPI';
+import { useImageEnhancement } from '@/hooks/useImageEnhancement';
+import { useAntiDetection } from '@/hooks/useAntiDetection';
 
 interface UploadedPhoto {
   id: string;
   file: File;
   preview: string;
   analysis?: any;
+  enhancementResults?: any[];
 }
 
 interface AIProcessingEngineProps {
@@ -33,7 +36,7 @@ interface ProcessingStep {
   name: string;
   icon: React.ComponentType<any>;
   description: string;
-  status: 'pending' | 'processing' | 'complete';
+  status: 'pending' | 'processing' | 'complete' | 'failed';
   progress: number;
 }
 
@@ -88,6 +91,8 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
   ]);
 
   const { analyzePhoto, generateEnhancementSuggestions, isLoading: geminiLoading, error: geminiError } = useGeminiAPI();
+  const { enhanceImage, generateVariants } = useImageEnhancement();
+  const { processAntiDetection } = useAntiDetection();
 
   const updateStepStatus = (stepId: string, status: ProcessingStep['status'], progress: number = 0) => {
     setProcessingSteps(prev => prev.map(step => 
@@ -96,70 +101,111 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
   };
 
   const processPhoto = async (photo: UploadedPhoto, index: number) => {
-    const steps = processingSteps;
-    
-    // Step 1: Analysis
-    updateStepStatus('analysis', 'processing', 20);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    let analysis = null;
     try {
-      analysis = await analyzePhoto(photo.preview);
+      // Step 1: Analysis
+      updateStepStatus('analysis', 'processing', 20);
+      
+      let analysis = null;
+      try {
+        analysis = await analyzePhoto(photo.preview);
+      } catch (error) {
+        console.error('Gemini API analysis failed:', error);
+      }
+      
+      // Fallback analysis if Gemini fails
+      if (!analysis) {
+        analysis = {
+          faceVisibility: 75 + Math.random() * 20,
+          smileConfidence: 60 + Math.random() * 30,
+          eyeContactConfidence: 70 + Math.random() * 25,
+          lightingScore: 65 + Math.random() * 30,
+          compositionScore: 70 + Math.random() * 25,
+          identitySimilarity: 0.95 + Math.random() * 0.04,
+          overallScore: 70 + Math.random() * 25,
+          suggestions: [
+            "Consider looking directly at the camera",
+            "Improve lighting for better visibility",
+            "Natural smile would enhance appeal"
+          ]
+        };
+      }
+      
+      updateStepStatus('analysis', 'complete', 100);
+      
+      // Step 2: Lighting Enhancement
+      updateStepStatus('lighting', 'processing', 30);
+      const enhancedVariants = await generateVariants(photo.preview, 3);
+      updateStepStatus('lighting', 'complete', 100);
+      
+      // Step 3: Composition Optimization
+      updateStepStatus('composition', 'processing', 50);
+      // Generate high-quality versions for each variant
+      const optimizedVariants = [];
+      for (const variant of enhancedVariants) {
+        const highQuality = await enhanceImage(photo.preview, variant.settings, 'high');
+        optimizedVariants.push(highQuality);
+      }
+      updateStepStatus('composition', 'complete', 100);
+      
+      // Step 4: Natural Enhancement
+      updateStepStatus('enhancement', 'processing', 70);
+      // Apply additional enhancement suggestions
+      const enhancementSuggestions = await generateEnhancementSuggestions(analysis);
+      updateStepStatus('enhancement', 'complete', 100);
+      
+      // Step 5: Anti-Detection Processing
+      updateStepStatus('antidetection', 'processing', 90);
+      const antiDetectionResults = [];
+      for (const variant of optimizedVariants) {
+        const antiDetection = await processAntiDetection(variant.dataUrl);
+        antiDetectionResults.push(antiDetection);
+      }
+      updateStepStatus('antidetection', 'complete', 100);
+      
+      // Prepare final results
+      const qualityResults = optimizedVariants.map((variant, idx) => ({
+        ...variant,
+        identitySimilarity: variant.identitySimilarity,
+        antiDetection: antiDetectionResults[idx],
+        enhancementSuggestions,
+      }));
+      
+      // Update photo with analysis and results
+      photo.analysis = analysis;
+      photo.enhancementResults = qualityResults;
+      
+      return {
+        ...photo,
+        analysis,
+        enhanced: true,
+        variants: antiDetectionResults.flatMap(ad => ad.variants.map(v => ({
+          platform: v.platform,
+          url: v.dataUrl,
+          optimized: true,
+          modifications: v.modifications,
+          hash: v.hash,
+        }))),
+        enhancementResults: qualityResults,
+      };
     } catch (error) {
-      console.error('Gemini API analysis failed:', error);
-    }
-    
-    // Fallback analysis
-    if (!analysis) {
-      analysis = {
-        faceVisibility: 75 + Math.random() * 20,
-        smileConfidence: 60 + Math.random() * 30,
-        eyeContactConfidence: 70 + Math.random() * 25,
-        lightingScore: 65 + Math.random() * 30,
-        compositionScore: 70 + Math.random() * 25,
-        identitySimilarity: 0.95 + Math.random() * 0.04,
-        overallScore: 70 + Math.random() * 25,
-        suggestions: [
-          "Consider looking directly at the camera",
-          "Improve lighting for better visibility",
-          "Natural smile would enhance appeal"
-        ]
+      console.error('Error processing photo:', error);
+      // Mark current step as failed
+      const currentStep = processingSteps.find(step => step.status === 'processing');
+      if (currentStep) {
+        updateStepStatus(currentStep.id, 'failed', 0);
+      }
+      
+      // Return photo with basic analysis
+      return {
+        ...photo,
+        analysis: {
+          overallScore: 50,
+          suggestions: ['Processing failed - please try again'],
+        },
+        enhanced: false,
+        variants: [],
       };
     }
-    
-    updateStepStatus('analysis', 'complete', 100);
-    
-    // Step 2: Lighting Enhancement
-    updateStepStatus('lighting', 'processing', 30);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    updateStepStatus('lighting', 'complete', 100);
-    
-    // Step 3: Composition
-    updateStepStatus('composition', 'processing', 50);
-    await new Promise(resolve => setTimeout(resolve, 1800));
-    updateStepStatus('composition', 'complete', 100);
-    
-    // Step 4: Enhancement
-    updateStepStatus('enhancement', 'processing', 70);
-    await new Promise(resolve => setTimeout(resolve, 2200));
-    updateStepStatus('enhancement', 'complete', 100);
-    
-    // Step 5: Anti-Detection
-    updateStepStatus('antidetection', 'processing', 90);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    updateStepStatus('antidetection', 'complete', 100);
-    
-    return {
-      ...photo,
-      analysis,
-      enhanced: true,
-      variants: [
-        { platform: 'tinder', url: photo.preview, optimized: true },
-        { platform: 'bumble', url: photo.preview, optimized: true },
-        { platform: 'cmb', url: photo.preview, optimized: true },
-        { platform: 'universal', url: photo.preview, optimized: true }
-      ]
-    };
   };
 
   const startProcessing = async () => {
