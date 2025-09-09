@@ -58,10 +58,10 @@ export const UploadSection = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
-              Upload Your Photos
+              Upload Your Best Photos
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Upload 1-3 photos and watch our AI transform them into dating app gold. 
+              Upload 1-3 of your favorite photos and let our AI give you that natural glow-up. 
               JPEG and PNG formats supported.
             </p>
           </div>
@@ -73,8 +73,8 @@ export const UploadSection = () => {
                 className={cn(
                   "relative border-2 border-dashed rounded-lg p-12 text-center transition-all duration-300",
                   isDragging
-                    ? "border-neon-green bg-neon-green/10 glow-green"
-                    : "border-border hover:border-neon-green/50 hover:bg-neon-green/5"
+                    ? "border-rose-gold bg-rose-gold/10 glow-rose"
+                    : "border-border hover:border-rose-gold/50 hover:bg-rose-gold/5"
                 )}
                 onDrop={handleDrop}
                 onDragOver={(e) => {
@@ -93,8 +93,8 @@ export const UploadSection = () => {
                 />
                 
                 <div className="space-y-4">
-                  <div className="mx-auto w-16 h-16 bg-neon-green/20 rounded-full flex items-center justify-center">
-                    <Upload className="w-8 h-8 text-neon-green" />
+                  <div className="mx-auto w-16 h-16 bg-rose-gold/20 rounded-full flex items-center justify-center">
+                    <Upload className="w-8 h-8 text-rose-gold" />
                   </div>
                   
                   <div className="space-y-2">
@@ -143,7 +143,7 @@ export const UploadSection = () => {
                           </Button>
                         </div>
                         <div className="absolute top-2 right-2">
-                          <CheckCircle className="w-6 h-6 text-neon-green" />
+                          <CheckCircle className="w-6 h-6 text-rose-gold" />
                         </div>
                       </div>
                     ))}
@@ -158,7 +158,7 @@ export const UploadSection = () => {
                           document.getElementById('enhance')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                       >
-                        ✨ Enhance My Photos
+                        ✨ Transform My Photos
                       </Button>
                     </div>
                   )}

@@ -67,11 +67,11 @@ export const BeforeAfterCarousel = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-accent">
-              Real Results, Real People
+              Stunning Transformations
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              See how SwipeBoost transformed ordinary photos into dating app gold.
-              Your glow-up is just one click away.
+              See how our invisible AI enhancement helps real people get better matches.
+              Your confidence boost is just one upload away.
             </p>
           </div>
 
@@ -107,11 +107,11 @@ export const BeforeAfterCarousel = () => {
                             src={currentExample.after}
                             alt="After enhancement"
                             className={cn(
-                              "w-full h-64 object-cover rounded-lg border-2 border-neon-green shadow-glow-green transition-all duration-500",
+                              "w-full h-64 object-cover rounded-lg border-2 border-rose-gold shadow-glow-rose transition-all duration-500",
                               isAnimating && "scale-105"
                             )}
                           />
-                          <div className="absolute top-2 left-2 bg-neon-green text-primary-foreground px-2 py-1 rounded text-sm font-semibold">
+                          <div className="absolute top-2 left-2 bg-rose-gold text-primary-foreground px-2 py-1 rounded text-sm font-semibold">
                             AFTER
                           </div>
                         </div>
@@ -120,7 +120,7 @@ export const BeforeAfterCarousel = () => {
 
                     {/* Improvement Stats */}
                     <div className="text-center">
-                      <div className="inline-flex items-center gap-2 bg-neon-green/20 text-neon-green px-4 py-2 rounded-full font-bold text-lg">
+                      <div className="inline-flex items-center gap-2 bg-rose-gold/20 text-rose-gold px-4 py-2 rounded-full font-bold text-lg">
                         <Star className="w-5 h-5 fill-current" />
                         {currentExample.improvement}
                       </div>
@@ -133,7 +133,7 @@ export const BeforeAfterCarousel = () => {
                       "{currentExample.testimonial}"
                     </blockquote>
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center text-neon-green">
+                      <div className="flex items-center text-rose-gold">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="w-5 h-5 fill-current" />
                         ))}
@@ -181,7 +181,7 @@ export const BeforeAfterCarousel = () => {
                 className={cn(
                   "w-3 h-3 rounded-full transition-all duration-300",
                   index === currentIndex
-                    ? "bg-neon-green shadow-glow-green"
+                    ? "bg-rose-gold shadow-glow-rose"
                     : "bg-muted hover:bg-muted-foreground/50"
                 )}
                 disabled={isAnimating}

@@ -10,28 +10,28 @@ const backgroundModes = [
     name: 'Authentic',
     description: 'Natural lighting and subtle enhancements',
     icon: Camera,
-    color: 'text-neon-green'
+    color: 'text-rose-gold'
   },
   {
     id: 'aesthetic',
     name: 'Aesthetic', 
     description: 'Instagram-ready with perfect lighting',
     icon: Sparkles,
-    color: 'text-electric-blue'
+    color: 'text-coral'
   },
   {
     id: 'scene',
     name: 'Scene',
     description: 'Background blur and depth enhancement',
     icon: Palette,
-    color: 'text-purple-400'
+    color: 'text-sunset-orange'
   },
   {
     id: 'natural',
     name: 'Natural',
     description: 'Golden hour vibes and skin smoothing',
     icon: Wand2,
-    color: 'text-orange-400'
+    color: 'text-warm-pink'
   }
 ];
 
@@ -56,11 +56,11 @@ export const EnhancementSection = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
-              Choose Your Enhancement Mode
+              Choose Your Enhancement Style
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Select the perfect style for your photos. Each mode is carefully crafted 
-              to maximize your dating app success while staying completely natural.
+              Select the perfect aesthetic that matches your personality and dating goals.
+              Each style is crafted to make you naturally irresistible.
             </p>
           </div>
 
@@ -75,20 +75,20 @@ export const EnhancementSection = () => {
                   key={mode.id}
                   className={`cursor-pointer transition-all duration-300 border-2 ${
                     isSelected 
-                      ? 'border-neon-green shadow-glow-green bg-neon-green/10' 
-                      : 'border-border/50 hover:border-neon-green/50 hover:bg-neon-green/5'
+                      ? 'border-rose-gold shadow-glow-rose bg-rose-gold/10' 
+                      : 'border-border/50 hover:border-rose-gold/50 hover:bg-rose-gold/5'
                   }`}
                   onClick={() => setSelectedMode(mode.id)}
                 >
                   <CardHeader className="text-center">
                     <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${
-                      isSelected ? 'bg-neon-green/20' : 'bg-muted/50'
+                      isSelected ? 'bg-rose-gold/20' : 'bg-muted/50'
                     }`}>
-                      <IconComponent className={`w-8 h-8 ${isSelected ? 'text-neon-green' : mode.color}`} />
+                      <IconComponent className={`w-8 h-8 ${isSelected ? 'text-rose-gold' : mode.color}`} />
                     </div>
                     <CardTitle className="text-xl">
                       {mode.name}
-                      {isSelected && <Badge className="ml-2 bg-neon-green text-primary-foreground">Selected</Badge>}
+                      {isSelected && <Badge className="ml-2 bg-rose-gold text-primary-foreground">Selected</Badge>}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -110,27 +110,27 @@ export const EnhancementSection = () => {
                     Ready to Transform Your Photos?
                   </h3>
                   <p className="text-muted-foreground mb-6">
-                    Our AI will enhance your photos with <span className="text-neon-green font-semibold">{selectedMode}</span> mode, 
+                    Our AI will enhance your photos with <span className="text-rose-gold font-semibold">{selectedMode}</span> mode, 
                     improving lighting, smoothing skin, and boosting attractiveness while keeping it 100% natural.
                   </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground mb-6">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-neon-green" />
-                      Golden Hour Lighting
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground mb-6">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-rose-gold" />
+                        Golden Hour Lighting
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-coral" />
+                        Skin Smoothing
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Palette className="w-4 h-4 text-sunset-orange" />
+                        Background Blur
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Wand2 className="w-4 h-4 text-warm-pink" />
+                        Contrast Boost
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Camera className="w-4 h-4 text-electric-blue" />
-                      Skin Smoothing
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Palette className="w-4 h-4 text-purple-400" />
-                      Background Blur
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Wand2 className="w-4 h-4 text-orange-400" />
-                      Contrast Boost
-                    </div>
-                  </div>
                 </div>
 
                 <Button 
@@ -140,16 +140,16 @@ export const EnhancementSection = () => {
                   className="group"
                 >
                   <Sparkles className="w-6 h-6 group-hover:animate-spin" />
-                  Start Enhancement Process
+                  ✨ Start My Transformation
                 </Button>
               </div>
             ) : (
               <div className="space-y-6">
-                <Card className="border-neon-green/50 bg-neon-green/10">
+                <Card className="border-rose-gold/50 bg-rose-gold/10">
                   <CardContent className="p-8 text-center">
                     <div className="space-y-4">
-                      <div className="mx-auto w-16 h-16 bg-neon-green/20 rounded-full flex items-center justify-center">
-                        <Sparkles className="w-8 h-8 text-neon-green animate-pulse" />
+                      <div className="mx-auto w-16 h-16 bg-rose-gold/20 rounded-full flex items-center justify-center">
+                        <Sparkles className="w-8 h-8 text-rose-gold animate-pulse" />
                       </div>
                       <h3 className="text-2xl font-semibold">
                         ✨ AI Enhancement in Progress
@@ -171,7 +171,7 @@ export const EnhancementSection = () => {
                           />
                         </div>
                         <p className="text-sm text-muted-foreground mt-2">
-                          Processing your glow-up...
+                          Creating your confidence boost...
                         </p>
                       </div>
                     </div>

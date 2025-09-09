@@ -2,60 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SwipeBoost Design System - Dark Cheat-Code Aesthetic */
+/* SwipeBoost Design System - Romantic Dating Aesthetic */
 
 @layer base {
   :root {
-    /* Dark theme with neon accents */
+    /* Dark theme with romantic accents */
     --background: 220 13% 8%;
-    --foreground: 210 40% 98%;
+    --foreground: 345 20% 98%;
 
     --card: 220 13% 12%;
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 345 20% 98%;
 
     --popover: 220 13% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover-foreground: 345 20% 98%;
 
-    /* Neon green primary */
-    --primary: 127 100% 50%;
+    /* Rose gold primary */
+    --primary: 15 85% 75%;
     --primary-foreground: 220 13% 8%;
 
-    /* Dark secondary */
+    /* Warm secondary */
     --secondary: 220 13% 18%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 345 20% 98%;
 
     --muted: 220 13% 15%;
     --muted-foreground: 215 20% 65%;
 
-    /* Electric blue accent */
-    --accent: 200 100% 50%;
+    /* Coral accent */
+    --accent: 10 90% 65%;
     --accent-foreground: 220 13% 8%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 345 20% 98%;
 
     --border: 220 13% 20%;
     --input: 220 13% 15%;
-    --ring: 127 100% 50%;
+    --ring: 15 85% 75%;
 
     --radius: 0.75rem;
 
-    /* Custom gaming-inspired tokens */
-    --neon-green: 127 100% 50%;
-    --electric-blue: 200 100% 50%;
+    /* Custom romantic dating tokens */
+    --rose-gold: 15 85% 75%;
+    --coral: 10 90% 65%;
+    --sunset-orange: 25 95% 70%;
+    --warm-pink: 340 75% 80%;
     --dark-surface: 220 13% 10%;
-    --glow-green: 127 100% 50%;
-    --glow-blue: 200 100% 50%;
+    --glow-rose: 15 85% 75%;
+    --glow-coral: 10 90% 65%;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(127 100% 50%), hsl(150 100% 45%));
-    --gradient-accent: linear-gradient(135deg, hsl(200 100% 50%), hsl(220 100% 55%));
+    /* Romantic gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(15 85% 75%), hsl(25 95% 70%));
+    --gradient-accent: linear-gradient(135deg, hsl(10 90% 65%), hsl(340 75% 80%));
     --gradient-dark: linear-gradient(135deg, hsl(220 13% 8%), hsl(220 13% 12%));
-    --gradient-glow: linear-gradient(135deg, hsl(127 100% 50% / 0.1), hsl(200 100% 50% / 0.1));
+    --gradient-sunset: linear-gradient(135deg, hsl(25 95% 70%), hsl(15 85% 75%));
+    --gradient-glow: linear-gradient(135deg, hsl(15 85% 75% / 0.1), hsl(10 90% 65% / 0.1));
 
-    /* Shadows and glows */
-    --shadow-glow-green: 0 0 20px hsl(127 100% 50% / 0.3);
-    --shadow-glow-blue: 0 0 20px hsl(200 100% 50% / 0.3);
+    /* Romantic shadows and glows */
+    --shadow-glow-rose: 0 0 20px hsl(15 85% 75% / 0.3);
+    --shadow-glow-coral: 0 0 20px hsl(10 90% 65% / 0.3);
     --shadow-dark: 0 10px 30px -10px hsl(220 13% 0% / 0.5);
 
     /* Animations */
@@ -130,13 +133,13 @@
 }
 
 @layer components {
-  /* Glow effects */
-  .glow-green {
-    box-shadow: var(--shadow-glow-green);
+  /* Romantic glow effects */
+  .glow-rose {
+    box-shadow: var(--shadow-glow-rose);
   }
   
-  .glow-blue {
-    box-shadow: var(--shadow-glow-blue);
+  .glow-coral {
+    box-shadow: var(--shadow-glow-coral);
   }
 
   /* Text gradients */
@@ -154,31 +157,35 @@
     background-clip: text;
   }
 
-  /* Gaming-style animations */
+  /* Romantic animations */
   .pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite alternate;
   }
 
   @keyframes pulse-glow {
     0% {
-      box-shadow: 0 0 5px hsl(var(--neon-green) / 0.4);
+      box-shadow: 0 0 5px hsl(var(--rose-gold) / 0.4);
     }
     100% {
-      box-shadow: 0 0 20px hsl(var(--neon-green) / 0.8), 0 0 30px hsl(var(--neon-green) / 0.4);
+      box-shadow: 0 0 20px hsl(var(--rose-gold) / 0.8), 0 0 30px hsl(var(--rose-gold) / 0.4);
     }
   }
 
   /* Hover glow effects */
-  .hover-glow-green {
+  .hover-glow-rose {
     transition: var(--transition-glow);
   }
 
-  .hover-glow-green:hover {
-    box-shadow: var(--shadow-glow-green);
+  .hover-glow-rose:hover {
+    box-shadow: var(--shadow-glow-rose);
   }
 
-  .hover-glow-blue {
+  .hover-glow-coral {
     transition: var(--transition-glow);
+  }
+
+  .hover-glow-coral:hover {
+    box-shadow: var(--shadow-glow-coral);
   }
 
   /* Progress animation */

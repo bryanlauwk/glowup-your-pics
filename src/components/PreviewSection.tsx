@@ -42,26 +42,26 @@ export const PreviewSection = () => {
           <div className="max-w-4xl mx-auto space-y-12 text-center">
             {/* Success Header */}
             <div className="space-y-4">
-              <div className="mx-auto w-20 h-20 bg-neon-green/20 rounded-full flex items-center justify-center">
-                <Star className="w-10 h-10 text-neon-green fill-current" />
+              <div className="mx-auto w-20 h-20 bg-rose-gold/20 rounded-full flex items-center justify-center">
+                <Star className="w-10 h-10 text-rose-gold fill-current" />
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary">
-                Your Glow-Up is Ready! 🔥
+                Your Photos Are Ready! ✨
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Download your enhanced photos and get ready for the matches to roll in!
+                Download your naturally enhanced photos and watch your confidence soar!
               </p>
             </div>
 
             {/* Download Section */}
             <div className="grid md:grid-cols-2 gap-8">
               {mockEnhancedPhotos.map((photo) => (
-                <Card key={photo.id} className="border-neon-green/50 bg-card/50 backdrop-blur-sm">
+                <Card key={photo.id} className="border-rose-gold/50 bg-card/50 backdrop-blur-sm">
                   <CardContent className="p-6">
                     <img
                       src={photo.after}
                       alt="Enhanced photo"
-                      className="w-full h-64 object-cover rounded-lg shadow-glow-green"
+                      className="w-full h-64 object-cover rounded-lg shadow-glow-rose"
                     />
                     <Button variant="hero" className="w-full mt-4">
                       <Download className="w-5 h-5" />
@@ -73,19 +73,19 @@ export const PreviewSection = () => {
             </div>
 
             {/* Viral Share */}
-            <Card className="border-electric-blue/50 bg-electric-blue/10">
+            <Card className="border-coral/50 bg-coral/10">
               <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">Show Off Your Glow-Up! 📸</h3>
+                <h3 className="text-2xl font-bold mb-4">Show Off Your Transformation! 💫</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Share your transformation and help others discover the secret to better dating photos.
+                  Share your confidence boost and inspire others to look their best.
                   Tag us for a chance to be featured!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button variant="cheat" size="lg" onClick={handleShare}>
+                  <Button variant="romantic" size="lg" onClick={handleShare}>
                     <Share2 className="w-5 h-5" />
                     Share on Instagram
                   </Button>
-                  <Button variant="cheat" size="lg" onClick={handleShare}>
+                  <Button variant="outline" size="lg" onClick={handleShare} className="border-coral text-coral hover:bg-coral hover:text-primary-foreground">
                     <Share2 className="w-5 h-5" />
                     Share on TikTok
                   </Button>
@@ -133,14 +133,14 @@ export const PreviewSection = () => {
 
                     {/* After Image with Watermark */}
                     <div className="space-y-4">
-                      <Badge className="bg-neon-green text-primary-foreground">
+                      <Badge className="bg-rose-gold text-primary-foreground">
                         AFTER - ENHANCED ✨
                       </Badge>
                       <div className="relative">
                         <img
                           src={photo.after}
                           alt="Enhanced photo"
-                          className="w-full h-64 object-cover rounded-lg border-2 border-neon-green shadow-glow-green"
+                          className="w-full h-64 object-cover rounded-lg border-2 border-rose-gold shadow-glow-rose"
                         />
                         {/* Watermark Overlay */}
                         <div className="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center">
@@ -159,38 +159,38 @@ export const PreviewSection = () => {
           </div>
 
           {/* Paywall Card */}
-          <Card className="border-neon-green bg-gradient-dark shadow-glow-green">
+          <Card className="border-rose-gold bg-gradient-dark shadow-glow-rose">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold text-gradient-primary">
-                Unlock Your Glow-Up
+                Unlock Your Transformation
               </CardTitle>
               <p className="text-xl text-muted-foreground">
-                Get high-resolution, watermark-free photos ready for your dating apps
+                Get high-resolution, watermark-free photos that boost your dating confidence
               </p>
             </CardHeader>
             <CardContent className="space-y-8">
               {/* Pricing */}
               <div className="text-center">
-                <div className="text-5xl font-bold text-neon-green mb-2">$9.99</div>
+                <div className="text-5xl font-bold text-rose-gold mb-2">$9.99</div>
                 <p className="text-muted-foreground">One-time payment • Instant download</p>
               </div>
 
               {/* Features */}
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-neon-green" />
+                  <Zap className="w-4 h-4 text-rose-gold" />
                   High-resolution photos (4K quality)
                 </div>
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-neon-green" />
+                  <Zap className="w-4 h-4 text-rose-gold" />
                   Watermark-free downloads
                 </div>
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-neon-green" />
+                  <Zap className="w-4 h-4 text-rose-gold" />
                   Ready for all dating apps
                 </div>
                 <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-neon-green" />
+                  <Zap className="w-4 h-4 text-rose-gold" />
                   Lifetime access to your photos
                 </div>
               </div>

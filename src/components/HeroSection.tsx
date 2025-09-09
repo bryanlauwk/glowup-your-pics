@@ -12,9 +12,9 @@ export const HeroSection = () => {
       />
       <div className="absolute inset-0 bg-background/70" />
       
-      {/* Animated Grid */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="h-full w-full bg-[linear-gradient(rgba(127,255,0,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(127,255,0,0.1)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      {/* Romantic Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="h-full w-full bg-[radial-gradient(circle_at_25%_25%,rgba(233,180,184,0.2)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(255,107,107,0.15)_0%,transparent_50%)]" />
       </div>
 
       {/* Content */}
@@ -23,14 +23,14 @@ export const HeroSection = () => {
           {/* Main Headline */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-black tracking-tight">
-              The Dating App
+              Turn Your Photos Into
               <span className="block text-gradient-primary">
-                Photo Cheat-Code
+                Conversation Starters
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Transform your dating photos into irresistible profile pics that get more matches. 
-              <span className="text-neon-green font-semibold"> Completely undetectable.</span>
+              Look like the best version of yourself with invisible AI enhancement that gets you more matches. 
+              <span className="text-rose-gold font-semibold"> Naturally irresistible.</span>
             </p>
           </div>
 
@@ -45,11 +45,11 @@ export const HeroSection = () => {
               }}
             >
               <Zap className="w-5 h-5 group-hover:animate-pulse" />
-              Get My Glow-Up Now
+              Get My Confidence Boost
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="cheat" size="xl">
-              See Before & After Examples
+            <Button variant="outline" size="xl" className="border-rose-gold text-rose-gold hover:bg-rose-gold hover:text-primary-foreground">
+              See Real Results
             </Button>
           </div>
 
@@ -70,9 +70,9 @@ export const HeroSection = () => {
       </div>
 
       {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-2 h-2 bg-neon-green rounded-full animate-pulse" />
-      <div className="absolute bottom-32 right-16 w-3 h-3 bg-electric-blue rounded-full animate-pulse delay-1000" />
-      <div className="absolute top-1/2 right-8 w-1 h-1 bg-neon-green rounded-full animate-pulse delay-500" />
+      <div className="absolute top-20 left-10 w-2 h-2 bg-rose-gold rounded-full animate-pulse" />
+      <div className="absolute bottom-32 right-16 w-3 h-3 bg-coral rounded-full animate-pulse delay-1000" />
+      <div className="absolute top-1/2 right-8 w-1 h-1 bg-sunset-orange rounded-full animate-pulse delay-500" />
     </div>
   );
 };
