@@ -14,7 +14,7 @@ import {
   Loader2,
   Sparkles
 } from 'lucide-react';
-import { useGeminiNano } from '@/hooks/useGeminiNano';
+import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 
 interface UploadedPhoto {
   id: string;
@@ -87,7 +87,7 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
     }
   ]);
 
-  const { isReady, analyzePhoto, generateEnhancementSuggestions } = useGeminiNano();
+  const { analyzePhoto, generateEnhancementSuggestions, isLoading: geminiLoading, error: geminiError } = useGeminiAPI();
 
   const updateStepStatus = (stepId: string, status: ProcessingStep['status'], progress: number = 0) => {
     setProcessingSteps(prev => prev.map(step => 
@@ -103,12 +103,10 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     let analysis = null;
-    if (isReady) {
-      try {
-        analysis = await analyzePhoto(photo.preview);
-      } catch (error) {
-        console.error('Gemini Nano analysis failed:', error);
-      }
+    try {
+      analysis = await analyzePhoto(photo.preview);
+    } catch (error) {
+      console.error('Gemini API analysis failed:', error);
     }
     
     // Fallback analysis
