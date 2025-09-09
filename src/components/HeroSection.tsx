@@ -4,17 +4,21 @@ import heroBackground from "@/assets/hero-background.jpg";
 
 export const HeroSection = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-dark">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroBackground})` }}
-      />
-      <div className="absolute inset-0 bg-background/70" />
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Romantic Golden Hour Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-gold/20 via-coral/10 to-sunset-orange/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/40 to-background/60" />
       
-      {/* Romantic Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_25%_25%,rgba(233,180,184,0.2)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(255,107,107,0.15)_0%,transparent_50%)]" />
+      {/* Soft Romantic Lighting Effects */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="h-full w-full bg-[radial-gradient(ellipse_at_top_left,rgba(232,180,184,0.3)_0%,transparent_60%),radial-gradient(ellipse_at_bottom_right,rgba(255,179,71,0.2)_0%,transparent_60%),radial-gradient(ellipse_at_center,rgba(255,107,107,0.1)_0%,transparent_70%)]" />
+      </div>
+      
+      {/* Gentle Bokeh Particles */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-rose-gold/30 rounded-full blur-xl animate-pulse" />
+        <div className="absolute top-3/4 right-1/3 w-24 h-24 bg-coral/25 rounded-full blur-2xl animate-pulse delay-1000" />
+        <div className="absolute bottom-1/3 left-1/2 w-40 h-40 bg-sunset-orange/20 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
 
       {/* Content */}
@@ -56,23 +60,24 @@ export const HeroSection = () => {
           {/* Social Proof */}
           <div className="pt-8 space-y-4">
             <p className="text-sm text-muted-foreground uppercase tracking-wide">
-              Trusted by 10,000+ Users
+              Join thousands of confident users
             </p>
-            <div className="flex flex-wrap justify-center gap-8 items-center text-2xl font-bold text-gradient-accent">
-              <span>+300% More Matches</span>
+            <div className="flex flex-wrap justify-center gap-8 items-center text-xl font-semibold text-gradient-accent">
+              <span>More meaningful connections</span>
               <span>•</span>
-              <span>100% Undetectable</span>
+              <span>Naturally enhanced</span>
               <span>•</span>
-              <span>5-Star Reviews</span>
+              <span>Loved by users everywhere</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-2 h-2 bg-rose-gold rounded-full animate-pulse" />
-      <div className="absolute bottom-32 right-16 w-3 h-3 bg-coral rounded-full animate-pulse delay-1000" />
-      <div className="absolute top-1/2 right-8 w-1 h-1 bg-sunset-orange rounded-full animate-pulse delay-500" />
+      {/* Gentle Floating Light Spots */}
+      <div className="absolute top-20 left-10 w-3 h-3 bg-rose-gold/60 rounded-full animate-pulse blur-sm" />
+      <div className="absolute bottom-32 right-16 w-4 h-4 bg-coral/50 rounded-full animate-pulse delay-1000 blur-sm" />
+      <div className="absolute top-1/2 right-8 w-2 h-2 bg-sunset-orange/70 rounded-full animate-pulse delay-500 blur-sm" />
+      <div className="absolute top-1/3 left-1/2 w-1 h-1 bg-rose-gold/80 rounded-full animate-pulse delay-700 blur-sm" />
     </div>
   );
 };
