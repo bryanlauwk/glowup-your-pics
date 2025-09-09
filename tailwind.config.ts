@@ -47,10 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        "rose-gold": "hsl(var(--rose-gold))",
-        "coral": "hsl(var(--coral))",
-        "sunset-orange": "hsl(var(--sunset-orange))",
-        "warm-pink": "hsl(var(--warm-pink))",
+        "violet-purple": "hsl(var(--violet-purple))",
+        "hot-pink": "hsl(var(--hot-pink))",
+        "magenta-glow": "hsl(var(--magenta-glow))",
+        "lavender-soft": "hsl(var(--lavender-soft))",
+        "deep-purple": "hsl(var(--deep-purple))",
+        "bright-pink": "hsl(var(--bright-pink))",
         "dark-surface": "hsl(var(--dark-surface))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -71,8 +73,8 @@ export default {
         "gradient-glow": "var(--gradient-glow)",
       },
       boxShadow: {
-        "glow-rose": "var(--shadow-glow-rose)",
-        "glow-coral": "var(--shadow-glow-coral)",
+        "glow-violet": "var(--shadow-glow-violet)",
+        "glow-pink": "var(--shadow-glow-pink)",
         "dark": "var(--shadow-dark)",
       },
       borderRadius: {

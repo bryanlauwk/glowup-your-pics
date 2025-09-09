@@ -4,32 +4,48 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Mock data for before/after examples
+// Mock data for before/after examples with diverse representation
 const beforeAfterExamples = [
   {
     id: 1,
-    before: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
-    improvement: "+240% more matches",
-    testimonial: "Holy shit, this actually works! Got 3 dates this week.",
-    name: "Jake, 25"
+    before: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=500&fit=crop&crop=face",
+    improvement: "3x more matches",
+    testimonial: "Confidence boosted instantly. Actually getting quality matches now!",
+    name: "Kevin, 26"
   },
   {
     id: 2,
-    before: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&crop=face",
-    improvement: "+180% more likes",
-    testimonial: "Went from 2 matches to 20+ matches in one day. Insane!",
-    name: "Mike, 28"
+    before: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=400&h=500&fit=crop&crop=face",
+    improvement: "5x more likes",
+    testimonial: "Went from invisible to irresistible. This works!",
+    name: "Hiroshi, 29"
   },
   {
     id: 3,
-    before: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1494790108755-2616b612b820?w=400&h=500&fit=crop&crop=face",
-    improvement: "+300% more swipes",
-    testimonial: "Finally getting the attention I deserve. This is a game changer.",
-    name: "Sarah, 24"
+    before: "https://images.unsplash.com/photo-1544348817-5f2cf14b88c8?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1567515004624-219c11d31f2e?w=400&h=500&fit=crop&crop=face",
+    improvement: "4x more conversations",
+    testimonial: "Finally matching with people I'm actually excited about.",
+    name: "Chen, 24"
   },
+  {
+    id: 4,
+    before: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face",
+    improvement: "2x more dates",
+    testimonial: "Subtle but powerful changes. People notice the confidence.",
+    name: "David, 31"
+  },
+  {
+    id: 5,
+    before: "https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=400&h=500&fit=crop&crop=face",
+    after: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=400&h=500&fit=crop&crop=face",
+    improvement: "6x more swipes",
+    testimonial: "Never thought subtle changes could make such a difference!",
+    name: "Yuki, 27"
+  }
 ];
 
 export const BeforeAfterCarousel = () => {
@@ -107,11 +123,11 @@ export const BeforeAfterCarousel = () => {
                             src={currentExample.after}
                             alt="After enhancement"
                             className={cn(
-                              "w-full h-64 object-cover rounded-lg border-2 border-rose-gold shadow-glow-rose transition-all duration-500",
+                              "w-full h-64 object-cover rounded-lg border-2 border-violet-purple shadow-glow-violet transition-all duration-500",
                               isAnimating && "scale-105"
                             )}
                           />
-                          <div className="absolute top-2 left-2 bg-rose-gold text-primary-foreground px-2 py-1 rounded text-sm font-semibold">
+                          <div className="absolute top-2 left-2 bg-violet-purple text-primary-foreground px-2 py-1 rounded text-sm font-semibold">
                             AFTER
                           </div>
                         </div>
@@ -120,7 +136,7 @@ export const BeforeAfterCarousel = () => {
 
                     {/* Improvement Stats */}
                     <div className="text-center">
-                      <div className="inline-flex items-center gap-2 bg-rose-gold/20 text-rose-gold px-4 py-2 rounded-full font-bold text-lg">
+                      <div className="inline-flex items-center gap-2 bg-violet-purple/20 text-violet-purple px-4 py-2 rounded-full font-bold text-lg">
                         <Star className="w-5 h-5 fill-current" />
                         {currentExample.improvement}
                       </div>
@@ -133,7 +149,7 @@ export const BeforeAfterCarousel = () => {
                       "{currentExample.testimonial}"
                     </blockquote>
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center text-rose-gold">
+                      <div className="flex items-center text-violet-purple">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="w-5 h-5 fill-current" />
                         ))}
@@ -181,7 +197,7 @@ export const BeforeAfterCarousel = () => {
                 className={cn(
                   "w-3 h-3 rounded-full transition-all duration-300",
                   index === currentIndex
-                    ? "bg-rose-gold shadow-glow-rose"
+                    ? "bg-violet-purple shadow-glow-violet"
                     : "bg-muted hover:bg-muted-foreground/50"
                 )}
                 disabled={isAnimating}
