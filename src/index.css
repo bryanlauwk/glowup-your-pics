@@ -2,41 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* SwipeBoost Design System - Dark Cheat-Code Aesthetic */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dark theme with neon accents */
+    --background: 220 13% 8%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 13% 12%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 13% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Neon green primary */
+    --primary: 127 100% 50%;
+    --primary-foreground: 220 13% 8%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Dark secondary */
+    --secondary: 220 13% 18%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 13% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Electric blue accent */
+    --accent: 200 100% 50%;
+    --accent-foreground: 220 13% 8%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 20%;
+    --input: 220 13% 15%;
+    --ring: 127 100% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom gaming-inspired tokens */
+    --neon-green: 127 100% 50%;
+    --electric-blue: 200 100% 50%;
+    --dark-surface: 220 13% 10%;
+    --glow-green: 127 100% 50%;
+    --glow-blue: 200 100% 50%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(127 100% 50%), hsl(150 100% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(200 100% 50%), hsl(220 100% 55%));
+    --gradient-dark: linear-gradient(135deg, hsl(220 13% 8%), hsl(220 13% 12%));
+    --gradient-glow: linear-gradient(135deg, hsl(127 100% 50% / 0.1), hsl(200 100% 50% / 0.1));
+
+    /* Shadows and glows */
+    --shadow-glow-green: 0 0 20px hsl(127 100% 50% / 0.3);
+    --shadow-glow-blue: 0 0 20px hsl(200 100% 50% / 0.3);
+    --shadow-dark: 0 10px 30px -10px hsl(220 13% 0% / 0.5);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: box-shadow 0.3s ease;
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +125,70 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+@layer components {
+  /* Glow effects */
+  .glow-green {
+    box-shadow: var(--shadow-glow-green);
+  }
+  
+  .glow-blue {
+    box-shadow: var(--shadow-glow-blue);
+  }
+
+  /* Text gradients */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-accent {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gaming-style animations */
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    0% {
+      box-shadow: 0 0 5px hsl(var(--neon-green) / 0.4);
+    }
+    100% {
+      box-shadow: 0 0 20px hsl(var(--neon-green) / 0.8), 0 0 30px hsl(var(--neon-green) / 0.4);
+    }
+  }
+
+  /* Hover glow effects */
+  .hover-glow-green {
+    transition: var(--transition-glow);
+  }
+
+  .hover-glow-green:hover {
+    box-shadow: var(--shadow-glow-green);
+  }
+
+  .hover-glow-blue {
+    transition: var(--transition-glow);
+  }
+
+  /* Progress animation */
+  .progress-animation {
+    animation: progressBar 3s ease-in-out forwards;
+  }
+
+  @keyframes progressBar {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
   }
 }
