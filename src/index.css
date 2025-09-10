@@ -16,19 +16,19 @@
     --popover: 220 13% 12%;
     --popover-foreground: 345 20% 98%;
 
-    /* Rose gold primary */
-    --primary: 15 85% 75%;
+    /* Romantic Pink Primary */
+    --primary: 330 85% 75%;
     --primary-foreground: 220 13% 8%;
 
-    /* Warm secondary */
-    --secondary: 220 13% 18%;
+    /* Soft Pink Secondary */
+    --secondary: 320 40% 25%;
     --secondary-foreground: 345 20% 98%;
 
     --muted: 220 13% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 70%;
 
-    /* Coral accent */
-    --accent: 10 90% 65%;
+    /* Blush Pink Accent */
+    --accent: 340 95% 75%;
     --accent-foreground: 220 13% 8%;
 
     --destructive: 0 84.2% 60.2%;
@@ -40,28 +40,28 @@
 
     --radius: 0.75rem;
 
-    /* Brighter purple-pink tokens */
-    --violet-purple: 270 80% 75%;
-    --hot-pink: 320 90% 70%;
-    --magenta-glow: 300 85% 80%;
-    --lavender-soft: 280 65% 88%;
-    --deep-purple: 260 90% 65%;
-    --bright-pink: 330 95% 75%;
-    --dark-surface: 260 15% 10%;
-    --glow-violet: 270 80% 75%;
-    --glow-pink: 320 90% 70%;
+    /* Romantic Love Tokens */
+    --love-pink: 340 90% 80%;
+    --romance-rose: 350 85% 75%;
+    --blush-soft: 330 70% 85%;
+    --passionate-pink: 320 95% 70%;
+    --tender-pink: 345 80% 88%;
+    --enchanting-purple: 310 85% 75%;
+    --dreamy-lavender: 280 70% 85%;
+    --magic-pink: 340 100% 80%;
+    --cupid-glow: 330 90% 75%;
     
-    /* Brighter purple-pink gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(270 80% 75%), hsl(320 90% 70%));
-    --gradient-accent: linear-gradient(135deg, hsl(300 85% 80%), hsl(330 95% 75%));
-    --gradient-dark: linear-gradient(135deg, hsl(260 15% 8%), hsl(260 15% 12%));
-    --gradient-sunset: linear-gradient(135deg, hsl(280 65% 88%), hsl(270 80% 75%));
-    --gradient-glow: linear-gradient(135deg, hsl(270 80% 75% / 0.3), hsl(320 90% 70% / 0.3));
+    /* Romantic Love Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(340 90% 80%), hsl(320 95% 70%));
+    --gradient-accent: linear-gradient(135deg, hsl(350 85% 75%), hsl(340 100% 80%));
+    --gradient-love: linear-gradient(135deg, hsl(330 70% 85%), hsl(345 80% 88%));
+    --gradient-romance: linear-gradient(135deg, hsl(310 85% 75%), hsl(340 90% 80%));
+    --gradient-enchanting: linear-gradient(135deg, hsl(340 90% 80% / 0.4), hsl(320 95% 70% / 0.4));
 
-    /* Brighter shadows and glows */
-    --shadow-glow-violet: 0 0 40px hsl(270 80% 75% / 0.5);
-    --shadow-glow-pink: 0 0 40px hsl(320 90% 70% / 0.5);
-    --shadow-dark: 0 10px 30px -10px hsl(260 15% 0% / 0.6);
+    /* Enchanting Love Glows */
+    --shadow-love-glow: 0 0 50px hsl(340 90% 80% / 0.6);
+    --shadow-romance-glow: 0 0 45px hsl(320 95% 70% / 0.5);
+    --shadow-cupid-kiss: 0 10px 40px -10px hsl(330 90% 75% / 0.4);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

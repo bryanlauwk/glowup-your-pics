@@ -8,51 +8,51 @@ import {
 
 const faqs = [
   {
-    question: "Will women notice the AI enhancement?",
-    answer: "No! Our advanced AI makes subtle, natural improvements that enhance your masculine features without looking fake or overly edited. The changes are completely undetectable to dating app algorithms and women - they'll just think you look amazing."
+    question: "Will she notice this is AI magic? 💕",
+    answer: "Not at all, darling! Our invisible love magic makes subtle, enchanting improvements that enhance your natural charm without looking fake. The changes are completely undetectable - she'll just think you look absolutely irresistible ✨"
   },
   {
-    question: "How natural do the changes look?",
-    answer: "Extremely natural. We enhance your existing features rather than changing them. Think of it as your best self on your best day - more confidence, better lighting, sharper jawline - but still authentically you."
+    question: "How natural and dreamy do I look? 🌙",
+    answer: "Like you're living in a romantic movie! We enhance your existing magnetism rather than changing who you are. Think of it as your most confident, attractive self on the most perfect day - but still authentically, beautifully you 💫"
   },
   {
-    question: "Will I still look masculine and strong?",
-    answer: "Absolutely! Our AI is specifically designed to enhance masculine features like jawlines, facial structure, and confidence. We make you look more attractive while maintaining your natural masculine appeal."
+    question: "Will I still look strong and charming? 💪",
+    answer: "Absolutely, gorgeous! Our AI is designed to amplify your natural masculine appeal - stronger jawlines, confident presence, irresistible charm. You'll look more attractive while maintaining that magnetic, masculine energy she craves 🔥"
   },
   {
-    question: "Does this work for Asian men and other ethnicities?",
-    answer: "Yes! Our AI is trained on diverse datasets and works exceptionally well for all ethnicities. We've helped thousands of Asian men, Black men, Latino men, and men of all backgrounds get better matches."
+    question: "Does this work for all beautiful souls? 🌍",
+    answer: "Yes, sweetie! Our AI celebrates all forms of beauty and works enchantingly well for all ethnicities. We've helped thousands of amazing souls find their perfect match, no matter their background 💖"
   },
   {
-    question: "How long does it take to get my enhanced photos?",
-    answer: "Most photos are processed within 5-10 minutes. Pro and Elite customers get priority processing for even faster results. You'll receive an email notification when your photos are ready for download."
+    question: "How quickly will I receive my love transformation? ⏰",
+    answer: "Your magical transformation happens in just 5-10 minutes! Premium lovers get priority processing for even faster results. You'll receive a sweet notification when your enchanted photos are ready 📱✨"
   },
   {
-    question: "Can I use these photos on all dating apps?",
-    answer: "Absolutely! Your enhanced photos work perfectly on Tinder, Bumble, Hinge, Coffee Meets Bagel, Match, OkCupid, and any other dating platform. The improvements are designed to perform well across all apps."
+    question: "Can I spread this love magic everywhere? 📱",
+    answer: "Absolutely, love! Your enchanted photos work like magic on Tinder, Bumble, Hinge, Coffee Meets Bagel, Match, OkCupid, and every dating platform. The love improvements are designed to make hearts flutter everywhere 💕"
   },
   {
-    question: "What if I don't get better results?",
-    answer: "We offer a 100% money-back guarantee. If you're not getting more quality matches within 30 days, we'll refund your purchase, no questions asked. Your success is our success."
+    question: "What if my heart doesn't find its match? 💔",
+    answer: "Don't worry, darling! We offer a 100% love guarantee. If you're not finding your soulmate within 30 days, we'll refund every penny, no questions asked. Your happiness is our greatest joy 💝"
   },
   {
-    question: "Is my data and photos secure?",
-    answer: "Yes, absolutely. We use enterprise-grade encryption to protect your photos and data. Your original photos are automatically deleted from our servers after 30 days, and we never share your images with third parties."
+    question: "Are my photos safe in your loving hands? 🛡️",
+    answer: "Completely safe, sweetheart! We use the strongest protection to guard your precious photos. Your originals are automatically deleted after 30 days, and we never, ever share your beautiful images with anyone else 🔐💕"
   }
 ];
 
 export const FAQSection = () => {
   return (
-    <div className="py-20 bg-gradient-to-br from-background via-deep-purple/5 to-background">
+    <div className="py-20 bg-gradient-to-br from-background via-enchanting-purple/5 to-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-accent">
-              Frequently Asked Questions
+              💕 Love Questions & Sweet Answers 💕
             </h2>
             <p className="text-xl text-muted-foreground">
-              Everything you need to know about SwipeBoost
+              Everything your heart needs to know about SwipeBoost ✨
             </p>
           </div>
 
@@ -64,7 +64,7 @@ export const FAQSection = () => {
                 value={`item-${index}`}
                 className="border border-border/50 rounded-lg px-6 bg-card/30 backdrop-blur-sm hover:bg-card/50 transition-all duration-300"
               >
-                <AccordionTrigger className="text-left font-semibold text-lg hover:text-violet-purple transition-colors">
+                <AccordionTrigger className="text-left font-semibold text-lg hover:text-love-pink transition-colors">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed pt-2 pb-4">
@@ -77,9 +77,9 @@ export const FAQSection = () => {
           {/* Contact CTA */}
           <div className="text-center space-y-4 pt-8">
             <p className="text-lg text-muted-foreground">
-              Still have questions?{' '}
-              <span className="text-violet-purple font-semibold hover:underline cursor-pointer">
-                Contact our support team
+              Still have questions, sweetie?{' '}
+              <span className="text-love-pink font-semibold hover:underline cursor-pointer">
+                Chat with our love experts 💕
               </span>
             </p>
           </div>
