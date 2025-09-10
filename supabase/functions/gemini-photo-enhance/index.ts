@@ -8,7 +8,10 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('🚀 FUNCTION INVOKED:', req.method, req.url);
+  
   if (req.method === 'OPTIONS') {
+    console.log('✅ Handling OPTIONS request');
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -19,7 +22,10 @@ serve(async (req) => {
   );
 
   try {
-    const { imageDataUrl, photoCategory, customPrompt, userId } = await req.json();
+    console.log('📥 Parsing request body...');
+    const body = await req.json();
+    console.log('📄 Request body keys:', Object.keys(body));
+    const { imageDataUrl, photoCategory, customPrompt, userId } = body;
 
     console.log('Enhancement request received:', {
       userId,
@@ -42,18 +48,24 @@ serve(async (req) => {
     }
 
     // Check user credits first
-    const { data: userCredits } = await supabase
+    console.log('💳 Checking user credits for userId:', userId);
+    const { data: userCredits, error: creditsError } = await supabase
       .from('user_credits')
       .select('credits')
       .eq('user_id', userId)
       .single();
+      
+    console.log('💳 Credits result:', { userCredits, creditsError });
 
-    if (!userCredits || userCredits.credits < 1) {
+    if (creditsError || !userCredits || userCredits.credits < 1) {
+      console.log('❌ Insufficient credits or error:', { creditsError, userCredits });
       return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+    
+    console.log('✅ User has sufficient credits:', userCredits.credits);
 
     // Create enhancement prompt based on category and custom user input
     const basePrompts = {
@@ -83,12 +95,16 @@ Enhancement instructions:
 IMPORTANT: Return the enhanced image file, not text analysis.`;
 
     const startTime = Date.now();
+    console.log('⏰ Start time:', startTime);
+    console.log('🤖 === CALLING GEMINI API ===');
 
     // Call Gemini API
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     if (!geminiApiKey) {
+      console.log('ERROR: GEMINI_API_KEY not configured');
       throw new Error('GEMINI_API_KEY not configured');
     }
+    console.log('Gemini API Key:', geminiApiKey ? 'Available' : 'Missing');
     
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
     
@@ -265,14 +281,16 @@ IMPORTANT: Return the enhanced image file, not text analysis.`;
     });
 
   } catch (error) {
-    console.error('Enhancement error:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
+    console.error('🔥 === FUNCTION ERROR ===');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
+    console.error('Full error object:', error);
+    
     return new Response(JSON.stringify({ 
       error: 'Enhancement failed: ' + error.message,
-      details: error.name 
+      details: error.name,
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
