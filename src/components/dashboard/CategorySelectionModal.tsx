@@ -9,68 +9,65 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Activity, Mountain, Users, Camera, Compass } from 'lucide-react';
+import { Target, Heart, Users, Activity, Mountain, Sparkles } from 'lucide-react';
 
-type PhotoCategory = 'headshot' | 'lifestyle-fullbody' | 'background-scenery' | 'lifestyle-activity' | 'social-friends' | 'adventure-travel';
+type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
 
 interface CategorySelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCategorySelect: (category: PhotoCategory) => void;
-  slotType: 'primary' | 'secondary';
+  slotIndex: number;
 }
 
-const primaryCategories = [
+const categories = [
   {
-    id: 'headshot' as const,
-    name: 'Headshot/Close-up',
-    description: 'Face-forward, clear, confident expression',
-    icon: User,
-    tips: 'Best for main profile photos, eye contact, natural lighting',
-    color: 'bg-blue-500/10 border-blue-500/30'
+    id: 'the-hook' as const,
+    name: 'The Perfect First Impression',
+    description: 'Your best headshot - crisp, smiling, well-lit with visible eyes',
+    icon: Target,
+    tips: 'This is your swipe-right photo! Eye contact and genuine smile are key',
+    color: 'bg-pink-500/10 border-pink-500/30'
   },
   {
-    id: 'lifestyle-fullbody' as const,
-    name: 'Lifestyle/Full-body',
-    description: 'Show your physique and style in natural setting',
-    icon: Activity,
-    tips: 'Great for showing personality, fashion sense, and body language',
-    color: 'bg-green-500/10 border-green-500/30'
-  }
-];
-
-const secondaryCategories = [
-  {
-    id: 'background-scenery' as const,
-    name: 'Background/Scenery',
-    description: 'Beautiful backgrounds and scenic locations',
-    icon: Mountain,
-    tips: 'Showcases your taste and travel experiences',
-    color: 'bg-emerald-500/10 border-emerald-500/30'
-  },
-  {
-    id: 'lifestyle-activity' as const,
-    name: 'Lifestyle/Activity',
-    description: 'Hobbies, sports, or daily activities',
-    icon: Activity,
-    tips: 'Great conversation starter, shows your interests',
-    color: 'bg-orange-500/10 border-orange-500/30'
-  },
-  {
-    id: 'social-friends' as const,
-    name: 'Social/Friends',
-    description: 'With friends or in social settings',
-    icon: Users,
-    tips: 'Social proof, but make sure you\'re clearly identifiable',
+    id: 'style-confidence' as const,
+    name: 'Show Your Style & Confidence',
+    description: 'Full-body shot showing your fashion sense and confidence',
+    icon: Heart,
+    tips: 'Avoid mirror selfies! Show your style in a natural setting',
     color: 'bg-purple-500/10 border-purple-500/30'
   },
   {
-    id: 'adventure-travel' as const,
-    name: 'Adventure/Travel',
-    description: 'Travel photos and adventure activities',
-    icon: Compass,
-    tips: 'Shows adventurous side and interesting lifestyle',
-    color: 'bg-pink-500/10 border-pink-500/30'
+    id: 'social-proof' as const,
+    name: 'Social Butterfly',
+    description: 'Fun shot with friends (max 2-3 people)',
+    icon: Users,
+    tips: 'Shows you\'re social and fun, but make sure you\'re clearly the focus',
+    color: 'bg-blue-500/10 border-blue-500/30'
+  },
+  {
+    id: 'passion-hobbies' as const,
+    name: 'Your Passion & Hobbies',
+    description: 'Action shot doing something you love',
+    icon: Activity,
+    tips: 'Perfect conversation starter! Shows your interests and active lifestyle',
+    color: 'bg-green-500/10 border-green-500/30'
+  },
+  {
+    id: 'lifestyle-adventure' as const,
+    name: 'Adventure & Lifestyle',
+    description: 'Travel or outdoor activities showing your adventurous side',
+    icon: Mountain,
+    tips: 'Signals ambition and curiosity - very attractive qualities!',
+    color: 'bg-orange-500/10 border-orange-500/30'
+  },
+  {
+    id: 'personality-closer' as const,
+    name: 'Personality Plus',
+    description: 'With pets, genuine laughter, or something uniquely you',
+    icon: Sparkles,
+    tips: 'End on a memorable note! Shows your fun, authentic personality',
+    color: 'bg-violet-500/10 border-violet-500/30'
   }
 ];
 
@@ -78,9 +75,8 @@ export const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
   isOpen,
   onClose,
   onCategorySelect,
-  slotType
+  slotIndex
 }) => {
-  const categories = slotType === 'primary' ? primaryCategories : secondaryCategories;
 
   const handleCategorySelect = (category: PhotoCategory) => {
     onCategorySelect(category);
@@ -92,20 +88,16 @@ export const CategorySelectionModal: React.FC<CategorySelectionModalProps> = ({
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Camera className="w-5 h-5 text-violet-purple" />
-            Select Photo Category
+            <Sparkles className="w-5 h-5 text-violet-purple" />
+            What kind of photo is this?
           </DialogTitle>
           <DialogDescription>
             <div className="space-y-2">
               <p>
-                <span className="font-medium">{slotType === 'primary' ? 'Primary Photo' : 'Secondary Photo'}</span>
-                {slotType === 'primary' ? ' (Required)' : ' (Optional)'}
+                <span className="font-medium">Photo #{slotIndex + 1}</span> in your dating lineup
               </p>
               <p className="text-sm">
-                {slotType === 'primary' 
-                  ? 'Your main profile photo - this will be the first impression!'
-                  : 'Additional photo to showcase your lifestyle and personality'
-                }
+                Choose the category that best describes this photo so we can optimize it perfectly for dating apps.
               </p>
             </div>
           </DialogDescription>

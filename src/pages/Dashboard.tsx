@@ -5,15 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { PhotoUploadStation } from "@/components/dashboard/PhotoUploadStation";
+import { PhotoLineupStation } from "@/components/dashboard/PhotoLineupStation";
 import { AIProcessingEngine } from "@/components/dashboard/AIProcessingEngine";
 import { EnhancementResults } from "@/components/dashboard/EnhancementResults";
 import { SwipeBoostEngine } from "@/components/SwipeBoostEngine";
 import { Upload, Zap, Download, Target } from "lucide-react";
 
 type DashboardStep = 'upload' | 'analysis' | 'processing' | 'results';
-type PhotoCategory = 'headshot' | 'lifestyle-fullbody' | 'background-scenery' | 'lifestyle-activity' | 'social-friends' | 'adventure-travel';
-type EnhancementTheme = 'professional' | 'natural' | 'attractive-dating' | 'glamour' | 'artistic';
+type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
+type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
 
 interface PhotoAnalysis {
   faceVisibility: number;
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const [currentStep, setCurrentStep] = useState<DashboardStep>('upload');
   const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
   const [currentPhoto, setCurrentPhoto] = useState<UploadedPhoto | null>(null);
-  const [currentSlotType, setCurrentSlotType] = useState<'primary' | 'secondary'>('primary');
+  const [currentSlotIndex, setCurrentSlotIndex] = useState<number>(0);
   const [enhancementResults, setEnhancementResults] = useState<any[]>([]);
 
   useEffect(() => {
@@ -51,10 +51,10 @@ export default function Dashboard() {
   }, [user, loading, navigate]);
 
   const steps = [
-    { id: 'upload', label: 'Upload Photos', icon: Upload, desc: 'Select 1-3 photos for analysis' },
-    { id: 'analysis', label: 'SwipeBoost Analysis', icon: Target, desc: 'Match-likelihood & compliance scoring' },
-    { id: 'processing', label: 'AI Enhancement', icon: Zap, desc: 'Optimized enhancement processing' },
-    { id: 'results', label: 'Download Results', icon: Download, desc: 'Get your enhanced photos' },
+    { id: 'upload', label: 'Build Your Lineup', icon: Upload, desc: 'Create your 6-photo dating lineup' },
+    { id: 'analysis', label: 'Photo Review', icon: Target, desc: 'AI feedback on your photo appeal' },
+    { id: 'processing', label: 'Photo Makeover', icon: Zap, desc: 'Make your photos irresistible' },
+    { id: 'results', label: 'Ready to Swipe', icon: Download, desc: 'Download your amazing photos' },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.id === currentStep);
@@ -76,10 +76,10 @@ export default function Dashboard() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gradient-primary mb-2">
-            SwipeBoost Match-Likelihood Engine
+            Build Your Perfect Dating Profile
           </h1>
           <p className="text-muted-foreground">
-            Compliance-first photo enhancement optimized for dating apps with measurable MLS + CS scores
+            Transform your photos into irresistible dating app magnets that get more matches
           </p>
         </div>
 
@@ -124,12 +124,12 @@ export default function Dashboard() {
 
         {/* Step Content */}
         {currentStep === 'upload' && (
-          <PhotoUploadStation
+          <PhotoLineupStation
             uploadedPhotos={uploadedPhotos}
             setUploadedPhotos={setUploadedPhotos}
-            onNext={(photo, slotType) => {
+            onNext={(photo, slotIndex) => {
               setCurrentPhoto(photo);
-              setCurrentSlotType(slotType);
+              setCurrentSlotIndex(slotIndex);
               setCurrentStep('analysis');
             }}
           />
@@ -141,7 +141,7 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="w-5 h-5" />
-                  {currentSlotType === 'primary' ? 'Primary' : 'Secondary'} Photo Enhancement
+                  Your Photo Makeover Preview
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -154,17 +154,17 @@ export default function Dashboard() {
                     />
                     <div className="space-y-2">
                       <Badge variant="secondary">
-                        Category: {currentPhoto.category}
+                        Photo #{currentSlotIndex + 1}: {currentPhoto.category?.replace(/-/g, ' ')}
                       </Badge>
                       <Badge variant="outline">
-                        Theme: {currentPhoto.theme}
+                        Style: {currentPhoto.theme?.replace(/-/g, ' ')}
                       </Badge>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
                     <p className="text-muted-foreground">
-                      Ready to analyze and enhance your {currentSlotType} photo with {currentPhoto.theme} styling.
+                      Ready to make this photo absolutely irresistible with {currentPhoto.theme} styling.
                     </p>
                     
                     <Button 
@@ -172,7 +172,7 @@ export default function Dashboard() {
                       className="w-full"
                       size="lg"
                     >
-                      Start Enhancement Process
+                      ✨ Transform My Photo
                     </Button>
                     
                     <Button 
@@ -180,7 +180,7 @@ export default function Dashboard() {
                       onClick={() => setCurrentStep('upload')}
                       className="w-full"
                     >
-                      Back to Upload
+                      Back to Lineup
                     </Button>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function Dashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Zap className="w-5 h-5" />
-                  Enhancing {currentSlotType === 'primary' ? 'Primary' : 'Secondary'} Photo
+                  ✨ Making Your Photo Irresistible
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -206,12 +206,12 @@ export default function Dashboard() {
                     setEnhancementResults(prev => [...prev, { photo: currentPhoto, results }]);
                     
                     // Check if there are more photos to process or go to results
-                    const nextSlot = currentSlotType === 'primary' ? 'secondary' : null;
-                    const nextPhoto = nextSlot === 'secondary' ? uploadedPhotos[1] : null;
+                    const nextIndex = currentSlotIndex + 1;
+                    const nextPhoto = uploadedPhotos[nextIndex];
                     
                     if (nextPhoto && nextPhoto.category && nextPhoto.theme) {
                       setCurrentPhoto(nextPhoto);
-                      setCurrentSlotType('secondary');
+                      setCurrentSlotIndex(nextIndex);
                       // Stay on processing step for next photo
                     } else {
                       setCurrentStep('results');
@@ -221,7 +221,7 @@ export default function Dashboard() {
                 
                 <div className="mt-6 p-4 bg-muted/20 rounded-lg">
                   <p className="text-sm text-muted-foreground">
-                    Processing your {currentPhoto.category} photo with {currentPhoto.theme} enhancement...
+                    ✨ Transforming your {currentPhoto.category} photo to be absolutely irresistible...
                   </p>
                 </div>
               </CardContent>

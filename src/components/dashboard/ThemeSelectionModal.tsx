@@ -11,72 +11,72 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, User, Heart, Camera, Palette } from 'lucide-react';
 
-type PhotoCategory = 'headshot' | 'lifestyle-fullbody' | 'background-scenery' | 'lifestyle-activity' | 'social-friends' | 'adventure-travel';
-type EnhancementTheme = 'professional' | 'natural' | 'attractive-dating' | 'glamour' | 'artistic';
+type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
+type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
 
 interface ThemeSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onThemeSelect: (theme: EnhancementTheme) => void;
   photoCategory: PhotoCategory;
-  slotType: 'primary' | 'secondary';
+  slotIndex: number;
 }
 
 const themes = [
   {
-    id: 'professional' as const,
-    name: 'Professional/LinkedIn',
-    description: 'Clean, professional enhancement for business use',
+    id: 'confident-successful' as const,
+    name: 'Confident & Successful',
+    description: 'Polished and professional while staying approachable',
     icon: User,
     color: 'bg-blue-500/10 border-blue-500/30',
     iconColor: 'text-blue-500',
-    bestFor: 'Business profiles, LinkedIn, professional dating'
+    bestFor: 'Shows ambition and success - very attractive!'
   },
   {
-    id: 'natural' as const,
-    name: 'Natural/Authentic',
-    description: 'Subtle improvements maintaining authenticity',
+    id: 'authentic-approachable' as const,
+    name: 'Authentic & Approachable',
+    description: 'Natural enhancements that highlight your genuine self',
     icon: Sparkles,
     color: 'bg-green-500/10 border-green-500/30',
     iconColor: 'text-green-500',
-    bestFor: 'Everyday use, natural dating profiles'
+    bestFor: 'Perfect for meaningful connections and long-term dating'
   },
   {
-    id: 'attractive-dating' as const,
-    name: 'Attractive/Dating',
-    description: 'Optimized for dating app success and appeal',
+    id: 'irresistible-magnetic' as const,
+    name: 'Irresistible & Magnetic',
+    description: 'Maximum appeal optimization for dating apps',
     icon: Heart,
     color: 'bg-pink-500/10 border-pink-500/30',
     iconColor: 'text-pink-500',
-    bestFor: 'Tinder, Bumble, dating apps'
+    bestFor: 'Get more matches on Tinder, Bumble, and Hinge!'
   },
   {
-    id: 'glamour' as const,
-    name: 'Glamour/Editorial',
-    description: 'Dramatic enhancement for special occasions',
+    id: 'stunning-sophisticated' as const,
+    name: 'Stunning & Sophisticated',
+    description: 'Elegant enhancement with dramatic flair',
     icon: Camera,
     color: 'bg-purple-500/10 border-purple-500/30',
     iconColor: 'text-purple-500',
-    bestFor: 'Events, parties, Instagram'
+    bestFor: 'Make a bold impression and stand out from the crowd'
   },
   {
-    id: 'artistic' as const,
-    name: 'Artistic/Creative',
-    description: 'Creative enhancement with artistic flair',
+    id: 'creative-unique' as const,
+    name: 'Creative & Unique',
+    description: 'Artistic enhancement that shows your creative side',
     icon: Palette,
     color: 'bg-orange-500/10 border-orange-500/30',
     iconColor: 'text-orange-500',
-    bestFor: 'Social media, creative profiles'
+    bestFor: 'Perfect for creative types and unique personalities'
   }
 ];
 
 const categoryDescriptions = {
-  'headshot': 'Close-up portrait optimization',
-  'lifestyle-fullbody': 'Full-body lifestyle enhancement',
-  'background-scenery': 'Background and scenery enhancement',
-  'lifestyle-activity': 'Activity and hobby optimization',
-  'social-friends': 'Social proof enhancement',
-  'adventure-travel': 'Adventure and travel optimization'
+  'the-hook': 'Your perfect first impression headshot',
+  'style-confidence': 'Full-body confidence and style showcase',
+  'social-proof': 'Social butterfly with friends',
+  'passion-hobbies': 'Your passions and hobbies in action',
+  'lifestyle-adventure': 'Adventure and aspirational lifestyle',
+  'personality-closer': 'Authentic personality and fun side'
 };
 
 export const ThemeSelectionModal: React.FC<ThemeSelectionModalProps> = ({
@@ -84,7 +84,7 @@ export const ThemeSelectionModal: React.FC<ThemeSelectionModalProps> = ({
   onClose,
   onThemeSelect,
   photoCategory,
-  slotType
+  slotIndex
 }) => {
   const handleThemeSelect = (theme: EnhancementTheme) => {
     onThemeSelect(theme);
@@ -96,14 +96,14 @@ export const ThemeSelectionModal: React.FC<ThemeSelectionModalProps> = ({
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-violet-purple" />
-            Choose Enhancement Theme
+            <Heart className="w-5 h-5 text-violet-purple" />
+            What vibe do you want?
           </DialogTitle>
           <DialogDescription className="space-y-2">
             <div>
-              <span className="font-medium">{slotType === 'primary' ? 'Primary' : 'Secondary'} Photo:</span> {categoryDescriptions[photoCategory]}
+              <span className="font-medium">Photo #{slotIndex + 1}:</span> {categoryDescriptions[photoCategory]}
             </div>
-            <p>Select the enhancement style that matches your goals:</p>
+            <p>Choose the style that matches the impression you want to make:</p>
           </DialogDescription>
         </DialogHeader>
 
