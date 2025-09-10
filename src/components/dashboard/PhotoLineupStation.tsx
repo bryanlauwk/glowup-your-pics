@@ -5,8 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { 
   Target, Heart, Users, Activity, Mountain, Sparkles, 
-  Upload, X, Download, Wand2, ArrowRight, Palette, 
-  Play, CheckCircle, Clock, Zap
+  Upload, X, Download, Wand2, Zap, Clock, CheckCircle
 } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
