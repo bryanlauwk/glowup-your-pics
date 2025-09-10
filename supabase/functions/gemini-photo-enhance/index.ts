@@ -144,11 +144,33 @@ serve(async (req) => {
 
     // Call Gemini API
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiApiKey) {
+      throw new Error('GEMINI_API_KEY not configured');
+    }
+    
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
     
-    // Extract base64 data from data URL
-    const base64Data = imageDataUrl.split(',')[1];
-    const mimeType = imageDataUrl.split(';')[0].split(':')[1];
+    // Handle both blob URLs and data URLs
+    let base64Data: string;
+    let mimeType: string;
+    
+    if (imageDataUrl.startsWith('blob:')) {
+      // Convert blob URL to base64
+      console.log('Converting blob URL to base64...');
+      const blobResponse = await fetch(imageDataUrl);
+      const blob = await blobResponse.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      base64Data = btoa(String.fromCharCode(...uint8Array));
+      mimeType = blob.type || 'image/jpeg';
+      console.log('Blob converted, mime type:', mimeType);
+    } else if (imageDataUrl.startsWith('data:')) {
+      // Extract base64 data from data URL
+      base64Data = imageDataUrl.split(',')[1];
+      mimeType = imageDataUrl.split(';')[0].split(':')[1];
+    } else {
+      throw new Error('Invalid image data format. Expected blob: or data: URL');
+    }
 
     const payload = {
       contents: [{
@@ -167,6 +189,14 @@ serve(async (req) => {
       }
     };
 
+    console.log('Calling Gemini API with payload structure:', {
+      contentsLength: payload.contents.length,
+      hasText: !!payload.contents[0].parts[0].text,
+      hasImage: !!payload.contents[0].parts[1].inlineData,
+      mimeType,
+      imageSizeKB: Math.round(base64Data.length * 0.75 / 1024)
+    });
+
     const response = await fetch(geminiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -174,14 +204,28 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Gemini API error details:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText
+      });
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('Gemini API response structure:', {
+      hasCandidates: !!result.candidates,
+      candidatesLength: result.candidates?.length,
+      hasContent: !!result.candidates?.[0]?.content,
+      partsLength: result.candidates?.[0]?.content?.parts?.length
+    });
+
     const enhancedBase64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
     if (!enhancedBase64) {
-      throw new Error('No enhanced image returned from Gemini');
+      console.error('Full Gemini response:', JSON.stringify(result, null, 2));
+      throw new Error('No enhanced image returned from Gemini API. Check response structure.');
     }
 
     const enhancedImageUrl = `data:image/png;base64,${enhancedBase64}`;
