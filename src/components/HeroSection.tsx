@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Heart, Star, Sparkles } from "lucide-react";
-import { UserMenu } from "@/components/UserMenu";
 import heroBackground from "@/assets/hero-background.jpg";
 
 export const HeroSection = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Vibrant Purple-Pink Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-purple/30 via-hot-pink/20 to-magenta-glow/25" />
       <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/30 to-background/50" />
@@ -63,11 +62,6 @@ export const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center">
-        {/* User Menu */}
-        <div className="absolute top-8 right-8">
-          <UserMenu />
-        </div>
-        
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Main Headline */}
           <div className="space-y-4">

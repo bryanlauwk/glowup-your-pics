@@ -7,13 +7,20 @@ import { Settings, Plus, CreditCard } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useCredits } from '@/hooks/useCredits';
+import { useAuth } from '@/hooks/useAuth';
 
 export const DevPanel: React.FC = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userIdentifier, setUserIdentifier] = useState('bryanlauwk');
   const [creditsAmount, setCreditsAmount] = useState(999999);
   const { credits, refetchCredits } = useCredits();
+
+  // Only show DevPanel for the specific user
+  if (!user || user.email !== 'bryanlauwk@gmail.com') {
+    return null;
+  }
 
   const addUnlimitedCredits = async () => {
     setLoading(true);

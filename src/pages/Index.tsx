@@ -1,3 +1,4 @@
+import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { UploadSection } from "@/components/UploadSection";
 import { BeforeAfterCarousel } from "@/components/BeforeAfterCarousel";
@@ -10,6 +11,7 @@ import { FloatingNav } from "@/components/FloatingNav";
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       <HeroSection />
       <UploadSection />
       <BeforeAfterCarousel />
