@@ -12,6 +12,8 @@ import { SwipeBoostEngine } from "@/components/SwipeBoostEngine";
 import { Upload, Zap, Download, Target } from "lucide-react";
 
 type DashboardStep = 'upload' | 'analysis' | 'processing' | 'results';
+type PhotoCategory = 'headshot' | 'lifestyle-fullbody' | 'background-scenery' | 'lifestyle-activity' | 'social-friends' | 'adventure-travel';
+type EnhancementTheme = 'professional' | 'natural' | 'attractive-dating' | 'glamour' | 'artistic';
 
 interface PhotoAnalysis {
   faceVisibility: number;
@@ -28,6 +30,8 @@ interface UploadedPhoto {
   id: string;
   file: File;
   preview: string;
+  category?: PhotoCategory;
+  theme?: EnhancementTheme;
   analysis?: PhotoAnalysis;
 }
 
@@ -36,8 +40,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<DashboardStep>('upload');
   const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
-  const [selectedPhoto, setSelectedPhoto] = useState<UploadedPhoto | null>(null);
-  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [currentPhoto, setCurrentPhoto] = useState<UploadedPhoto | null>(null);
+  const [currentSlotType, setCurrentSlotType] = useState<'primary' | 'secondary'>('primary');
   const [enhancementResults, setEnhancementResults] = useState<any[]>([]);
 
   useEffect(() => {
@@ -123,74 +127,106 @@ export default function Dashboard() {
           <PhotoUploadStation
             uploadedPhotos={uploadedPhotos}
             setUploadedPhotos={setUploadedPhotos}
-            onNext={(photos) => {
-              setUploadedPhotos(photos);
-              if (photos.length > 0) {
-                setSelectedPhoto(photos[0]);
-                setCurrentStep('analysis');
-              }
+            onNext={(photo, slotType) => {
+              setCurrentPhoto(photo);
+              setCurrentSlotType(slotType);
+              setCurrentStep('analysis');
             }}
           />
         )}
 
-        {currentStep === 'analysis' && selectedPhoto && (
+        {currentStep === 'analysis' && currentPhoto && (
           <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="w-5 h-5" />
-                  Select Photo for Analysis
+                  {currentSlotType === 'primary' ? 'Primary' : 'Secondary'} Photo Enhancement
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  {uploadedPhotos.map((photo) => (
-                    <Card
-                      key={photo.id}
-                      className={`cursor-pointer transition-all duration-200 ${
-                        selectedPhoto.id === photo.id
-                          ? 'border-violet-purple bg-violet-purple/10'
-                          : 'hover:border-violet-purple/50'
-                      }`}
-                      onClick={() => setSelectedPhoto(photo)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <img 
+                      src={currentPhoto.preview} 
+                      alt="Selected photo"
+                      className="w-full h-64 object-cover rounded-lg mb-4"
+                    />
+                    <div className="space-y-2">
+                      <Badge variant="secondary">
+                        Category: {currentPhoto.category}
+                      </Badge>
+                      <Badge variant="outline">
+                        Theme: {currentPhoto.theme}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground">
+                      Ready to analyze and enhance your {currentSlotType} photo with {currentPhoto.theme} styling.
+                    </p>
+                    
+                    <Button 
+                      onClick={() => setCurrentStep('processing')}
+                      className="w-full"
+                      size="lg"
                     >
-                      <CardContent className="p-4">
-                        <img 
-                          src={photo.preview} 
-                          alt="Upload preview"
-                          className="w-full h-48 object-cover rounded-lg mb-2"
-                        />
-                        <Badge variant={selectedPhoto.id === photo.id ? 'default' : 'secondary'} className="w-full">
-                          {selectedPhoto.id === photo.id ? 'Selected' : 'Select'}
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  ))}
+                      Start Enhancement Process
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setCurrentStep('upload')}
+                      className="w-full"
+                    >
+                      Back to Upload
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-
-            <SwipeBoostEngine 
-              imageDataUrl={selectedPhoto.preview}
-              onResults={(results) => {
-                console.log('SwipeBoost results:', results);
-                // Can proceed to enhancement if gates pass
-                if (results.gateResults.overallPass) {
-                  setCurrentStep('processing');
-                }
-              }}
-            />
           </div>
         )}
 
-        {currentStep === 'processing' && (
-          <AIProcessingEngine
-            photos={uploadedPhotos}
-            onProcessingComplete={(results) => {
-              setEnhancementResults(results);
-              setCurrentStep('results');
-            }}
-          />
+        {currentStep === 'processing' && currentPhoto && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  Enhancing {currentSlotType === 'primary' ? 'Primary' : 'Secondary'} Photo
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SwipeBoostEngine 
+                  imageDataUrl={currentPhoto.preview}
+                  onResults={(results) => {
+                    console.log('Enhancement results:', results);
+                    setEnhancementResults(prev => [...prev, { photo: currentPhoto, results }]);
+                    
+                    // Check if there are more photos to process or go to results
+                    const nextSlot = currentSlotType === 'primary' ? 'secondary' : null;
+                    const nextPhoto = nextSlot === 'secondary' ? uploadedPhotos[1] : null;
+                    
+                    if (nextPhoto && nextPhoto.category && nextPhoto.theme) {
+                      setCurrentPhoto(nextPhoto);
+                      setCurrentSlotType('secondary');
+                      // Stay on processing step for next photo
+                    } else {
+                      setCurrentStep('results');
+                    }
+                  }}
+                />
+                
+                <div className="mt-6 p-4 bg-muted/20 rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    Processing your {currentPhoto.category} photo with {currentPhoto.theme} enhancement...
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {currentStep === 'results' && (
