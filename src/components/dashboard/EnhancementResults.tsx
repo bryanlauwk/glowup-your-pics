@@ -13,6 +13,7 @@ import {
   CreditCard,
   Smartphone 
 } from 'lucide-react';
+import { logger } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 
 interface UploadedPhoto {
@@ -81,7 +82,7 @@ export const EnhancementResults: React.FC<EnhancementResultsProps> = ({
 
   const shareVariant = (platform: string) => {
     // Implement sharing logic
-    console.log(`Sharing ${platform} variant`);
+    logger.info('Share variant requested', { platform, component: 'EnhancementResults' });
   };
 
   if (!currentResult) {

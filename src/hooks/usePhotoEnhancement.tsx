@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export interface PhotoEnhancementResult {
   enhancedImageUrl: string;
@@ -45,14 +46,14 @@ export const usePhotoEnhancement = () => {
 
       // Test internal function first if in development
       if (process.env.NODE_ENV === 'development') {
-        console.log('🧪 Testing internal function first...');
+        logger.debug('Testing internal function first', { component: 'usePhotoEnhancement' });
         try {
           const testResponse = await supabase.functions.invoke('gemini-photo-enhance', {
             body: { internal_test: true }
           });
-          console.log('🧪 Internal test result:', testResponse);
+          logger.debug('Internal test result', { response: testResponse });
         } catch (testError) {
-          console.log('🧪 Internal test failed:', testError);
+          logger.debug('Internal test failed', { error: testError });
         }
       }
 

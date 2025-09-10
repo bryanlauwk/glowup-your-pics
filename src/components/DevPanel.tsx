@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useCredits } from '@/hooks/useCredits';
 import { useAuth } from '@/hooks/useAuth';
 import { TestEnhancement } from '@/components/TestEnhancement';
+import { logger } from '@/lib/logger';
 
 export const DevPanel: React.FC = () => {
   const { user } = useAuth();
@@ -34,12 +35,12 @@ export const DevPanel: React.FC = () => {
       });
 
       if (error) {
-        console.error('Admin credits error:', error);
+        logger.error('Admin credits error', { error: error.message });
         toast.error(`Failed: ${error.message}`);
         return;
       }
 
-      console.log('Admin credits response:', data);
+      logger.info('Admin credits response received', { success: data?.success });
       
       if (data.success) {
         toast.success(data.message);

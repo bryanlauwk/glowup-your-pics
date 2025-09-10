@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Lock, CreditCard, Download, Share2, Star, Zap } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 // Mock enhanced photos (in real app these would come from AI processing)
 const mockEnhancedPhotos = [
@@ -23,7 +24,7 @@ export const PreviewSection = () => {
 
   const handlePayment = async () => {
     // In real app, this would integrate with Stripe
-    console.log('Opening Stripe checkout...');
+    logger.info('Payment process initiated', { component: 'PreviewSection' });
     // Simulate payment process
     setTimeout(() => {
       setIsPaid(true);
@@ -32,7 +33,7 @@ export const PreviewSection = () => {
 
   const handleShare = () => {
     // In real app, this would open social media sharing
-    console.log('Opening share options...');
+    logger.info('Share options requested', { component: 'PreviewSection' });
   };
 
   if (isPaid) {

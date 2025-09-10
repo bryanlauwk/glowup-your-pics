@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export const TestEnhancement: React.FC = () => {
   const [testing, setTesting] = useState(false);
@@ -13,17 +14,17 @@ export const TestEnhancement: React.FC = () => {
     setResult(null);
     
     try {
-      console.log('🧪 Running enhancement test...');
+      logger.info('Enhancement test started', { component: 'TestEnhancement' });
       
       // Test internal function
       const testResponse = await supabase.functions.invoke('test-gemini', {});
-      console.log('Test response:', testResponse);
+      logger.info('Test response received', { response: testResponse });
       
       setResult(testResponse);
       toast.success('Test completed');
       
     } catch (error) {
-      console.error('Test failed:', error);
+      logger.error('Test failed', { error });
       setResult({ error: error.message });
       toast.error('Test failed: ' + error.message);
     } finally {
