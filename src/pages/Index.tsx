@@ -1,6 +1,8 @@
 import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
+import { TrustSignals } from "@/components/TrustSignals";
 import { BeforeAfterCarousel } from "@/components/BeforeAfterCarousel";
+import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { CheatAppsSection } from "@/components/CheatAppsSection";
 import { PricingSection } from "@/components/PricingSection";
 import { FAQSection } from "@/components/FAQSection";
@@ -12,7 +14,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <HeroSection />
+      <TrustSignals />
       <BeforeAfterCarousel />
+      <TestimonialsSection />
       <CheatAppsSection />
       <PricingSection />
       <FAQSection />

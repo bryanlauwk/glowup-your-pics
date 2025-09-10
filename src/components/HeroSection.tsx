@@ -74,40 +74,57 @@ export const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
+          {/* FREE Trial Badge */}
+          <div className="bg-gradient-to-r from-love-pink/20 to-passionate-pink/20 backdrop-blur-sm border border-love-pink/30 rounded-full px-6 py-3 mx-auto w-fit mb-6">
+            <div className="flex items-center gap-2 text-love-pink font-semibold">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+              <span className="text-lg">FREE TRIAL • No Credit Card Required</span>
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+          </div>
+
           {/* Main Headline */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-black tracking-tight">
               <span className="block text-gradient-primary">
-                💕 Make Them Fall
+                💕 Try FREE Now -
               </span>
               <span className="block text-gradient-primary">
-                Head Over Heels 💕
+                See The Magic! ✨
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Stop being invisible on <span className="text-love-pink font-semibold">Tinder</span>, <span className="text-passionate-pink font-semibold">Bumble</span> & <span className="text-enchanting-purple font-semibold">Hinge</span>. AI magic that makes hearts skip beats and fingers swipe right on 
-              <span className="text-romance-rose font-semibold"> the love of your life</span> ✨
+              Transform your first photo <span className="text-love-pink font-bold">100% FREE</span> and watch the matches pour in on <span className="text-passionate-pink font-semibold">Tinder</span>, <span className="text-enchanting-purple font-semibold">Bumble</span> & <span className="text-romance-rose font-semibold">Hinge</span> 
             </p>
-            <p className="text-lg text-muted-foreground/80 italic">
-              Be the one they've been dreaming of 💫
-            </p>
+            <div className="bg-love-pink/10 border border-love-pink/20 rounded-lg p-4 mx-auto max-w-lg">
+              <p className="text-lg font-semibold text-love-pink">
+                🔥 See Results in 30 Seconds • No Risk, Pure Magic
+              </p>
+            </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
             <Button variant="hero" size="xl" className="group relative overflow-hidden" onClick={handleGetStarted}>
               <div className="absolute inset-0 bg-gradient-to-r from-love-pink/20 to-passionate-pink/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
-              <Heart className="w-5 h-5 group-hover:animate-pulse text-love-pink" />
-              Ignite My Love Story
+              <Sparkles className="w-5 h-5 group-hover:animate-pulse text-love-pink" />
+              Try FREE Now - See The Magic
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             
           </div>
 
+          {/* Risk Reversal */}
+          <div className="pt-4">
+            <p className="text-sm text-muted-foreground/80">
+              ✨ No Credit Card • Instant Results • Join 87% who see more matches in 7 days
+            </p>
+          </div>
+
           {/* Social Proof */}
           <div className="pt-8 space-y-4">
             <p className="text-sm text-muted-foreground uppercase tracking-wide">
-              Join 50k+ hearts already finding their perfect match 💘
+              Join thousands finding their soulmate daily 💘
             </p>
             <div className="flex flex-wrap justify-center gap-8 items-center text-xl font-semibold text-gradient-accent">
               <span className="flex items-center gap-2">

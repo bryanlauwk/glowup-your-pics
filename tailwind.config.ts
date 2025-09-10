@@ -47,6 +47,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Romantic color palette for SwipeBoost
+        "love-pink": "hsl(var(--love-pink))",
+        "romance-rose": "hsl(var(--romance-rose))",
+        "blush-soft": "hsl(var(--blush-soft))",
+        "passionate-pink": "hsl(var(--passionate-pink))",
+        "tender-pink": "hsl(var(--tender-pink))",
+        "enchanting-purple": "hsl(var(--enchanting-purple))",
+        "dreamy-lavender": "hsl(var(--dreamy-lavender))",
+        "magic-pink": "hsl(var(--magic-pink))",
+        "cupid-glow": "hsl(var(--cupid-glow))",
+        // Legacy colors for backward compatibility
         "violet-purple": "hsl(270 80% 75%)",
         "hot-pink": "hsl(320 90% 70%)",
         "magenta-glow": "hsl(300 85% 80%)",

@@ -7,12 +7,16 @@ import { logger } from '@/lib/logger';
 export interface UserCredits {
   credits: number;
   id: string;
+  trial_used: boolean;
+  trial_date: string | null;
 }
 
 export const useCredits = () => {
   const { user } = useAuth();
   const [credits, setCredits] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [trialUsed, setTrialUsed] = useState<boolean>(false);
+  const [isTrialAvailable, setIsTrialAvailable] = useState<boolean>(false);
 
   const fetchCredits = useCallback(async () => {
     if (!user) {
@@ -24,7 +28,7 @@ export const useCredits = () => {
     try {
       const { data, error } = await supabase
         .from('user_credits')
-        .select('credits')
+        .select('credits, trial_used, trial_date')
         .eq('user_id', user.id)
         .single();
 
@@ -33,6 +37,8 @@ export const useCredits = () => {
       }
 
       setCredits(data?.credits || 0);
+      setTrialUsed(data?.trial_used || false);
+      setIsTrialAvailable(!data?.trial_used && data?.credits === 1);
     } catch (error) {
       logger.error('Error fetching credits', { error, hook: 'useCredits', action: 'fetchCredits' });
       setCredits(0);
@@ -118,6 +124,8 @@ export const useCredits = () => {
   return {
     credits,
     loading,
+    trialUsed,
+    isTrialAvailable,
     purchaseCredits,
     addCredits,
     refetchCredits: fetchCredits

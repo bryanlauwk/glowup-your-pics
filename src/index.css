@@ -40,7 +40,7 @@
 
     --radius: 0.75rem;
 
-    /* Romantic Love Tokens */
+    /* Romantic Love Tokens - Ensure HSL format for semantic usage */
     --love-pink: 340 90% 80%;
     --romance-rose: 350 85% 75%;
     --blush-soft: 330 70% 85%;
