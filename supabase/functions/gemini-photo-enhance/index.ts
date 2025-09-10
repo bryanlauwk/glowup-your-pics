@@ -226,7 +226,7 @@ CRITICAL: Generate and return only the enhanced image file.`;
 });
 
 async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: string): Promise<string> {
-  console.log('🤖 === CALLING GEMINI API ===');
+  console.log('🤖 === CALLING IMAGEN API ===');
   
   const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
   if (!geminiApiKey) {
@@ -247,94 +247,80 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
   console.log('📸 Image data length:', imageData.length);
   console.log('📝 Enhancement prompt length:', enhancementPrompt.length);
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
+  // Use Imagen 4.0 API format
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict`;
   
   const requestPayload = {
-    contents: [{
-      parts: [
-        {
-          text: enhancementPrompt
-        },
-        {
-          inlineData: {
-            mimeType: "image/jpeg",
-            data: imageData
-          }
-        }
-      ]
+    instances: [{
+      prompt: enhancementPrompt,
+      image: {
+        bytes_base64_encoded: imageData
+      }
     }],
-    generationConfig: {
-      temperature: 0.7,
-      topK: 32,
-      topP: 1,
-      maxOutputTokens: 8192
+    parameters: {
+      sampleCount: 1,
+      sampleImageSize: "1K",
+      aspectRatio: "1:1"
     }
   };
 
-  console.log('🔄 Making Gemini API request...');
+  console.log('🔄 Making Imagen API request...');
   console.log('📤 Request config:', {
-    url: geminiUrl.replace(geminiApiKey, 'HIDDEN'),
-    temperature: requestPayload.generationConfig.temperature
+    url: apiUrl,
+    model: 'imagen-4.0-generate-001'
   });
 
-  const geminiResponse = await fetch(geminiUrl, {
+  const imagenResponse = await fetch(apiUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-goog-api-key': geminiApiKey,
     },
     body: JSON.stringify(requestPayload)
   });
 
-  console.log('📥 Gemini response status:', geminiResponse.status);
-  console.log('📥 Gemini response headers:', Object.fromEntries(geminiResponse.headers.entries()));
+  console.log('📥 Imagen response status:', imagenResponse.status);
+  console.log('📥 Imagen response headers:', Object.fromEntries(imagenResponse.headers.entries()));
 
-  if (!geminiResponse.ok) {
-    const errorText = await geminiResponse.text();
-    console.error('❌ Gemini API error response:', errorText);
-    throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+  if (!imagenResponse.ok) {
+    const errorText = await imagenResponse.text();
+    console.error('❌ Imagen API error response:', errorText);
+    throw new Error(`Imagen API error (${imagenResponse.status}): ${errorText}`);
   }
 
-  const geminiResult = await geminiResponse.json();
-  console.log('📦 Gemini response structure:', {
-    candidates: geminiResult.candidates ? geminiResult.candidates.length : 'none',
-    hasContent: !!geminiResult.candidates?.[0]?.content,
-    hasParts: !!geminiResult.candidates?.[0]?.content?.parts?.length
+  const imagenResult = await imagenResponse.json();
+  console.log('📦 Imagen response structure:', {
+    predictions: imagenResult.predictions ? imagenResult.predictions.length : 'none',
+    hasPrediction: !!imagenResult.predictions?.[0],
   });
 
-  // Parse response for image data - multiple strategies
+  // Parse response for image data - Imagen API format
   let enhancedImageBase64: string | null = null;
 
-  // Strategy 1: Look for inline data in parts
-  if (geminiResult.candidates?.[0]?.content?.parts) {
-    for (const part of geminiResult.candidates[0].content.parts) {
-      if (part.inlineData?.data) {
-        console.log('✅ Found image in inlineData');
-        enhancedImageBase64 = part.inlineData.data;
-        break;
-      }
-    }
-  }
-
-  // Strategy 2: Look for direct image data
-  if (!enhancedImageBase64 && geminiResult.image) {
-    console.log('✅ Found image in direct image field');
-    enhancedImageBase64 = geminiResult.image;
-  }
-
-  // Strategy 3: Look for base64 data in text response
-  if (!enhancedImageBase64 && geminiResult.candidates?.[0]?.content?.parts?.[0]?.text) {
-    const textContent = geminiResult.candidates[0].content.parts[0].text;
-    const base64Match = textContent.match(/data:image\/[^;]+;base64,([A-Za-z0-9+/=]+)/);
-    if (base64Match) {
-      console.log('✅ Found base64 image in text response');
-      enhancedImageBase64 = base64Match[1];
+  // Look for predictions format (Imagen API)
+  if (imagenResult.predictions && imagenResult.predictions[0]) {
+    const prediction = imagenResult.predictions[0];
+    
+    // Look for image data in different possible formats
+    if (prediction.image && prediction.image.bytes_base64_encoded) {
+      console.log('✅ Found image in image.bytes_base64_encoded');
+      enhancedImageBase64 = prediction.image.bytes_base64_encoded;
+    } else if (prediction.bytes_base64_encoded) {
+      console.log('✅ Found image in bytes_base64_encoded');
+      enhancedImageBase64 = prediction.bytes_base64_encoded;
+    } else if (prediction.image_bytes) {
+      console.log('✅ Found image in image_bytes');
+      enhancedImageBase64 = prediction.image_bytes;
+    } else if (prediction.generated_images && prediction.generated_images[0]) {
+      console.log('✅ Found image in generated_images array');
+      enhancedImageBase64 = prediction.generated_images[0].image_bytes || prediction.generated_images[0];
     }
   }
 
   if (!enhancedImageBase64) {
-    console.error('❌ No image data found in response');
-    console.error('Full response:', JSON.stringify(geminiResult, null, 2));
-    throw new Error('No enhanced image received from Gemini API');
+    console.error('❌ No image data found in Imagen response');
+    console.error('Full response:', JSON.stringify(imagenResult, null, 2));
+    throw new Error('No enhanced image received from Imagen API');
   }
 
   console.log('✅ Successfully extracted enhanced image data');
