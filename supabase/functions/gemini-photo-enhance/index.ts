@@ -67,20 +67,20 @@ serve(async (req) => {
 
     const categoryPrompt = basePrompts[photoCategory as keyof typeof basePrompts] || 'Dating profile photo';
     
-    const enhancementPrompt = `Edit and enhance this image to create ${categoryPrompt}. User's specific request: "${customPrompt}".
+    const enhancementPrompt = `You are an AI image editor. Edit and enhance this image to create ${categoryPrompt}. 
 
-CRITICAL: You MUST return an enhanced version of this image, not text analysis.
+User's specific request: "${customPrompt}"
 
 Enhancement instructions:
 - Improve lighting, contrast, and color balance for maximum visual appeal
-- Enhance skin tone and texture naturally (avoid over-smoothing)
+- Enhance skin tone and texture naturally (avoid over-smoothing)  
 - Optimize facial features and expressions for attractiveness
 - Improve composition and background if needed
 - Ensure the person looks confident and approachable
 - Maintain authenticity - no artificial or fake appearance
 - Focus specifically on: ${customPrompt}
 
-IMPORTANT: Generate and return the enhanced image file directly. Do not provide text analysis or suggestions.`;
+IMPORTANT: Return the enhanced image file, not text analysis.`;
 
     const startTime = Date.now();
 
@@ -90,7 +90,7 @@ IMPORTANT: Generate and return the enhanced image file directly. Do not provide 
       throw new Error('GEMINI_API_KEY not configured');
     }
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
     
     // Handle both blob URLs and data URLs
     let base64Data: string;
@@ -127,11 +127,13 @@ IMPORTANT: Generate and return the enhanced image file directly. Do not provide 
         ]
       }],
       generationConfig: {
-        responseMimeType: "image/png",
-        responseSchema: {
-          type: "string",
-          format: "base64"
-        }
+        temperature: 0.7,
+        maxOutputTokens: 2048
+      },
+      systemInstruction: {
+        parts: [{
+          text: "You are an advanced image editor. When given an image and enhancement instructions, return only an enhanced version of the image. Do not provide text responses or analysis - only return the improved image."
+        }]
       }
     };
 
