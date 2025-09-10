@@ -80,7 +80,7 @@ Return an enhanced version that will get more matches on dating apps.`;
       throw new Error('GEMINI_API_KEY not configured');
     }
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
     
     // Handle both blob URLs and data URLs
     let base64Data: string;
