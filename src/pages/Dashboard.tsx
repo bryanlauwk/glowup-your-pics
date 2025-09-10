@@ -11,6 +11,7 @@ import { EnhancementResults } from '@/components/dashboard/EnhancementResults';
 import { CreditsDisplay } from '@/components/CreditsDisplay';
 import { SwipeBoostEngine } from '@/components/SwipeBoostEngine';
 import { BulkPhotoProcessor } from '@/components/dashboard/BulkPhotoProcessor';
+import { DevPanel } from '@/components/DevPanel';
 import { Upload, Zap, Download, Target, ArrowLeft } from "lucide-react";
 
 type DashboardStep = 'upload' | 'analysis' | 'processing' | 'bulk-processing' | 'results';
@@ -288,6 +289,9 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Developer Panel */}
+      <DevPanel />
     </div>
   );
 }
