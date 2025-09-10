@@ -3,11 +3,11 @@ import { ArrowRight, Zap, Heart, Star, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
-
 export const HeroSection = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
-
   const handleGetStarted = () => {
     if (user) {
       navigate('/dashboard');
@@ -15,8 +15,7 @@ export const HeroSection = () => {
       navigate('/auth');
     }
   };
-  return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+  return <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Vibrant Purple-Pink Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-purple/30 via-hot-pink/20 to-magenta-glow/25" />
       <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/30 to-background/50" />
@@ -96,21 +95,13 @@ export const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-            <Button 
-              variant="hero" 
-              size="xl"
-              className="group relative overflow-hidden"
-              onClick={handleGetStarted}
-            >
+            <Button variant="hero" size="xl" className="group relative overflow-hidden" onClick={handleGetStarted}>
               <div className="absolute inset-0 bg-gradient-to-r from-hot-pink/20 to-violet-purple/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
               <Heart className="w-5 h-5 group-hover:animate-pulse text-hot-pink" />
               Get My Competitive Edge
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="xl" className="border-rose-gold text-rose-gold hover:bg-rose-gold hover:text-primary-foreground group">
-              <Star className="w-4 h-4 group-hover:animate-spin" />
-              See Match Results
-            </Button>
+            
           </div>
 
           {/* Social Proof */}
@@ -149,6 +140,5 @@ export const HeroSection = () => {
       <div className="absolute top-1/6 right-1/4 text-hot-pink/30 animate-float">💋</div>
       <div className="absolute bottom-1/6 left-1/3 text-rose-gold/30 animate-float delay-1000">🌹</div>
       <div className="absolute top-3/4 right-1/6 text-violet-purple/30 animate-bounce delay-500">💕</div>
-    </div>
-  );
+    </div>;
 };
