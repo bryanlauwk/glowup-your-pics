@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      photo_enhancements: {
+        Row: {
+          cost_credits: number | null
+          created_at: string
+          enhanced_photo_url: string | null
+          enhancement_theme: string
+          id: string
+          original_photo_url: string
+          photo_category: string
+          processing_time: number | null
+          prompt_used: string
+          status: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cost_credits?: number | null
+          created_at?: string
+          enhanced_photo_url?: string | null
+          enhancement_theme: string
+          id?: string
+          original_photo_url: string
+          photo_category: string
+          processing_time?: number | null
+          prompt_used: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cost_credits?: number | null
+          created_at?: string
+          enhanced_photo_url?: string | null
+          enhancement_theme?: string
+          id?: string
+          original_photo_url?: string
+          photo_category?: string
+          processing_time?: number | null
+          prompt_used?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -38,6 +83,30 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
