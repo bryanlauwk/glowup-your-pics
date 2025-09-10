@@ -90,7 +90,7 @@ IMPORTANT: Generate and return the enhanced image file directly. Do not provide 
       throw new Error('GEMINI_API_KEY not configured');
     }
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
     
     // Handle both blob URLs and data URLs
     let base64Data: string;
@@ -127,8 +127,11 @@ IMPORTANT: Generate and return the enhanced image file directly. Do not provide 
         ]
       }],
       generationConfig: {
-        response_modalities: ["IMAGE"],
-        response_mime_type: "image/png"
+        responseMimeType: "image/png",
+        responseSchema: {
+          type: "string",
+          format: "base64"
+        }
       }
     };
 
