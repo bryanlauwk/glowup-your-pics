@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Sparkles, Eye, Smile, Sun, Focus, Palette } from 'lucide-react';
 import { EnhancementSettings, useImageEnhancement } from '@/hooks/useImageEnhancement';
+import { logger } from '@/lib/logger';
 
 interface EnhancementControlsProps {
   imageDataUrl: string;

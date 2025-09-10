@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Target, Heart, Users, Activity, Mountain, Sparkles, Upload, X, Download, Wand2, Zap, Clock, CheckCircle } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
+import { logger } from '@/lib/logger';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';

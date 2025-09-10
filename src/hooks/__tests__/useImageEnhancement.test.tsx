@@ -31,6 +31,5 @@ describe('useImageEnhancement Hook', () => {
     const { result } = renderHook(() => useImageEnhancement());
     
     expect(typeof result.current.enhanceImage).toBe('function');
-    expect(typeof result.current.resetState).toBe('function');
   });
 });

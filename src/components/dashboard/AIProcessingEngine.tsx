@@ -17,6 +17,7 @@ import {
 import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 import { useImageEnhancement } from '@/hooks/useImageEnhancement';
 import { useAntiDetection } from '@/hooks/useAntiDetection';
+import { logger } from '@/lib/logger';
 
 interface UploadedPhoto {
   id: string;

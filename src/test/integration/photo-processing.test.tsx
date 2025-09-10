@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 
@@ -53,10 +53,7 @@ describe('Photo Processing Integration', () => {
 
     const enhancementResult = await enhancePromise;
 
-    await waitFor(() => {
-      expect(result.current.isProcessing).toBe(false);
-    });
-
+    expect(result.current.isProcessing).toBe(false);
     expect(enhancementResult.enhancedImageUrl).toBe('https://example.com/enhanced.jpg');
     expect(enhancementResult.creditsRemaining).toBe(9);
   });
