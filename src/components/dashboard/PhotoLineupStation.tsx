@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { 
   Target, Heart, Users, Activity, Mountain, Sparkles, 
@@ -10,7 +12,6 @@ import {
 import { useCredits } from '@/hooks/useCredits';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 
 export interface UploadedPhoto {
@@ -18,7 +19,7 @@ export interface UploadedPhoto {
   file: File;
   preview: string;
   category?: PhotoCategory;
-  theme?: EnhancementTheme;
+  customPrompt?: string; // Changed from theme to customPrompt
   enhancedUrl?: string;
 }
 
@@ -120,6 +121,16 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     { id: 'creative-unique', name: 'Creative & Unique', description: 'Artistic, original, and intriguing' }
   ];
 
+  const promptSuggestions = [
+    "Make me look confident and successful",
+    "Natural and approachable vibe", 
+    "Professional but friendly",
+    "Mysterious and intriguing",
+    "Fun and energetic personality",
+    "Sophisticated and elegant",
+    "Creative and artistic look"
+  ];
+
   // Helper function to convert blob URL to base64
   const blobToBase64 = (blob: Blob): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -183,10 +194,10 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     });
   };
 
-  const handleThemeSelect = (photo: UploadedPhoto, slotIndex: number, theme: EnhancementTheme) => {
+  const handlePromptChange = (photo: UploadedPhoto, slotIndex: number, customPrompt: string) => {
     setUploadedPhotos(prev => {
       const newPhotos = [...prev];
-      newPhotos[slotIndex] = { ...photo, theme };
+      newPhotos[slotIndex] = { ...photo, customPrompt };
       return newPhotos;
     });
   };
@@ -197,8 +208,8 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       return;
     }
 
-    if (!photo.theme) {
-      toast.error('Please select a theme first.');
+    if (!photo.customPrompt?.trim()) {
+      toast.error('Please enter your desired vibe/style first.');
       return;
     }
 
@@ -216,7 +227,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
         imageDataUrl = photo.preview;
       }
 
-      const result = await enhancePhoto(imageDataUrl, photo.category!, photo.theme);
+      const result = await enhancePhoto(imageDataUrl, photo.category!, photo.customPrompt);
       
       // Update the photo with enhanced version
       setUploadedPhotos(prev => {
@@ -240,7 +251,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   };
 
   const handleBulkTransform = () => {
-    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.theme);
+    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
     const totalCost = readyPhotos.length;
 
     if (credits < totalCost) {
@@ -249,7 +260,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     }
 
     if (readyPhotos.length === 0) {
-      toast.error('Please upload and configure at least one photo first.');
+      toast.error('Please upload and add custom prompts for at least one photo first.');
       return;
     }
 
@@ -274,7 +285,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     }
   };
 
-  const readyPhotos = uploadedPhotos.filter(photo => photo && photo.theme);
+  const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
   const totalBulkCost = readyPhotos.length;
 
   return (
@@ -313,7 +324,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
           {photoSlots.map((slot, index) => {
             const photo = uploadedPhotos[index];
             const Icon = slot.icon;
-            const isReady = photo && photo.theme;
+            const isReady = photo && photo.customPrompt?.trim();
             const isEnhanced = photo && photo.enhancedUrl;
 
             return (
@@ -398,36 +409,39 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                     {slot.description}
                   </p>
 
-                  {/* Theme Selection & Actions */}
+                  {/* Custom Vibe Input & Actions */}
                   {photo && (
                     <div className="space-y-3">
                       <div>
                         <label className="text-xs font-medium text-muted-foreground mb-2 block">
-                          Choose Your Vibe:
+                          Describe your desired vibe/style:
                         </label>
-                        <Select
-                          value={photo.theme || ''}
-                          onValueChange={(value) => handleThemeSelect(photo, index, value as EnhancementTheme)}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder="Select theme..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {themes.map((theme) => (
-                              <SelectItem key={theme.id} value={theme.id} className="text-xs">
-                                <div>
-                                  <div className="font-medium">{theme.name}</div>
-                                  <div className="text-muted-foreground text-xs">{theme.description}</div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Textarea
+                          value={photo.customPrompt || ''}
+                          onChange={(e) => handlePromptChange(photo, index, e.target.value)}
+                          placeholder="e.g., Make me look confident and professional, or natural and approachable..."
+                          className="h-20 text-xs resize-none"
+                        />
+                        
+                        {/* Suggestion buttons */}
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {promptSuggestions.slice(0, 3).map((suggestion, i) => (
+                            <Button
+                              key={i}
+                              variant="outline"
+                              size="sm"
+                              className="text-xs h-6 px-2"
+                              onClick={() => handlePromptChange(photo, index, suggestion)}
+                            >
+                              {suggestion}
+                            </Button>
+                          ))}
+                        </div>
                       </div>
 
                       {/* Action Buttons */}
                       <div className="flex gap-2">
-                        {photo.theme && !photo.enhancedUrl && (
+                        {photo.customPrompt?.trim() && !photo.enhancedUrl && (
                           <Button
                             onClick={() => handleIndividualTransform(photo, index)}
                             disabled={processingPhotoId === photo.id || credits < 1}
@@ -540,7 +554,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                   {photoSlots[currentProcessingPhoto.slotIndex].title}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Applying {themes.find(t => t.id === currentProcessingPhoto.photo.theme)?.name} enhancement...
+                  Applying custom enhancement: "{currentProcessingPhoto.photo.customPrompt}"...
                 </p>
                 <Progress value={progress} className="w-full" />
                 <p className="text-xs text-muted-foreground mt-2">
