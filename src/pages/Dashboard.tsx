@@ -7,8 +7,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { PhotoLineupStation } from "@/components/dashboard/PhotoLineupStation";
 import { AIProcessingEngine } from "@/components/dashboard/AIProcessingEngine";
-import { EnhancementResults } from "@/components/dashboard/EnhancementResults";
-import { SwipeBoostEngine } from "@/components/SwipeBoostEngine";
+import { EnhancementResults } from '@/components/dashboard/EnhancementResults';
+import { CreditsDisplay } from '@/components/CreditsDisplay';
+import { SwipeBoostEngine } from '@/components/SwipeBoostEngine';
 import { Upload, Zap, Download, Target } from "lucide-react";
 
 type DashboardStep = 'upload' | 'analysis' | 'processing' | 'results';
@@ -190,42 +191,32 @@ export default function Dashboard() {
         )}
 
         {currentStep === 'processing' && currentPhoto && (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="w-5 h-5" />
-                  ✨ Making Your Photo Irresistible
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SwipeBoostEngine 
-                  imageDataUrl={currentPhoto.preview}
-                  onResults={(results) => {
-                    console.log('Enhancement results:', results);
-                    setEnhancementResults(prev => [...prev, { photo: currentPhoto, results }]);
-                    
-                    // Check if there are more photos to process or go to results
-                    const nextIndex = currentSlotIndex + 1;
-                    const nextPhoto = uploadedPhotos[nextIndex];
-                    
-                    if (nextPhoto && nextPhoto.category && nextPhoto.theme) {
-                      setCurrentPhoto(nextPhoto);
-                      setCurrentSlotIndex(nextIndex);
-                      // Stay on processing step for next photo
-                    } else {
-                      setCurrentStep('results');
-                    }
-                  }}
-                />
-                
-                <div className="mt-6 p-4 bg-muted/20 rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    ✨ Transforming your {currentPhoto.category} photo to be absolutely irresistible...
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <SwipeBoostEngine
+                imageDataUrl={currentPhoto.preview}
+                photoCategory={currentPhoto.category || 'the-hook'}
+                enhancementTheme={currentPhoto.theme || 'confident-successful'}
+                onResults={(results) => {
+                  setEnhancementResults(prev => [...prev, { photo: currentPhoto, results }]);
+                  
+                  // Check if there are more photos to process or go to results
+                  const nextIndex = currentSlotIndex + 1;
+                  const nextPhoto = uploadedPhotos[nextIndex];
+                  
+                  if (nextPhoto && nextPhoto.category && nextPhoto.theme) {
+                    setCurrentPhoto(nextPhoto);
+                    setCurrentSlotIndex(nextIndex);
+                    // Stay on processing step for next photo
+                  } else {
+                    setCurrentStep('results');
+                  }
+                }}
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <CreditsDisplay />
+            </div>
           </div>
         )}
 
