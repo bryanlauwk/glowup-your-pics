@@ -1,8 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Heart, Star, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
 
 export const HeroSection = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Vibrant Purple-Pink Background */}
@@ -66,9 +78,11 @@ export const HeroSection = () => {
           {/* Main Headline */}
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-black tracking-tight">
-              Get More Quality Matches
               <span className="block text-gradient-primary">
-                (For Men)
+                Stand Out, Get Noticed,
+              </span>
+              <span className="block text-gradient-primary">
+                Get Swiped Right!
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -86,9 +100,7 @@ export const HeroSection = () => {
               variant="hero" 
               size="xl"
               className="group relative overflow-hidden"
-              onClick={() => {
-                document.getElementById('upload')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={handleGetStarted}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-hot-pink/20 to-violet-purple/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
               <Heart className="w-5 h-5 group-hover:animate-pulse text-hot-pink" />

@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Zap } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 const apps = [
   { name: 'Tinder', color: 'from-red-500 to-pink-500' },
   { name: 'Bumble', color: 'from-yellow-400 to-yellow-500' },
@@ -14,10 +16,14 @@ const apps = [
 
 
 export const CheatAppsSection = () => {
-  const scrollToUpload = () => {
-    const uploadElement = document.getElementById('upload');
-    if (uploadElement) {
-      uploadElement.scrollIntoView({ behavior: 'smooth' });
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
     }
   };
 
@@ -73,7 +79,7 @@ export const CheatAppsSection = () => {
             </Badge>
             
             <Button 
-              onClick={scrollToUpload}
+              onClick={handleGetStarted}
               size="lg" 
               className="text-xl px-8 py-6 bg-gradient-primary hover:shadow-glow-violet transition-all duration-300 hover:scale-105"
             >

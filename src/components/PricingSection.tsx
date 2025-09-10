@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Zap, Star, Crown } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const pricingPlans = [
   {
@@ -64,10 +66,14 @@ const pricingPlans = [
 ];
 
 export const PricingSection = () => {
-  const scrollToUpload = () => {
-    const uploadElement = document.getElementById('upload');
-    if (uploadElement) {
-      uploadElement.scrollIntoView({ behavior: 'smooth' });
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
     }
   };
 
@@ -135,7 +141,7 @@ export const PricingSection = () => {
                   </ul>
                   
                   <Button 
-                    onClick={scrollToUpload}
+                    onClick={handleGetStarted}
                     className={`w-full py-6 font-bold text-lg transition-all duration-300 hover:scale-105 ${
                       plan.popular 
                         ? 'bg-gradient-primary hover:shadow-glow-violet' 
