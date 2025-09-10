@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useCredits } from '@/hooks/useCredits';
 import { useAuth } from '@/hooks/useAuth';
+import { TestEnhancement } from '@/components/TestEnhancement';
 
 export const DevPanel: React.FC = () => {
   const { user } = useAuth();
@@ -54,6 +55,28 @@ export const DevPanel: React.FC = () => {
     }
   };
 
+  const cleanupDatabase = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('photo_enhancements')
+        .update({ 
+          status: 'failed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('status', 'processing');
+
+      if (error) throw error;
+      
+      toast.success('Cleaned up stuck processing records');
+    } catch (error) {
+      console.error('Cleanup error:', error);
+      toast.error('Failed to cleanup database');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isOpen) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
@@ -71,7 +94,7 @@ export const DevPanel: React.FC = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <Card className="w-80 bg-card/95 backdrop-blur-sm border-border/50 shadow-lg">
+      <Card className="w-96 max-h-[80vh] overflow-y-auto bg-card/95 backdrop-blur-sm border-border/50 shadow-lg">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center justify-between">
             <span className="flex items-center gap-2">
@@ -117,28 +140,44 @@ export const DevPanel: React.FC = () => {
               />
             </div>
 
-            <Button
-              onClick={addUnlimitedCredits}
-              disabled={loading}
-              className="w-full h-8 text-xs bg-violet-purple hover:bg-violet-purple/80"
-              size="sm"
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-3 w-3 border-b border-white mr-2" />
-                  Adding...
-                </>
-              ) : (
-                <>
-                  <Plus className="w-3 h-3 mr-2" />
-                  Add Credits
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={addUnlimitedCredits}
+                disabled={loading}
+                className="flex-1 h-8 text-xs bg-violet-purple hover:bg-violet-purple/80"
+                size="sm"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b border-white mr-2" />
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-3 h-3 mr-2" />
+                    Add Credits
+                  </>
+                )}
+              </Button>
+              
+              <Button
+                onClick={cleanupDatabase}
+                disabled={loading}
+                variant="outline"
+                className="flex-1 h-8 text-xs"
+                size="sm"
+              >
+                Clean DB
+              </Button>
+            </div>
+          </div>
+
+          <div className="border-t pt-4">
+            <TestEnhancement />
           </div>
 
           <div className="text-xs text-muted-foreground">
-            Internal testing only - calls admin function to set credits
+            Internal testing only - admin functions & diagnostics
           </div>
         </CardContent>
       </Card>

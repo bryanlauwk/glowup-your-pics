@@ -32,22 +32,22 @@ export const TestEnhancement: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle>Enhancement Function Test</CardTitle>
-        <CardDescription>
+    <Card className="w-full">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm">Enhancement Function Test</CardTitle>
+        <CardDescription className="text-xs">
           Test the Gemini photo enhancement function
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <Button onClick={runTest} disabled={testing} className="w-full">
+      <CardContent className="space-y-3">
+        <Button onClick={runTest} disabled={testing} className="w-full h-8 text-xs">
           {testing ? 'Testing...' : 'Run Test'}
         </Button>
         
         {result && (
-          <div className="mt-4 p-4 bg-muted rounded-lg">
-            <h4 className="font-semibold mb-2">Test Result:</h4>
-            <pre className="text-sm overflow-auto">
+          <div className="mt-3 p-3 bg-muted rounded-lg">
+            <h4 className="font-semibold mb-2 text-xs">Test Result:</h4>
+            <pre className="text-xs overflow-auto max-h-32">
               {JSON.stringify(result, null, 2)}
             </pre>
           </div>
