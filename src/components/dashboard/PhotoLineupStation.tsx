@@ -1,49 +1,54 @@
 import React, { useState, useCallback } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, X, Plus, Sparkles, Camera, Target, Heart, Users, Mountain, Compass, Activity, Zap, Download, CreditCard, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { CategorySelectionModal } from './CategorySelectionModal';
-import { ThemeSelectionModal } from './ThemeSelectionModal';
+import { toast } from 'sonner';
+import { 
+  Target, Heart, Users, Activity, Mountain, Sparkles, 
+  Upload, X, Download, Wand2, ArrowRight, Palette, 
+  Play, CheckCircle, Clock, Zap
+} from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
-import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 
-interface UploadedPhoto {
+export interface UploadedPhoto {
   id: string;
   file: File;
   preview: string;
   category?: PhotoCategory;
   theme?: EnhancementTheme;
-  analysis?: any;
   enhancedUrl?: string;
 }
 
-type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
-type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
+export type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
+export type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
 
 interface PhotoLineupStationProps {
-  uploadedPhotos: UploadedPhoto[];
-  setUploadedPhotos: React.Dispatch<React.SetStateAction<UploadedPhoto[]>>;
-  onNext: (photo: UploadedPhoto, slotIndex: number) => void;
+  uploadedPhotos: (UploadedPhoto | null)[];
+  setUploadedPhotos: React.Dispatch<React.SetStateAction<(UploadedPhoto | null)[]>>;
+  onNext?: (photo: UploadedPhoto, slotIndex: number) => void;
   onIndividualTransform?: (photo: UploadedPhoto, slotIndex: number) => void;
   onBulkTransform?: (photos: UploadedPhoto[]) => void;
 }
 
-export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
+const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   uploadedPhotos,
   setUploadedPhotos,
   onNext,
   onIndividualTransform,
-  onBulkTransform,
+  onBulkTransform
 }) => {
-  const [isDragging, setIsDragging] = useState<number>(-1);
-  const [showCategoryModal, setShowCategoryModal] = useState<{ slotIndex: number } | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<PhotoCategory | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [processingPhotoId, setProcessingPhotoId] = useState<string | null>(null);
-  const { credits, loading: creditsLoading } = useCredits();
-  const { isProcessing, enhancePhoto } = usePhotoEnhancement();
+  const [showProcessingModal, setShowProcessingModal] = useState<boolean>(false);
+  const [showResultsModal, setShowResultsModal] = useState<{ photo: UploadedPhoto; slotIndex: number } | null>(null);
+  const [currentProcessingPhoto, setCurrentProcessingPhoto] = useState<{ photo: UploadedPhoto; slotIndex: number } | null>(null);
+  
+  const { credits } = useCredits();
+  const { isProcessing, enhancePhoto, progress } = usePhotoEnhancement();
 
   const photoSlots = [
     {
@@ -53,6 +58,7 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       icon: Target,
       color: "text-pink-500",
       bgColor: "bg-pink-500/10 border-pink-500/30",
+      category: 'the-hook' as PhotoCategory,
       required: true
     },
     {
@@ -62,6 +68,7 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       icon: Heart,
       color: "text-purple-500", 
       bgColor: "bg-purple-500/10 border-purple-500/30",
+      category: 'style-confidence' as PhotoCategory,
       required: false
     },
     {
@@ -70,7 +77,8 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       description: "A fun shot with friends (max 2-3). Make sure you're the main focus and clearly identifiable.",
       icon: Users,
       color: "text-blue-500",
-      bgColor: "bg-blue-500/10 border-blue-500/30", 
+      bgColor: "bg-blue-500/10 border-blue-500/30",
+      category: 'social-proof' as PhotoCategory,
       required: false
     },
     {
@@ -80,6 +88,7 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       icon: Activity,
       color: "text-green-500",
       bgColor: "bg-green-500/10 border-green-500/30",
+      category: 'passion-hobbies' as PhotoCategory,
       required: false
     },
     {
@@ -89,6 +98,7 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       icon: Mountain,
       color: "text-orange-500",
       bgColor: "bg-orange-500/10 border-orange-500/30",
+      category: 'lifestyle-adventure' as PhotoCategory,
       required: false
     },
     {
@@ -98,92 +108,18 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       icon: Sparkles,
       color: "text-violet-500",
       bgColor: "bg-violet-500/10 border-violet-500/30",
+      category: 'personality-closer' as PhotoCategory,
       required: false
     }
   ];
 
-  const handleFiles = async (files: File[], slotIndex: number) => {
-    const file = files[0];
-    if (!file || !file.type.startsWith('image/')) return;
-
-    // Show category selection modal
-    setShowCategoryModal({ slotIndex });
-    
-    // Store the file temporarily
-    const id = Math.random().toString(36).substr(2, 9);
-    const preview = URL.createObjectURL(file);
-    const newPhoto = { file, preview, id };
-
-    setUploadedPhotos(prev => {
-      const newPhotos = [...prev];
-      newPhotos[slotIndex] = newPhoto;
-      return newPhotos.slice(0, 6); // Keep only first 6 slots
-    });
-  };
-
-  const handleCategorySelect = (category: PhotoCategory) => {
-    if (showCategoryModal) {
-      setUploadedPhotos(prev => {
-        const newPhotos = [...prev];
-        if (newPhotos[showCategoryModal.slotIndex]) {
-          newPhotos[showCategoryModal.slotIndex] = {
-            ...newPhotos[showCategoryModal.slotIndex],
-            category
-          };
-        }
-        return newPhotos;
-      });
-      setSelectedCategory(category);
-    }
-  };
-
-  const handleThemeSelect = (theme: EnhancementTheme) => {
-    if (showCategoryModal && selectedCategory) {
-      const photo = uploadedPhotos[showCategoryModal.slotIndex];
-      if (photo) {
-        const enhancedPhoto = {
-          ...photo,
-          category: selectedCategory,
-          theme
-        };
-        
-        // Update the photo with both category and theme
-        setUploadedPhotos(prev => {
-          const newPhotos = [...prev];
-          newPhotos[showCategoryModal.slotIndex] = enhancedPhoto;
-          return newPhotos;
-        });
-
-        // Proceed to enhancement
-        onNext(enhancedPhoto, showCategoryModal.slotIndex);
-      }
-    }
-  };
-
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, slotIndex: number) => {
-    e.preventDefault();
-    setIsDragging(-1);
-    
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files, slotIndex);
-  }, []);
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>, slotIndex: number) => {
-    if (e.target.files) {
-      handleFiles(Array.from(e.target.files), slotIndex);
-    }
-  };
-
-  const removePhoto = (index: number) => {
-    setUploadedPhotos(prev => {
-      const newPhotos = [...prev];
-      if (newPhotos[index]) {
-        URL.revokeObjectURL(newPhotos[index].preview);
-        newPhotos.splice(index, 1);
-      }
-      return newPhotos;
-    });
-  };
+  const themes = [
+    { id: 'confident-successful', name: 'Confident & Successful', description: 'Professional, polished, and accomplished' },
+    { id: 'authentic-approachable', name: 'Authentic & Approachable', description: 'Genuine, warm, and down-to-earth' },
+    { id: 'irresistible-magnetic', name: 'Irresistible & Magnetic', description: 'Captivating, alluring, and memorable' },
+    { id: 'stunning-sophisticated', name: 'Stunning & Sophisticated', description: 'Elegant, refined, and classy' },
+    { id: 'creative-unique', name: 'Creative & Unique', description: 'Artistic, original, and intriguing' }
+  ];
 
   // Helper function to convert blob URL to base64
   const blobToBase64 = (blob: Blob): Promise<string> => {
@@ -195,18 +131,81 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     });
   };
 
+  const handleFiles = useCallback((files: File[], slotIndex: number) => {
+    const file = files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    const photoId = `photo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const newPhoto: UploadedPhoto = {
+      id: photoId,
+      file,
+      preview: URL.createObjectURL(file),
+      category: photoSlots[slotIndex].category // Auto-assign category based on slot
+    };
+
+    setUploadedPhotos(prev => {
+      const newPhotos = [...prev];
+      // Clean up old preview URL if exists
+      if (newPhotos[slotIndex]) {
+        URL.revokeObjectURL(newPhotos[slotIndex]!.preview);
+      }
+      newPhotos[slotIndex] = newPhoto;
+      return newPhotos;
+    });
+  }, [photoSlots, setUploadedPhotos]);
+
+  const handleDrop = useCallback((e: React.DragEvent, slotIndex: number) => {
+    e.preventDefault();
+    setDragOverIndex(null);
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files, slotIndex);
+  }, [handleFiles]);
+
+  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>, slotIndex: number) => {
+    const files = Array.from(e.target.files || []);
+    handleFiles(files, slotIndex);
+    // Reset input value to allow selecting the same file again
+    e.target.value = '';
+  }, [handleFiles]);
+
+  const removePhoto = (index: number) => {
+    setUploadedPhotos(prev => {
+      const newPhotos = [...prev];
+      if (newPhotos[index]) {
+        URL.revokeObjectURL(newPhotos[index]!.preview);
+        newPhotos[index] = null;
+      }
+      return newPhotos;
+    });
+  };
+
+  const handleThemeSelect = (photo: UploadedPhoto, slotIndex: number, theme: EnhancementTheme) => {
+    setUploadedPhotos(prev => {
+      const newPhotos = [...prev];
+      newPhotos[slotIndex] = { ...photo, theme };
+      return newPhotos;
+    });
+  };
+
   const handleIndividualTransform = async (photo: UploadedPhoto, slotIndex: number) => {
     if (credits < 1) {
       toast.error('Insufficient credits. Please purchase more credits to enhance photos.');
       return;
     }
 
-    if (!photo.category || !photo.theme) {
-      toast.error('Please select category and theme first.');
+    if (!photo.theme) {
+      toast.error('Please select a theme first.');
       return;
     }
 
-    setProcessingPhotoId(photo.id);
+    setCurrentProcessingPhoto({ photo, slotIndex });
+    setShowProcessingModal(true);
+
     try {
       // Convert blob URL to base64 data URL
       let imageDataUrl: string;
@@ -218,29 +217,31 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
         imageDataUrl = photo.preview;
       }
 
-      const result = await enhancePhoto(imageDataUrl, photo.category, photo.theme);
+      const result = await enhancePhoto(imageDataUrl, photo.category!, photo.theme);
       
       // Update the photo with enhanced version
       setUploadedPhotos(prev => {
         const newPhotos = [...prev];
         newPhotos[slotIndex] = {
-          ...newPhotos[slotIndex],
+          ...newPhotos[slotIndex]!,
           enhancedUrl: result.enhancedImageUrl
         };
         return newPhotos;
       });
       
+      setShowProcessingModal(false);
+      setShowResultsModal({ photo: { ...photo, enhancedUrl: result.enhancedImageUrl }, slotIndex });
+      
       onIndividualTransform?.(photo, slotIndex);
     } catch (error) {
       console.error('Enhancement failed:', error);
       toast.error('Enhancement failed. Please try again.');
-    } finally {
-      setProcessingPhotoId(null);
+      setShowProcessingModal(false);
     }
   };
 
   const handleBulkTransform = () => {
-    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.category && photo.theme);
+    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.theme);
     const totalCost = readyPhotos.length;
 
     if (credits < totalCost) {
@@ -256,240 +257,205 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     onBulkTransform?.(readyPhotos);
   };
 
-  const canProceed = uploadedPhotos[0]; // Only need first photo
-  const readyPhotos = uploadedPhotos.filter(photo => photo && photo.category && photo.theme);
+  const downloadImage = async (imageUrl: string, filename: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast.error('Download failed. Please try again.');
+    }
+  };
+
+  const readyPhotos = uploadedPhotos.filter(photo => photo && photo.theme);
   const totalBulkCost = readyPhotos.length;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Left and center columns - Photo Upload Lineup */}
+      {/* Main Photo Lineup */}
       <div className="lg:col-span-2 space-y-6">
-        {/* Header with Credits Display */}
-        <Card className="bg-gradient-to-r from-violet-purple/10 to-hot-pink/10 border-violet-purple/30">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl font-bold text-gradient-primary">Your Perfect Dating Lineup</CardTitle>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Build the ultimate 6-photo dating profile. Each photo serves a unique purpose to attract more matches!
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center gap-2 bg-card/50 rounded-lg px-3 py-2">
-                  <CreditCard className="w-4 h-4 text-violet-purple" />
-                  <span className="text-sm font-medium">
-                    {creditsLoading ? '...' : credits} Credits
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">1 photo = 1 credit</p>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Bulk Transform CTA */}
-        {readyPhotos.length > 1 && (
-          <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/30">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-green-700 dark:text-green-300">
-                      Transform All {readyPhotos.length} Photos
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Process your entire lineup at once for maximum efficiency
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="text-xs">
-                    {totalBulkCost} Credits
-                  </Badge>
-                  <Button
-                    onClick={handleBulkTransform}
-                    disabled={credits < totalBulkCost}
-                    className="bg-green-500 hover:bg-green-600 text-white"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2" />
-                    Transform All
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Photo Lineup</h3>
-            <Badge variant="outline" className="text-xs">
-              {uploadedPhotos.length}/6 uploaded
+        {/* Header with Credits and Bulk Action */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gradient-primary mb-1">
+              Your Dating Photo Lineup
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Upload photos to each category, select themes, and transform them instantly
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Badge variant="outline" className="text-sm font-medium">
+              {credits} Credits Available
             </Badge>
+            {totalBulkCost > 0 && (
+              <Button
+                onClick={handleBulkTransform}
+                disabled={credits < totalBulkCost}
+                className="bg-gradient-primary text-white hover:bg-gradient-primary/90"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                Transform All ({totalBulkCost})
+              </Button>
+            )}
           </div>
         </div>
 
+        {/* Photo Slots Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {photoSlots.map((slot, index) => {
-            const Icon = slot.icon;
             const photo = uploadedPhotos[index];
-            
+            const Icon = slot.icon;
+            const isReady = photo && photo.theme;
+            const isEnhanced = photo && photo.enhancedUrl;
+
             return (
-              <Card key={index} className={cn(
-                "relative transition-all duration-300 hover:scale-[1.02]",
-                slot.bgColor,
-                photo ? "bg-card/80" : "bg-card/50 backdrop-blur-sm border-border/50"
-              )}>
+              <Card key={index} className={`${slot.bgColor} border-2 transition-all duration-300 hover:shadow-lg`}>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", slot.bgColor)}>
-                        <Icon className={cn("w-4 h-4", slot.color)} />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-sm">{slot.title}</h3>
-                        <p className="text-xs text-muted-foreground">{slot.subtitle}</p>
-                      </div>
+                  {/* Slot Header */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`p-2 rounded-lg bg-background/50`}>
+                      <Icon className={`w-5 h-5 ${slot.color}`} />
                     </div>
-                    {slot.required ? (
-                      <Badge variant="destructive" className="text-xs">Required</Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-xs">Optional</Badge>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-sm">{slot.title}</h3>
+                      <p className="text-xs text-muted-foreground">{slot.subtitle}</p>
+                    </div>
+                    {slot.required && (
+                      <Badge variant="secondary" className="text-xs">Required</Badge>
                     )}
                   </div>
-                  
+
+                  {/* Upload Area or Photo Preview */}
+                  <div
+                    className={`
+                      relative aspect-[4/5] rounded-lg border-2 border-dashed transition-all duration-300 mb-4
+                      ${dragOverIndex === index ? 'border-primary bg-primary/5' : 'border-muted'}
+                      ${!photo ? 'hover:border-primary/50 cursor-pointer' : ''}
+                    `}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOverIndex(index);
+                    }}
+                    onDragLeave={() => setDragOverIndex(null)}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onClick={() => !photo && document.getElementById(`file-input-${index}`)?.click()}
+                  >
+                    {!photo ? (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                        <p className="text-sm font-medium mb-1">Upload Photo</p>
+                        <p className="text-xs text-muted-foreground">Drag & drop or click</p>
+                      </div>
+                    ) : (
+                      <>
+                        <img
+                          src={photo.enhancedUrl || photo.preview}
+                          alt="Uploaded"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removePhoto(index);
+                          }}
+                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        
+                        {/* Status Badge */}
+                        <div className="absolute top-2 left-2">
+                          {isEnhanced ? (
+                            <Badge className="bg-green-500 text-white">Enhanced ✨</Badge>
+                          ) : isReady ? (
+                            <Badge className="bg-blue-500 text-white">Ready 🎯</Badge>
+                          ) : (
+                            <Badge variant="outline" className="bg-background/80">Needs Theme</Badge>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+                    <input
+                      id={`file-input-${index}`}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileInput(e, index)}
+                    />
+                  </div>
+
+                  {/* Photo Description */}
                   <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
                     {slot.description}
                   </p>
 
-                  {!photo ? (
-                    <div
-                      className={cn(
-                        "relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer",
-                        isDragging === index
-                          ? "border-violet-purple bg-violet-purple/10 shadow-glow-violet"
-                          : "border-border hover:border-violet-purple/50 hover:bg-violet-purple/5"
-                      )}
-                      onDrop={(e) => handleDrop(e, index)}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setIsDragging(index);
-                      }}
-                      onDragLeave={() => setIsDragging(-1)}
-                      onClick={() => {
-                        document.getElementById(`file-input-${index}`)?.click();
-                      }}
-                    >
-                      <input
-                        id={`file-input-${index}`}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileInput(e, index)}
-                        className="hidden"
-                      />
-                      
-                      <div className="space-y-2">
-                        <div className="mx-auto w-8 h-8 bg-violet-purple/20 rounded-full flex items-center justify-center">
-                          <Plus className="w-4 h-4 text-violet-purple" />
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Drop photo or click
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
+                  {/* Theme Selection & Actions */}
+                  {photo && (
                     <div className="space-y-3">
-                      <div className="relative group">
-                        <img
-                          src={photo.preview}
-                          alt={`${slot.title} photo`}
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removePhoto(index)}
-                            className="rounded-full w-6 h-6 p-0"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
-                        </div>
-                        
-                        {/* Status Badges */}
-                        <div className="absolute top-2 left-2 flex gap-1">
-                          {photo.category && photo.theme && (
-                            <Badge className="text-xs bg-green-500/90 text-white">
-                              Ready ✨
-                            </Badge>
-                          )}
-                          {photo.enhancedUrl && (
-                            <Badge className="text-xs bg-violet-purple/90 text-white">
-                              Enhanced 🎉
-                            </Badge>
-                          )}
-                        </div>
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                          Choose Your Vibe:
+                        </label>
+                        <Select
+                          value={photo.theme || ''}
+                          onValueChange={(value) => handleThemeSelect(photo, index, value as EnhancementTheme)}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue placeholder="Select theme..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {themes.map((theme) => (
+                              <SelectItem key={theme.id} value={theme.id} className="text-xs">
+                                <div>
+                                  <div className="font-medium">{theme.name}</div>
+                                  <div className="text-muted-foreground text-xs">{theme.description}</div>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
-                      {/* Individual Transform Button */}
-                      {photo.category && photo.theme && !photo.enhancedUrl && (
-                        <Button
-                          onClick={() => handleIndividualTransform(photo, index)}
-                          disabled={isProcessing && processingPhotoId === photo.id || credits < 1}
-                          size="sm"
-                          className="w-full bg-violet-purple hover:bg-violet-purple/80 text-white text-xs"
-                        >
-                          {isProcessing && processingPhotoId === photo.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-b border-white mr-2" />
-                              Transforming...
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="w-3 h-3 mr-2" />
-                              Transform (1 Credit)
-                            </>
-                          )}
-                        </Button>
-                      )}
-
-                      {/* Download Button for Enhanced Photos */}
-                      {photo.enhancedUrl && (
-                        <Button
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = photo.enhancedUrl!;
-                            link.download = `enhanced-photo-${index + 1}.png`;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                          }}
-                          size="sm"
-                          variant="outline"
-                          className="w-full text-xs"
-                        >
-                          <Download className="w-3 h-3 mr-2" />
-                          Download Enhanced
-                        </Button>
-                      )}
-
-                      {/* Configure Button for Unconfigured Photos */}
-                      {(!photo.category || !photo.theme) && (
-                        <Button
-                          onClick={() => {
-                            setShowCategoryModal({ slotIndex: index });
-                          }}
-                          size="sm"
-                          variant="outline"
-                          className="w-full text-xs"
-                        >
-                          <Target className="w-3 h-3 mr-2" />
-                          Configure Photo
-                        </Button>
-                      )}
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        {photo.theme && !photo.enhancedUrl && (
+                          <Button
+                            onClick={() => handleIndividualTransform(photo, index)}
+                            disabled={processingPhotoId === photo.id || credits < 1}
+                            size="sm"
+                            className="flex-1 bg-gradient-primary text-white hover:bg-gradient-primary/90"
+                          >
+                            {processingPhotoId === photo.id ? (
+                              <Clock className="w-3 h-3 mr-1" />
+                            ) : (
+                              <Wand2 className="w-3 h-3 mr-1" />
+                            )}
+                            Transform
+                          </Button>
+                        )}
+                        
+                        {photo.enhancedUrl && (
+                          <Button
+                            onClick={() => downloadImage(photo.enhancedUrl!, `enhanced-photo-${index + 1}.png`)}
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                          >
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -499,90 +465,146 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
         </div>
       </div>
 
-      {/* Right column - Tips & Progress */}
+      {/* Sidebar with Tips */}
       <div className="space-y-6">
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gradient-primary">Dating Photo Secrets</h2>
-          <p className="text-muted-foreground text-sm">
-            Pro tips to make your photos absolutely irresistible
-          </p>
-        </div>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-          <CardContent className="p-6 space-y-4">
-            <h3 className="font-semibold flex items-center gap-2 text-sm">
-              <Sparkles className="w-4 h-4 text-violet-purple" />
-              Success Formula
-            </h3>
-            
-            <div className="space-y-3 text-xs">
-              <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
-                <p className="font-medium text-pink-600 dark:text-pink-400 mb-1">✨ First Impression</p>
-                <p className="text-muted-foreground">Eye contact, genuine smile, great lighting. This photo decides if they swipe right!</p>
+        <Card className="bg-gradient-to-br from-violet-purple/10 to-bright-pink/10 border-violet-purple/20">
+          <CardContent className="p-6">
+            <h3 className="font-bold text-lg mb-4 text-gradient-primary">Dating Photo Secrets</h3>
+            <div className="space-y-4 text-sm">
+              <div>
+                <h4 className="font-semibold mb-2">✨ The Golden Rules</h4>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Eye contact is everything</li>
+                  <li>• Natural lighting wins</li>
+                  <li>• Show your genuine smile</li>
+                  <li>• Quality over quantity</li>
+                </ul>
               </div>
-              
-              <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <p className="font-medium text-purple-600 dark:text-purple-400 mb-1">💪 Show Confidence</p>
-                <p className="text-muted-foreground">Full-body shots show your style and confidence. No mirror selfies!</p>
-              </div>
-              
-              <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                <p className="font-medium text-blue-600 dark:text-blue-400 mb-1">👥 Social Proof</p>
-                <p className="text-muted-foreground">Photos with friends show you're fun and social. Just be clearly identifiable!</p>
+              <div>
+                <h4 className="font-semibold mb-2">🎯 Pro Tips</h4>
+                <ul className="space-y-1 text-muted-foreground">
+                  <li>• Avoid group photos as your main</li>
+                  <li>• Include full-body shots</li>
+                  <li>• Show your interests</li>
+                  <li>• Keep it recent (within 2 years)</li>
+                </ul>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Upload Progress */}
-        <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <Card className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border-green-500/20">
           <CardContent className="p-6">
-            <h3 className="font-semibold mb-4 text-sm">Your Lineup Progress</h3>
-            
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span>Photos uploaded</span>
-                <span>{uploadedPhotos.length}/6</span>
+            <h3 className="font-bold text-lg mb-4">Success Formula</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>Upload to category-specific slots</span>
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-pink-500 to-violet-500 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${(uploadedPhotos.length / 6) * 100}%` }}
-                />
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>Choose the perfect vibe/theme</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {uploadedPhotos.length === 0 ? "Start with your best headshot!" :
-                 uploadedPhotos.length < 3 ? "Great start! Add more photos for better results." :
-                 uploadedPhotos.length < 6 ? "Looking good! Complete your lineup for maximum appeal." :
-                 "Perfect lineup! You're ready to get more matches."}
-              </p>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>Transform with AI enhancement</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>Download and upload to dating apps</span>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Modals */}
-      {showCategoryModal && (
-        <CategorySelectionModal
-          isOpen={true}
-          onClose={() => setShowCategoryModal(null)}
-          onCategorySelect={handleCategorySelect}
-          slotIndex={showCategoryModal.slotIndex}
-        />
-      )}
-      
-      {selectedCategory && showCategoryModal && (
-        <ThemeSelectionModal
-          isOpen={!!selectedCategory}
-          onClose={() => {
-            setSelectedCategory(null);
-            setShowCategoryModal(null);
-          }}
-          onThemeSelect={handleThemeSelect}
-          photoCategory={selectedCategory}
-          slotIndex={showCategoryModal.slotIndex}
-        />
-      )}
+      {/* Processing Modal */}
+      <Dialog open={showProcessingModal} onOpenChange={setShowProcessingModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">✨ Transforming Your Photo</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            {currentProcessingPhoto && (
+              <div className="text-center">
+                <div className="relative w-32 h-40 mx-auto mb-4 rounded-lg overflow-hidden">
+                  <img
+                    src={currentProcessingPhoto.photo.preview}
+                    alt="Processing"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
+                    <Wand2 className="w-8 h-8 text-white animate-pulse" />
+                  </div>
+                </div>
+                <h3 className="font-semibold mb-2">
+                  {photoSlots[currentProcessingPhoto.slotIndex].title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Applying {themes.find(t => t.id === currentProcessingPhoto.photo.theme)?.name} enhancement...
+                </p>
+                <Progress value={progress} className="w-full" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {progress}% complete
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Results Modal */}
+      <Dialog open={!!showResultsModal} onOpenChange={() => setShowResultsModal(null)}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-center">🎉 Transformation Complete!</DialogTitle>
+          </DialogHeader>
+          {showResultsModal && (
+            <div className="space-y-6 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <h3 className="font-semibold mb-2">Before</h3>
+                  <div className="aspect-[4/5] rounded-lg overflow-hidden">
+                    <img
+                      src={showResultsModal.photo.preview}
+                      alt="Original"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h3 className="font-semibold mb-2">After ✨</h3>
+                  <div className="aspect-[4/5] rounded-lg overflow-hidden">
+                    <img
+                      src={showResultsModal.photo.enhancedUrl!}
+                      alt="Enhanced"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-3 justify-center">
+                <Button
+                  onClick={() => downloadImage(showResultsModal.photo.enhancedUrl!, `enhanced-photo-${showResultsModal.slotIndex + 1}.png`)}
+                  className="bg-gradient-primary text-white hover:bg-gradient-primary/90"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Enhanced Photo
+                </Button>
+                <Button
+                  onClick={() => setShowResultsModal(null)}
+                  variant="outline"
+                >
+                  Continue Editing
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+export default PhotoLineupStation;
