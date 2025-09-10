@@ -185,6 +185,16 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     });
   };
 
+  // Helper function to convert blob URL to base64
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const handleIndividualTransform = async (photo: UploadedPhoto, slotIndex: number) => {
     if (credits < 1) {
       toast.error('Insufficient credits. Please purchase more credits to enhance photos.');
@@ -198,7 +208,17 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
 
     setProcessingPhotoId(photo.id);
     try {
-      const result = await enhancePhoto(photo.preview, photo.category, photo.theme);
+      // Convert blob URL to base64 data URL
+      let imageDataUrl: string;
+      if (photo.preview.startsWith('blob:')) {
+        const response = await fetch(photo.preview);
+        const blob = await response.blob();
+        imageDataUrl = await blobToBase64(blob);
+      } else {
+        imageDataUrl = photo.preview;
+      }
+
+      const result = await enhancePhoto(imageDataUrl, photo.category, photo.theme);
       
       // Update the photo with enhanced version
       setUploadedPhotos(prev => {
@@ -213,6 +233,7 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       onIndividualTransform?.(photo, slotIndex);
     } catch (error) {
       console.error('Enhancement failed:', error);
+      toast.error('Enhancement failed. Please try again.');
     } finally {
       setProcessingPhotoId(null);
     }
