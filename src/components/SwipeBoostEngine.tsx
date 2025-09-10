@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, XCircle, Zap, Sparkles, Download } from 'lucide-react';
+import { CheckCircle, XCircle, Zap, Sparkles, Download, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { useCredits } from '@/hooks/useCredits';
@@ -13,6 +13,7 @@ interface SwipeBoostEngineProps {
   photoCategory: string;
   enhancementTheme: string;
   onResults?: (results: any) => void;
+  onBack?: () => void;
 }
 
 export const SwipeBoostEngine: React.FC<SwipeBoostEngineProps> = ({
@@ -20,6 +21,7 @@ export const SwipeBoostEngine: React.FC<SwipeBoostEngineProps> = ({
   photoCategory,
   enhancementTheme,
   onResults,
+  onBack,
 }) => {
   const [enhancedImage, setEnhancedImage] = useState<string | null>(null);
   const { isProcessing, error, progress, enhancePhoto } = usePhotoEnhancement();
@@ -70,29 +72,43 @@ export const SwipeBoostEngine: React.FC<SwipeBoostEngineProps> = ({
             </Badge>
           </div>
           
-          <Button 
-            onClick={processPhoto}
-            disabled={isProcessing || credits < 1}
-            className="w-full bg-gradient-primary hover:shadow-glow-violet transition-all duration-300"
-            size="lg"
-          >
-            {isProcessing ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                Creating Your Perfect Photo...
-              </>
-            ) : credits < 1 ? (
-              <>
-                <XCircle className="w-4 h-4 mr-2" />
-                Insufficient Credits
-              </>
-            ) : (
-              <>
-                <Zap className="w-4 h-4 mr-2" />
-                Transform My Photo (1 Credit)
-              </>
+          <div className="space-y-3">
+            <Button 
+              onClick={processPhoto}
+              disabled={isProcessing || credits < 1}
+              className="w-full bg-gradient-primary hover:shadow-glow-violet transition-all duration-300"
+              size="lg"
+            >
+              {isProcessing ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  Creating Your Perfect Photo...
+                </>
+              ) : credits < 1 ? (
+                <>
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Insufficient Credits
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Transform My Photo (1 Credit)
+                </>
+              )}
+            </Button>
+
+            {onBack && (
+              <Button
+                onClick={onBack}
+                variant="outline"
+                className="w-full"
+                disabled={isProcessing}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Lineup
+              </Button>
             )}
-          </Button>
+          </div>
           
           {error && (
             <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">

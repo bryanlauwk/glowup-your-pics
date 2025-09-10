@@ -11,7 +11,7 @@ import { EnhancementResults } from '@/components/dashboard/EnhancementResults';
 import { CreditsDisplay } from '@/components/CreditsDisplay';
 import { SwipeBoostEngine } from '@/components/SwipeBoostEngine';
 import { BulkPhotoProcessor } from '@/components/dashboard/BulkPhotoProcessor';
-import { Upload, Zap, Download, Target } from "lucide-react";
+import { Upload, Zap, Download, Target, ArrowLeft } from "lucide-react";
 
 type DashboardStep = 'upload' | 'analysis' | 'processing' | 'bulk-processing' | 'results';
 type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
@@ -223,6 +223,11 @@ export default function Dashboard() {
                     setCurrentStep('results');
                   }
                 }}
+                onBack={() => {
+                  setCurrentStep('upload');
+                  setCurrentPhoto(null);
+                  setCurrentSlotIndex(0);
+                }}
               />
             </div>
             <div className="lg:col-span-1">
@@ -249,15 +254,38 @@ export default function Dashboard() {
               setEnhancementResults(results);
               setCurrentStep('results');
             }}
-            onBack={() => setCurrentStep('upload')}
+            onBack={() => {
+              setCurrentStep('upload');
+              setBulkPhotos([]);
+            }}
           />
         )}
 
         {currentStep === 'results' && (
-          <EnhancementResults
-            results={enhancementResults}
-            originalPhotos={uploadedPhotos}
-          />
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gradient-primary">Your Enhanced Photos</h2>
+              <Button
+                onClick={() => {
+                  setCurrentStep('upload');
+                  setEnhancementResults([]);
+                  setCurrentPhoto(null);
+                  setCurrentSlotIndex(0);
+                  setBulkPhotos([]);
+                }}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Lineup
+              </Button>
+            </div>
+            
+            <EnhancementResults
+              results={enhancementResults}
+              originalPhotos={uploadedPhotos}
+            />
+          </div>
         )}
       </div>
     </div>
