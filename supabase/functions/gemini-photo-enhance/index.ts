@@ -29,6 +29,12 @@ serve(async (req) => {
     });
 
     if (!imageDataUrl || !photoCategory || !customPrompt || !userId) {
+      console.error('Missing required parameters:', { 
+        hasImageDataUrl: !!imageDataUrl, 
+        hasPhotoCategory: !!photoCategory, 
+        hasCustomPrompt: !!customPrompt, 
+        hasUserId: !!userId 
+      });
       return new Response(JSON.stringify({ error: 'Missing required parameters' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -117,11 +123,7 @@ Output: Return the enhanced image that will perform better on dating apps while 
             } 
           }
         ]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1024
-      }
+      }]
     };
 
     console.log('Calling Gemini API with payload structure:', {
@@ -138,12 +140,22 @@ Output: Return the enhanced image that will perform better on dating apps while 
       body: JSON.stringify(payload)
     });
 
+    console.log('Gemini API response status:', response.status, response.statusText);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gemini API error details:', {
         status: response.status,
         statusText: response.statusText,
-        error: errorText
+        error: errorText,
+        url: geminiUrl,
+        payloadStructure: {
+          contentsLength: payload.contents.length,
+          hasText: !!payload.contents[0].parts[0].text,
+          hasImage: !!payload.contents[0].parts[1].inlineData,
+          mimeType,
+          imageSizeKB: Math.round(base64Data.length * 0.75 / 1024)
+        }
       });
       throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
@@ -158,13 +170,23 @@ Output: Return the enhanced image that will perform better on dating apps while 
       firstPartKeys: result.candidates?.[0]?.content?.parts?.[0] ? Object.keys(result.candidates[0].content.parts[0]) : []
     });
 
-    // Try different possible response structures
+    // Try different possible response structures for text analysis instead of image generation
     let enhancedBase64 = null;
+    let analysisResult = null;
     
     if (result.candidates?.[0]?.content?.parts) {
       const parts = result.candidates[0].content.parts;
       
-      // Look for image data in any part
+      // Look for text response first (more likely with current model)
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].text) {
+          analysisResult = parts[i].text;
+          console.log('Received text analysis:', analysisResult.substring(0, 200) + '...');
+          break;
+        }
+      }
+      
+      // Look for image data in any part (less likely but worth checking)
       for (let i = 0; i < parts.length; i++) {
         if (parts[i].inlineData?.data) {
           enhancedBase64 = parts[i].inlineData.data;
@@ -174,17 +196,14 @@ Output: Return the enhanced image that will perform better on dating apps while 
       }
     }
 
-    if (!enhancedBase64) {
+    if (!enhancedBase64 && !analysisResult) {
       console.error('Full Gemini response:', JSON.stringify(result, null, 2));
-      
-      // Check if it's a text response that we need to handle differently
-      if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
-        const textResponse = result.candidates[0].content.parts[0].text;
-        console.log('Received text response instead of image:', textResponse.substring(0, 200));
-        throw new Error('Gemini returned text instead of enhanced image. The model may not support image editing.');
-      }
-      
-      throw new Error('No enhanced image returned from Gemini API. Response structure: ' + JSON.stringify(Object.keys(result)));
+      throw new Error('No enhanced image or analysis returned from Gemini API. Response structure: ' + JSON.stringify(Object.keys(result)));
+    }
+
+    // If we only got analysis text, return error explaining the limitation
+    if (analysisResult && !enhancedBase64) {
+      throw new Error('Gemini returned analysis text instead of enhanced image. Current model configuration may not support image editing. Analysis received: ' + analysisResult.substring(0, 100) + '...');
     }
 
     const enhancedImageUrl = `data:image/png;base64,${enhancedBase64}`;
@@ -223,8 +242,15 @@ Output: Return the enhanced image that will perform better on dating apps while 
     });
 
   } catch (error) {
-    console.error('Enhancement error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('Enhancement error:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return new Response(JSON.stringify({ 
+      error: 'Enhancement failed: ' + error.message,
+      details: error.name 
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
