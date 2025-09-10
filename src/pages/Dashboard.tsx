@@ -10,9 +10,10 @@ import { AIProcessingEngine } from "@/components/dashboard/AIProcessingEngine";
 import { EnhancementResults } from '@/components/dashboard/EnhancementResults';
 import { CreditsDisplay } from '@/components/CreditsDisplay';
 import { SwipeBoostEngine } from '@/components/SwipeBoostEngine';
+import { BulkPhotoProcessor } from '@/components/dashboard/BulkPhotoProcessor';
 import { Upload, Zap, Download, Target } from "lucide-react";
 
-type DashboardStep = 'upload' | 'analysis' | 'processing' | 'results';
+type DashboardStep = 'upload' | 'analysis' | 'processing' | 'bulk-processing' | 'results';
 type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
 type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
 
@@ -34,6 +35,7 @@ interface UploadedPhoto {
   category?: PhotoCategory;
   theme?: EnhancementTheme;
   analysis?: PhotoAnalysis;
+  enhancedUrl?: string;
 }
 
 export default function Dashboard() {
@@ -44,6 +46,7 @@ export default function Dashboard() {
   const [currentPhoto, setCurrentPhoto] = useState<UploadedPhoto | null>(null);
   const [currentSlotIndex, setCurrentSlotIndex] = useState<number>(0);
   const [enhancementResults, setEnhancementResults] = useState<any[]>([]);
+  const [bulkPhotos, setBulkPhotos] = useState<UploadedPhoto[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -133,6 +136,14 @@ export default function Dashboard() {
               setCurrentSlotIndex(slotIndex);
               setCurrentStep('analysis');
             }}
+            onIndividualTransform={(photo, slotIndex) => {
+              // Individual photo processing handled within PhotoLineupStation
+              console.log('Individual photo transformed:', photo);
+            }}
+            onBulkTransform={(photos) => {
+              setBulkPhotos(photos);
+              setCurrentStep('bulk-processing');
+            }}
           />
         )}
 
@@ -218,6 +229,28 @@ export default function Dashboard() {
               <CreditsDisplay />
             </div>
           </div>
+        )}
+
+        {currentStep === 'bulk-processing' && bulkPhotos.length > 0 && (
+          <BulkPhotoProcessor
+            photos={bulkPhotos}
+            onComplete={(results) => {
+              setEnhancementResults(results);
+              setCurrentStep('results');
+            }}
+            onBack={() => setCurrentStep('upload')}
+          />
+        )}
+
+        {currentStep === 'bulk-processing' && bulkPhotos.length > 0 && (
+          <BulkPhotoProcessor
+            photos={bulkPhotos}
+            onComplete={(results) => {
+              setEnhancementResults(results);
+              setCurrentStep('results');
+            }}
+            onBack={() => setCurrentStep('upload')}
+          />
         )}
 
         {currentStep === 'results' && (

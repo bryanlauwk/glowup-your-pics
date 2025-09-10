@@ -1,11 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Upload, X, Plus, Sparkles, Camera, Target, Heart, Users, Mountain, Compass, Activity } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Upload, X, Plus, Sparkles, Camera, Target, Heart, Users, Mountain, Compass, Activity, Zap, Download, CreditCard, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { CategorySelectionModal } from './CategorySelectionModal';
 import { ThemeSelectionModal } from './ThemeSelectionModal';
+import { useCredits } from '@/hooks/useCredits';
+import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
+import { toast } from 'sonner';
 
 interface UploadedPhoto {
   id: string;
@@ -14,6 +17,7 @@ interface UploadedPhoto {
   category?: PhotoCategory;
   theme?: EnhancementTheme;
   analysis?: any;
+  enhancedUrl?: string;
 }
 
 type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
@@ -23,16 +27,23 @@ interface PhotoLineupStationProps {
   uploadedPhotos: UploadedPhoto[];
   setUploadedPhotos: React.Dispatch<React.SetStateAction<UploadedPhoto[]>>;
   onNext: (photo: UploadedPhoto, slotIndex: number) => void;
+  onIndividualTransform?: (photo: UploadedPhoto, slotIndex: number) => void;
+  onBulkTransform?: (photos: UploadedPhoto[]) => void;
 }
 
 export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   uploadedPhotos,
   setUploadedPhotos,
   onNext,
+  onIndividualTransform,
+  onBulkTransform,
 }) => {
   const [isDragging, setIsDragging] = useState<number>(-1);
   const [showCategoryModal, setShowCategoryModal] = useState<{ slotIndex: number } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<PhotoCategory | null>(null);
+  const [processingPhotoId, setProcessingPhotoId] = useState<string | null>(null);
+  const { credits, loading: creditsLoading } = useCredits();
+  const { isProcessing, enhancePhoto } = usePhotoEnhancement();
 
   const photoSlots = [
     {
@@ -174,17 +185,130 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     });
   };
 
+  const handleIndividualTransform = async (photo: UploadedPhoto, slotIndex: number) => {
+    if (credits < 1) {
+      toast.error('Insufficient credits. Please purchase more credits to enhance photos.');
+      return;
+    }
+
+    if (!photo.category || !photo.theme) {
+      toast.error('Please select category and theme first.');
+      return;
+    }
+
+    setProcessingPhotoId(photo.id);
+    try {
+      const result = await enhancePhoto(photo.preview, photo.category, photo.theme);
+      
+      // Update the photo with enhanced version
+      setUploadedPhotos(prev => {
+        const newPhotos = [...prev];
+        newPhotos[slotIndex] = {
+          ...newPhotos[slotIndex],
+          enhancedUrl: result.enhancedImageUrl
+        };
+        return newPhotos;
+      });
+      
+      onIndividualTransform?.(photo, slotIndex);
+    } catch (error) {
+      console.error('Enhancement failed:', error);
+    } finally {
+      setProcessingPhotoId(null);
+    }
+  };
+
+  const handleBulkTransform = () => {
+    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.category && photo.theme);
+    const totalCost = readyPhotos.length;
+
+    if (credits < totalCost) {
+      toast.error(`Insufficient credits. You need ${totalCost} credits but only have ${credits}.`);
+      return;
+    }
+
+    if (readyPhotos.length === 0) {
+      toast.error('Please upload and configure at least one photo first.');
+      return;
+    }
+
+    onBulkTransform?.(readyPhotos);
+  };
+
   const canProceed = uploadedPhotos[0]; // Only need first photo
+  const readyPhotos = uploadedPhotos.filter(photo => photo && photo.category && photo.theme);
+  const totalBulkCost = readyPhotos.length;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left and center columns - Photo Upload Lineup */}
       <div className="lg:col-span-2 space-y-6">
+        {/* Header with Credits Display */}
+        <Card className="bg-gradient-to-r from-violet-purple/10 to-hot-pink/10 border-violet-purple/30">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl font-bold text-gradient-primary">Your Perfect Dating Lineup</CardTitle>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Build the ultimate 6-photo dating profile. Each photo serves a unique purpose to attract more matches!
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center gap-2 bg-card/50 rounded-lg px-3 py-2">
+                  <CreditCard className="w-4 h-4 text-violet-purple" />
+                  <span className="text-sm font-medium">
+                    {creditsLoading ? '...' : credits} Credits
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">1 photo = 1 credit</p>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Bulk Transform CTA */}
+        {readyPhotos.length > 1 && (
+          <Card className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/30">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-green-700 dark:text-green-300">
+                      Transform All {readyPhotos.length} Photos
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Process your entire lineup at once for maximum efficiency
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline" className="text-xs">
+                    {totalBulkCost} Credits
+                  </Badge>
+                  <Button
+                    onClick={handleBulkTransform}
+                    disabled={credits < totalBulkCost}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    <ArrowRight className="w-4 h-4 mr-2" />
+                    Transform All
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-gradient-primary">Your Perfect Dating Lineup</h2>
-          <p className="text-muted-foreground">
-            Build the ultimate 6-photo dating profile. Each photo serves a unique purpose to attract more matches!
-          </p>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Photo Lineup</h3>
+            <Badge variant="outline" className="text-xs">
+              {uploadedPhotos.length}/6 uploaded
+            </Badge>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -256,26 +380,94 @@ export const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="relative group">
-                      <img
-                        src={photo.preview}
-                        alt={`${slot.title} photo`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removePhoto(index)}
-                          className="rounded-full w-6 h-6 p-0"
-                        >
-                          <X className="w-3 h-3" />
-                        </Button>
+                    <div className="space-y-3">
+                      <div className="relative group">
+                        <img
+                          src={photo.preview}
+                          alt={`${slot.title} photo`}
+                          className="w-full h-32 object-cover rounded-lg"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removePhoto(index)}
+                            className="rounded-full w-6 h-6 p-0"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
+                        
+                        {/* Status Badges */}
+                        <div className="absolute top-2 left-2 flex gap-1">
+                          {photo.category && photo.theme && (
+                            <Badge className="text-xs bg-green-500/90 text-white">
+                              Ready ✨
+                            </Badge>
+                          )}
+                          {photo.enhancedUrl && (
+                            <Badge className="text-xs bg-violet-purple/90 text-white">
+                              Enhanced 🎉
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      {photo.category && (
-                        <Badge className="absolute top-2 left-2 text-xs bg-black/70">
-                          Ready ✨
-                        </Badge>
+
+                      {/* Individual Transform Button */}
+                      {photo.category && photo.theme && !photo.enhancedUrl && (
+                        <Button
+                          onClick={() => handleIndividualTransform(photo, index)}
+                          disabled={isProcessing && processingPhotoId === photo.id || credits < 1}
+                          size="sm"
+                          className="w-full bg-violet-purple hover:bg-violet-purple/80 text-white text-xs"
+                        >
+                          {isProcessing && processingPhotoId === photo.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-b border-white mr-2" />
+                              Transforming...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-3 h-3 mr-2" />
+                              Transform (1 Credit)
+                            </>
+                          )}
+                        </Button>
+                      )}
+
+                      {/* Download Button for Enhanced Photos */}
+                      {photo.enhancedUrl && (
+                        <Button
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = photo.enhancedUrl!;
+                            link.download = `enhanced-photo-${index + 1}.png`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }}
+                          size="sm"
+                          variant="outline"
+                          className="w-full text-xs"
+                        >
+                          <Download className="w-3 h-3 mr-2" />
+                          Download Enhanced
+                        </Button>
+                      )}
+
+                      {/* Configure Button for Unconfigured Photos */}
+                      {(!photo.category || !photo.theme) && (
+                        <Button
+                          onClick={() => {
+                            setShowCategoryModal({ slotIndex: index });
+                          }}
+                          size="sm"
+                          variant="outline"
+                          className="w-full text-xs"
+                        >
+                          <Target className="w-3 h-3 mr-2" />
+                          Configure Photo
+                        </Button>
                       )}
                     </div>
                   )}
