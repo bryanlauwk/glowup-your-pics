@@ -267,16 +267,14 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
       temperature: 0.7,
       topK: 32,
       topP: 1,
-      maxOutputTokens: 8192,
-      responseMimeType: "image/jpeg"
+      maxOutputTokens: 8192
     }
   };
 
   console.log('🔄 Making Gemini API request...');
   console.log('📤 Request config:', {
     url: geminiUrl.replace(geminiApiKey, 'HIDDEN'),
-    temperature: requestPayload.generationConfig.temperature,
-    responseMimeType: requestPayload.generationConfig.responseMimeType
+    temperature: requestPayload.generationConfig.temperature
   });
 
   const geminiResponse = await fetch(geminiUrl, {
