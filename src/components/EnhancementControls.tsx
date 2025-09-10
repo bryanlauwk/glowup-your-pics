@@ -31,7 +31,7 @@ export const EnhancementControls = ({
       setIdentitySimilarity(result.identitySimilarity);
       onEnhancementChange(result.dataUrl, newSettings, result.identitySimilarity);
     } catch (error) {
-      console.error('Enhancement failed:', error);
+      logger.error('Enhancement failed', { error, component: 'EnhancementControls', action: 'handleBoostPhoto' });
     }
   };
 
@@ -42,7 +42,7 @@ export const EnhancementControls = ({
       setIdentitySimilarity(result.identitySimilarity);
       onEnhancementChange(result.dataUrl, defaultSettings, result.identitySimilarity);
     } catch (error) {
-      console.error('Enhancement failed:', error);
+      logger.error('Enhancement failed', { error, component: 'EnhancementControls', action: 'handleEnhancePhoto' });
     }
   };
 

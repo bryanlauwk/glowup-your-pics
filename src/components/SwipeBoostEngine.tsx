@@ -7,6 +7,7 @@ import { CheckCircle, XCircle, Zap, Sparkles, Download, ArrowLeft } from 'lucide
 import { cn } from '@/lib/utils';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { useCredits } from '@/hooks/useCredits';
+import { logger } from '@/lib/logger';
 
 interface SwipeBoostEngineProps {
   imageDataUrl: string;
@@ -38,7 +39,7 @@ export const SwipeBoostEngine: React.FC<SwipeBoostEngineProps> = ({
       setEnhancedImage(result.enhancedImageUrl);
       onResults?.(result);
     } catch (error) {
-      console.error('Processing failed:', error);
+      logger.error('Processing failed', { error, component: 'SwipeBoostEngine', action: 'processPhoto' });
     }
   }, [imageDataUrl, photoCategory, enhancementTheme, enhancePhoto, onResults, credits]);
 

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 export interface UserCredits {
   credits: number;
@@ -33,7 +34,7 @@ export const useCredits = () => {
 
       setCredits(data?.credits || 0);
     } catch (error) {
-      console.error('Error fetching credits:', error);
+      logger.error('Error fetching credits', { error, hook: 'useCredits', action: 'fetchCredits' });
       setCredits(0);
     } finally {
       setLoading(false);
@@ -56,7 +57,7 @@ export const useCredits = () => {
       // Open Stripe checkout in new tab
       window.open(data.url, '_blank');
     } catch (error) {
-      console.error('Error creating checkout:', error);
+      logger.error('Error creating checkout', { error, hook: 'useCredits', action: 'purchaseCredits', packageType });
       toast.error('Failed to start checkout process');
     }
   }, [user]);
@@ -78,7 +79,7 @@ export const useCredits = () => {
       setCredits(data.credits);
       toast.success(`Added ${amount} credits!`);
     } catch (error) {
-      console.error('Error adding credits:', error);
+      logger.error('Error adding credits', { error, hook: 'useCredits', action: 'addCredits', amount, source });
       toast.error('Failed to add credits');
     }
   }, [user]);

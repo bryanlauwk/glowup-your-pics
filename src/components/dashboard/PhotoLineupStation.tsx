@@ -241,7 +241,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       });
       onIndividualTransform?.(photo, slotIndex);
     } catch (error) {
-      console.error('Enhancement failed:', error);
+      logger.error('Enhancement failed', { error, component: 'PhotoLineupStation', action: 'handleEnhance' });
       toast.error('Enhancement failed. Please try again.');
       setShowProcessingModal(false);
     }
@@ -272,7 +272,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Download failed:', error);
+      logger.error('Download failed', { error, component: 'PhotoLineupStation', action: 'handleDownload' });
       toast.error('Download failed. Please try again.');
     }
   };

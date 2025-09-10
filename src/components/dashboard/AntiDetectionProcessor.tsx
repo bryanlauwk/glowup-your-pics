@@ -170,7 +170,7 @@ export const AntiDetectionProcessor: React.FC<AntiDetectionProcessorProps> = ({
       }, 1000);
       
     } catch (error) {
-      console.error('Processing failed:', error);
+      logger.error('Processing failed', { error, component: 'AntiDetectionProcessor', action: 'processPhotos' });
     } finally {
       setIsProcessing(false);
     }

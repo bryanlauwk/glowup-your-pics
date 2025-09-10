@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface SwipeBoostMetrics {
   mls: number; // Match-Likelihood Score
@@ -139,7 +140,7 @@ export const useSwipeBoost = () => {
       return data;
 
     } catch (error) {
-      console.error('Failed to get recipe suggestion:', error);
+      logger.error('Failed to get recipe suggestion', { error, hook: 'useSwipeBoost', action: 'getRecipeSuggestion' });
       return null;
     }
   }, []);
@@ -152,7 +153,7 @@ export const useSwipeBoost = () => {
       return data;
 
     } catch (error) {
-      console.error('Failed to get policies:', error);
+      logger.error('Failed to get policies', { error, hook: 'useSwipeBoost', action: 'getPolicies' });
       return null;
     }
   }, []);

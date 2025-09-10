@@ -49,7 +49,7 @@ export const DevPanel: React.FC = () => {
         toast.error(data.error || 'Failed to add credits');
       }
     } catch (error) {
-      console.error('Error calling admin function:', error);
+      logger.error('Error calling admin function', { error, component: 'DevPanel', action: 'addUnlimitedCredits' });
       toast.error('Network error - check console for details');
     } finally {
       setLoading(false);
@@ -71,7 +71,7 @@ export const DevPanel: React.FC = () => {
       
       toast.success('Cleaned up stuck processing records');
     } catch (error) {
-      console.error('Cleanup error:', error);
+      logger.error('Cleanup error', { error, component: 'DevPanel', action: 'cleanupDatabase' });
       toast.error('Failed to cleanup database');
     } finally {
       setLoading(false);

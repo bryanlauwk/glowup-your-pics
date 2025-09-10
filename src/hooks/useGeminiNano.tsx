@@ -186,7 +186,7 @@ export const useGeminiNano = () => {
         };
       }
     } catch (error) {
-      console.error('Photo analysis failed:', error);
+      logger.error('Photo analysis failed', { error, hook: 'useGeminiNano', action: 'analyzePhoto' });
       throw new Error('Failed to analyze photo with Gemini Nano');
     }
   }, [state.session, state.isReady]);
@@ -244,7 +244,7 @@ export const useGeminiNano = () => {
       const similarity = parseInt(response.trim());
       return isNaN(similarity) ? 92 : Math.max(0, Math.min(100, similarity));
     } catch (error) {
-      console.error('Identity validation failed:', error);
+      logger.error('Identity validation failed', { error, hook: 'useGeminiNano', action: 'validateIdentity' });
       return 92; // Default safe score
     }
   }, [state.session, state.isReady]);

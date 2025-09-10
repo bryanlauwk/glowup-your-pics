@@ -109,7 +109,7 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
       try {
         analysis = await analyzePhoto(photo.preview);
       } catch (error) {
-        console.error('Gemini API analysis failed:', error);
+        logger.error('Gemini API analysis failed', { error, component: 'AIProcessingEngine', action: 'analyzePhoto' });
       }
       
       // Fallback analysis if Gemini fails
@@ -188,7 +188,7 @@ export const AIProcessingEngine: React.FC<AIProcessingEngineProps> = ({
         enhancementResults: qualityResults,
       };
     } catch (error) {
-      console.error('Error processing photo:', error);
+      logger.error('Error processing photo', { error, component: 'AIProcessingEngine', action: 'processPhoto' });
       // Mark current step as failed
       const currentStep = processingSteps.find(step => step.status === 'processing');
       if (currentStep) {

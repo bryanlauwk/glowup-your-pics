@@ -160,7 +160,7 @@ export const MatchLikelihoodEngine: React.FC<MatchLikelihoodEngineProps> = ({
                 analysis.identitySimilarity = geminiAnalysis.identitySimilarity;
                 analysis.suggestions = geminiAnalysis.suggestions;
               } catch (geminiError) {
-                console.warn('Gemini Nano analysis failed, using fallback scores');
+                logger.warn('Gemini Nano analysis failed, using fallback scores', { error: geminiError, component: 'MatchLikelihoodEngine' });
               }
             } else {
               // Fallback scoring system when Gemini Nano is not available
@@ -207,7 +207,7 @@ export const MatchLikelihoodEngine: React.FC<MatchLikelihoodEngineProps> = ({
           };
           
         } catch (error) {
-          console.error(`Failed to analyze photo ${photoIndex}:`, error);
+          logger.error('Failed to analyze photo', { error, photoIndex, component: 'MatchLikelihoodEngine', action: 'analyzePhoto' });
           // Add fallback analysis
           newAnalyzedPhotos[photoIndex] = {
             ...photo,
@@ -234,7 +234,7 @@ export const MatchLikelihoodEngine: React.FC<MatchLikelihoodEngineProps> = ({
       }, 1000);
       
     } catch (error) {
-      console.error('Analysis failed:', error);
+      logger.error('Analysis failed', { error, component: 'MatchLikelihoodEngine', action: 'analyzePhotos' });
     } finally {
       setIsAnalyzing(false);
     }
