@@ -75,12 +75,39 @@ serve(async (req) => {
 
     // Create enhancement prompt based on category and custom user input
     const basePrompts = {
-      'the-hook': 'Perfect headshot photo that makes an amazing first impression',
-      'style-confidence': 'Full-body confidence shot showing great style and posture',
-      'social-proof': 'Social photo with friends where the main subject stands out clearly',
-      'passion-hobbies': 'Action shot showing passion and engagement in an activity',
-      'lifestyle-adventure': 'Lifestyle photo showing adventure and interesting experiences',
-      'personality-closer': 'Genuine personality photo with warmth and authenticity'
+      'the-hook': `Transform into a captivating professional headshot with perfect golden hour lighting that creates a warm, magnetic glow on the face. 
+      Enhance facial symmetry subtly and naturally while maintaining authenticity. Create sparkling, confident eyes that draw viewers in with perfect catchlight. 
+      Optimize the smile to be genuine and approachable - the kind that stops scrolling. Perfect skin tone with natural texture (no over-smoothing). 
+      Ensure impeccable composition with the subject perfectly positioned. Add subtle depth of field to make the subject pop from background. 
+      This should be the ultimate "stop scrolling" headshot that radiates confidence and approachability.`,
+      
+      'style-confidence': `Enhance into a fashion-magazine quality full-body shot that radiates success and style. Perfect the posture to show supreme confidence - shoulders back, 
+      head high, commanding presence. Optimize outfit colors and contrast for maximum visual impact. Enhance fabric textures and fit to look premium. 
+      Create a sophisticated background that complements without competing. Perfect the lighting to create dimension and highlight the best features. 
+      Enhance body language to project confidence, success, and magnetic appeal. The result should look like a high-end fashion or lifestyle magazine cover.`,
+      
+      'social-proof': `Transform into a dynamic social photo where the main subject clearly stands out as the star with enhanced lighting and natural focus effects. 
+      Subtly adjust lighting and contrast to make the main person pop while keeping others naturally lit but secondary. Enhance the social energy and 
+      authentic group interaction. Perfect the composition to guide eyes to the main subject. Optimize facial expressions to show genuine connection and fun. 
+      Create warm, inviting atmosphere that shows social confidence without diminishing others. The goal is natural social proof where the subject shines.`,
+      
+      'passion-hobbies': `Create an inspiring action shot that captures passionate engagement and skill with enhanced motion dynamics and energy. 
+      Add subtle motion blur or freeze-frame effects to emphasize action and expertise. Enhance the expression to show intense focus, determination, 
+      and genuine passion for the activity. Optimize the environment and equipment to look professional and appealing. Create dramatic lighting that 
+      adds energy and excitement to the scene. Enhance colors and contrast to make the activity look more dynamic and engaging. 
+      The result should inspire others to want to join this exciting activity.`,
+      
+      'lifestyle-adventure': `Transform into an epic adventure photo with dramatic landscape enhancement and perfect natural lighting that inspires wanderlust. 
+      Enhance the natural scenery to be more breathtaking - richer colors, more dramatic skies, enhanced textures in nature. Perfect the outdoor lighting 
+      for golden hour or blue hour effects. Add atmospheric elements like enhanced mist, rays of light, or weather drama. Position the subject to show 
+      scale and adventure spirit against the magnificent backdrop. Enhance gear and clothing to look premium and adventure-ready. 
+      Create a sense of awe and wanderlust that makes viewers want to experience similar adventures.`,
+      
+      'personality-closer': `Enhance into a heartwarming personality shot with genuine joy and laughter that creates instant emotional connection. 
+      Perfect the lighting for a warm, inviting atmosphere that feels cozy and authentic. Enhance genuine expressions of joy, laughter, or 
+      warm smiles that reveal true character. If there are pets or props, make them complement the personality perfectly. Create soft, 
+      natural lighting that makes the scene feel intimate and genuine. Enhance colors to be warm and inviting. Perfect the composition 
+      to feel candid yet polished. The result should make viewers feel like they already know and like this person's genuine character.`
     };
 
     const categoryPrompt = basePrompts[photoCategory as keyof typeof basePrompts] || 'Dating profile photo';
