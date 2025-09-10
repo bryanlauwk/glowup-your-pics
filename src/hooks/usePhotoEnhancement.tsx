@@ -43,6 +43,19 @@ export const usePhotoEnhancement = () => {
     try {
       setState(prev => ({ ...prev, progress: 20 }));
 
+      // Test internal function first if in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🧪 Testing internal function first...');
+        try {
+          const testResponse = await supabase.functions.invoke('gemini-photo-enhance', {
+            body: { internal_test: true }
+          });
+          console.log('🧪 Internal test result:', testResponse);
+        } catch (testError) {
+          console.log('🧪 Internal test failed:', testError);
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('gemini-photo-enhance', {
         body: {
           imageDataUrl,

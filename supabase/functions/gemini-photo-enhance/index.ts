@@ -25,6 +25,13 @@ serve(async (req) => {
     console.log('📥 Parsing request body...');
     const body = await req.json();
     console.log('📄 Request body keys:', Object.keys(body));
+    
+    // Handle internal test request
+    if (body.internal_test) {
+      console.log('🧪 INTERNAL TEST MODE');
+      return await handleInternalTest(supabase);
+    }
+    
     const { imageDataUrl, photoCategory, customPrompt, userId } = body;
 
     console.log('Enhancement request received:', {
@@ -34,14 +41,13 @@ serve(async (req) => {
       imageSize: imageDataUrl.length
     });
 
-    if (!imageDataUrl || !photoCategory || !customPrompt || !userId) {
+    if (!imageDataUrl || !photoCategory || !userId) {
       console.error('Missing required parameters:', { 
         hasImageDataUrl: !!imageDataUrl, 
         hasPhotoCategory: !!photoCategory, 
-        hasCustomPrompt: !!customPrompt, 
         hasUserId: !!userId 
       });
-      return new Response(JSON.stringify({ error: 'Missing required parameters' }), {
+      return new Response(JSON.stringify({ error: 'Missing required parameters: imageDataUrl, photoCategory, userId' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -79,206 +85,127 @@ serve(async (req) => {
 
     const categoryPrompt = basePrompts[photoCategory as keyof typeof basePrompts] || 'Dating profile photo';
     
-    const enhancementPrompt = `You are an AI image editor. Edit and enhance this image to create ${categoryPrompt}. 
+    const enhancementPrompt = `${categoryPrompt}. ${customPrompt ? `\n\nSpecific instructions: ${customPrompt}` : ''}
 
-User's specific request: "${customPrompt}"
-
-Enhancement instructions:
+Enhancement guidelines:
 - Improve lighting, contrast, and color balance for maximum visual appeal
 - Enhance skin tone and texture naturally (avoid over-smoothing)  
 - Optimize facial features and expressions for attractiveness
 - Improve composition and background if needed
 - Ensure the person looks confident and approachable
 - Maintain authenticity - no artificial or fake appearance
-- Focus specifically on: ${customPrompt}
+- Generate and return the enhanced image, not text analysis
 
-IMPORTANT: Return the enhanced image file, not text analysis.`;
+CRITICAL: Generate and return only the enhanced image file.`;
 
+    // Create enhancement record with timeout handling
+    const enhancementId = crypto.randomUUID();
     const startTime = Date.now();
-    console.log('⏰ Start time:', startTime);
-    console.log('🤖 === CALLING GEMINI API ===');
-
-    // Call Gemini API
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!geminiApiKey) {
-      console.log('ERROR: GEMINI_API_KEY not configured');
-      throw new Error('GEMINI_API_KEY not configured');
-    }
-    console.log('Gemini API Key:', geminiApiKey ? 'Available' : 'Missing');
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
-    
-    // Handle both blob URLs and data URLs
-    let base64Data: string;
-    let mimeType: string;
-    
-    if (imageDataUrl.startsWith('blob:')) {
-      // Convert blob URL to base64
-      console.log('Converting blob URL to base64...');
-      const blobResponse = await fetch(imageDataUrl);
-      const blob = await blobResponse.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      base64Data = btoa(String.fromCharCode(...uint8Array));
-      mimeType = blob.type || 'image/jpeg';
-      console.log('Blob converted, mime type:', mimeType);
-    } else if (imageDataUrl.startsWith('data:')) {
-      // Extract base64 data from data URL
-      base64Data = imageDataUrl.split(',')[1];
-      mimeType = imageDataUrl.split(';')[0].split(':')[1];
-    } else {
-      throw new Error('Invalid image data format. Expected blob: or data: URL');
-    }
-
-    const payload = {
-      contents: [{
-        parts: [
-          { text: enhancementPrompt },
-          { 
-            inlineData: { 
-              mimeType: mimeType, 
-              data: base64Data 
-            } 
-          }
-        ]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2048
-      },
-      systemInstruction: {
-        parts: [{
-          text: "You are an advanced image editor. When given an image and enhancement instructions, return only an enhanced version of the image. Do not provide text responses or analysis - only return the improved image."
-        }]
-      }
-    };
-
-    console.log('Calling Gemini API with payload structure:', {
-      contentsLength: payload.contents.length,
-      hasText: !!payload.contents[0].parts[0].text,
-      hasImage: !!payload.contents[0].parts[1].inlineData,
-      mimeType,
-      imageSizeKB: Math.round(base64Data.length * 0.75 / 1024)
-    });
-
-    const response = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    console.log('Gemini API response status:', response.status, response.statusText);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API error details:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText,
-        url: geminiUrl,
-        payloadStructure: {
-          contentsLength: payload.contents.length,
-          hasText: !!payload.contents[0].parts[0].text,
-          hasImage: !!payload.contents[0].parts[1].inlineData,
-          mimeType,
-          imageSizeKB: Math.round(base64Data.length * 0.75 / 1024)
-        }
-      });
-      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
-    }
-
-    const result = await response.json();
-    console.log('Gemini API response structure:', {
-      hasCandidates: !!result.candidates,
-      candidatesLength: result.candidates?.length,
-      hasContent: !!result.candidates?.[0]?.content,
-      partsLength: result.candidates?.[0]?.content?.parts?.length,
-      firstPartType: typeof result.candidates?.[0]?.content?.parts?.[0],
-      firstPartKeys: result.candidates?.[0]?.content?.parts?.[0] ? Object.keys(result.candidates[0].content.parts[0]) : []
-    });
-
-    // Try different possible response structures for image generation with 2.5-flash-image-preview
-    let enhancedBase64 = null;
-    let analysisResult = null;
-    
-    console.log('Parsing Gemini 2.5 Flash Image Preview response...');
-    console.log('Full response structure:', JSON.stringify(result, null, 2));
-    
-    if (result.candidates?.[0]?.content?.parts) {
-      const parts = result.candidates[0].content.parts;
-      console.log(`Response has ${parts.length} parts`);
-      
-      // Look for image data in any part (priority for image generation model)
-      for (let i = 0; i < parts.length; i++) {
-        console.log(`Part ${i} structure:`, Object.keys(parts[i]));
-        
-        if (parts[i].inlineData?.data) {
-          enhancedBase64 = parts[i].inlineData.data;
-          console.log(`✅ Found enhanced image data in part ${i}, size: ${enhancedBase64.length} characters`);
-          break;
-        }
-        
-        // Also check for alternative response structures
-        if (parts[i].image?.data) {
-          enhancedBase64 = parts[i].image.data;
-          console.log(`✅ Found enhanced image data in image field of part ${i}`);
-          break;
-        }
-        
-        if (parts[i].text) {
-          analysisResult = parts[i].text;
-          console.log(`⚠️ Found text in part ${i}:`, analysisResult.substring(0, 200) + '...');
-        }
-      }
-    }
-
-    if (!enhancedBase64) {
-      console.error('❌ No enhanced image returned from Gemini 2.5 Flash Image Preview');
-      console.error('Full response for debugging:', JSON.stringify(result, null, 2));
-      
-      if (analysisResult) {
-        throw new Error(`Model returned text analysis instead of enhanced image. This suggests the model may not support image editing or the prompt needs adjustment. Response: ${analysisResult.substring(0, 200)}...`);
-      }
-      
-      throw new Error('No enhanced image returned from Gemini 2.5 Flash Image Preview. Response structure: ' + JSON.stringify(result, null, 1).substring(0, 500));
-    }
-
-    console.log('✅ Successfully extracted enhanced image data');
-
-    const enhancedImageUrl = `data:image/png;base64,${enhancedBase64}`;
-    const processingTime = Date.now() - startTime;
-
-    // Store enhancement record
+    console.log('📝 Creating enhancement record:', enhancementId);
     const { error: insertError } = await supabase
       .from('photo_enhancements')
       .insert({
+        id: enhancementId,
         user_id: userId,
-        original_photo_url: imageDataUrl,
-        enhanced_photo_url: enhancedImageUrl,
         photo_category: photoCategory,
-        enhancement_theme: customPrompt, // Store custom prompt in theme field
-        prompt_used: enhancementPrompt,
-        processing_time: processingTime,
-        status: 'completed'
+        enhancement_theme: 'ai_enhanced',
+        prompt_used: customPrompt || `Enhance this ${photoCategory} photo`,
+        original_photo_url: 'data_url_provided',
+        status: 'processing'
       });
 
     if (insertError) {
-      console.error('Database insert error:', insertError);
+      console.error('❌ Failed to create enhancement record:', insertError);
+      throw new Error('Failed to create enhancement record');
     }
 
-    // Deduct credit
-    await supabase
-      .from('user_credits')
-      .update({ credits: userCredits.credits - 1 })
-      .eq('user_id', userId);
+    try {
+      // Set up timeout (Edge Functions have 55-second limit, use 50 seconds)
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Function timeout after 50 seconds')), 50000);
+      });
 
-    return new Response(JSON.stringify({
-      enhancedImageUrl,
-      processingTime,
-      creditsRemaining: userCredits.credits - 1
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
+      const enhancementPromise = performImageEnhancement(imageDataUrl, enhancementPrompt);
+      
+      console.log('🏁 Starting enhancement with timeout...');
+      const enhancedImageBase64 = await Promise.race([enhancementPromise, timeoutPromise]) as string;
+
+      const processingTime = Date.now() - startTime;
+      console.log(`✅ Enhancement completed in ${processingTime}ms`);
+
+      // Store enhanced image in Supabase Storage
+      const fileName = `enhanced_${enhancementId}.jpg`;
+      const imageBuffer = Uint8Array.from(atob(enhancedImageBase64), c => c.charCodeAt(0));
+      
+      console.log('💾 Uploading to storage:', fileName);
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('enhanced-photos')
+        .upload(fileName, imageBuffer, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('❌ Upload error:', uploadError);
+        throw new Error(`Upload failed: ${uploadError.message}`);
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('enhanced-photos')
+        .getPublicUrl(fileName);
+
+      console.log('🔗 Public URL created:', publicUrl);
+
+      // Update enhancement record with results
+      const { error: updateError } = await supabase
+        .from('photo_enhancements')
+        .update({
+          enhanced_photo_url: publicUrl,
+          processing_time: processingTime,
+          status: 'completed'
+        })
+        .eq('id', enhancementId);
+
+      if (updateError) {
+        console.error('❌ Failed to update enhancement record:', updateError);
+        throw new Error('Failed to update enhancement record');
+      }
+
+      // Deduct credits
+      console.log('💳 Deducting credit from user');
+      const { error: creditError } = await supabase
+        .from('user_credits')
+        .update({ credits: userCredits.credits - 1 })
+        .eq('user_id', userId);
+
+      if (creditError) {
+        console.error('❌ Failed to deduct credits:', creditError);
+        // Don't fail the request for credit deduction errors
+      }
+
+      console.log('🎉 Enhancement successful!');
+      return new Response(JSON.stringify({
+        enhancedImageUrl: publicUrl,
+        processingTime,
+        enhancementId,
+        creditsRemaining: userCredits.credits - 1
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+
+    } catch (enhancementError) {
+      console.error('❌ Enhancement failed:', enhancementError.message);
+      
+      // Update record to failed status
+      await supabase
+        .from('photo_enhancements')
+        .update({ status: 'failed' })
+        .eq('id', enhancementId);
+        
+      throw enhancementError;
+    }
 
   } catch (error) {
     console.error('🔥 === FUNCTION ERROR ===');
@@ -297,3 +224,171 @@ IMPORTANT: Return the enhanced image file, not text analysis.`;
     });
   }
 });
+
+async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: string): Promise<string> {
+  console.log('🤖 === CALLING GEMINI API ===');
+  
+  const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+  if (!geminiApiKey) {
+    console.log('ERROR: GEMINI_API_KEY not configured');
+    throw new Error('GEMINI_API_KEY not configured');
+  }
+  console.log('✅ Gemini API Key available');
+
+  // Clean image data URL
+  let imageData = imageDataUrl;
+  if (imageData.startsWith('data:image/')) {
+    const base64Index = imageData.indexOf(';base64,');
+    if (base64Index !== -1) {
+      imageData = imageData.substring(base64Index + 8);
+    }
+  }
+
+  console.log('📸 Image data length:', imageData.length);
+  console.log('📝 Enhancement prompt length:', enhancementPrompt.length);
+
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
+  
+  const requestPayload = {
+    contents: [{
+      parts: [
+        {
+          text: enhancementPrompt
+        },
+        {
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: imageData
+          }
+        }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.7,
+      topK: 32,
+      topP: 1,
+      maxOutputTokens: 8192,
+      responseMimeType: "image/jpeg"
+    }
+  };
+
+  console.log('🔄 Making Gemini API request...');
+  console.log('📤 Request config:', {
+    url: geminiUrl.replace(geminiApiKey, 'HIDDEN'),
+    temperature: requestPayload.generationConfig.temperature,
+    responseMimeType: requestPayload.generationConfig.responseMimeType
+  });
+
+  const geminiResponse = await fetch(geminiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestPayload)
+  });
+
+  console.log('📥 Gemini response status:', geminiResponse.status);
+  console.log('📥 Gemini response headers:', Object.fromEntries(geminiResponse.headers.entries()));
+
+  if (!geminiResponse.ok) {
+    const errorText = await geminiResponse.text();
+    console.error('❌ Gemini API error response:', errorText);
+    throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+  }
+
+  const geminiResult = await geminiResponse.json();
+  console.log('📦 Gemini response structure:', {
+    candidates: geminiResult.candidates ? geminiResult.candidates.length : 'none',
+    hasContent: !!geminiResult.candidates?.[0]?.content,
+    hasParts: !!geminiResult.candidates?.[0]?.content?.parts?.length
+  });
+
+  // Parse response for image data - multiple strategies
+  let enhancedImageBase64: string | null = null;
+
+  // Strategy 1: Look for inline data in parts
+  if (geminiResult.candidates?.[0]?.content?.parts) {
+    for (const part of geminiResult.candidates[0].content.parts) {
+      if (part.inlineData?.data) {
+        console.log('✅ Found image in inlineData');
+        enhancedImageBase64 = part.inlineData.data;
+        break;
+      }
+    }
+  }
+
+  // Strategy 2: Look for direct image data
+  if (!enhancedImageBase64 && geminiResult.image) {
+    console.log('✅ Found image in direct image field');
+    enhancedImageBase64 = geminiResult.image;
+  }
+
+  // Strategy 3: Look for base64 data in text response
+  if (!enhancedImageBase64 && geminiResult.candidates?.[0]?.content?.parts?.[0]?.text) {
+    const textContent = geminiResult.candidates[0].content.parts[0].text;
+    const base64Match = textContent.match(/data:image\/[^;]+;base64,([A-Za-z0-9+/=]+)/);
+    if (base64Match) {
+      console.log('✅ Found base64 image in text response');
+      enhancedImageBase64 = base64Match[1];
+    }
+  }
+
+  if (!enhancedImageBase64) {
+    console.error('❌ No image data found in response');
+    console.error('Full response:', JSON.stringify(geminiResult, null, 2));
+    throw new Error('No enhanced image received from Gemini API');
+  }
+
+  console.log('✅ Successfully extracted enhanced image data');
+  return enhancedImageBase64;
+}
+
+async function handleInternalTest(supabase: any): Promise<Response> {
+  console.log('🧪 Running internal test...');
+  
+  try {
+    // Clean up stuck processing records first
+    console.log('🧹 Cleaning up stuck processing records...');
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    
+    const { data: stuckRecords, error: stuckError } = await supabase
+      .from('photo_enhancements')
+      .update({ status: 'failed' })
+      .eq('status', 'processing')
+      .lt('created_at', fiveMinutesAgo);
+      
+    if (stuckError) {
+      console.error('❌ Error cleaning stuck records:', stuckError);
+    } else {
+      console.log('✅ Cleaned up stuck records');
+    }
+
+    // Test with a simple base64 image (1x1 pixel)
+    const testImageBase64 = '/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A';
+    const testImageDataUrl = `data:image/jpeg;base64,${testImageBase64}`;
+    
+    console.log('🔬 Testing enhancement with minimal image...');
+    const result = await performImageEnhancement(testImageDataUrl, 'Simple test enhancement');
+    
+    console.log('✅ Internal test successful - received enhanced image');
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Internal test passed',
+      resultLength: result.length,
+      timestamp: new Date().toISOString()
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+    
+  } catch (error) {
+    console.error('❌ Internal test failed:', error.message);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
