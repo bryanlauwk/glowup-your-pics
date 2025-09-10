@@ -67,7 +67,9 @@ serve(async (req) => {
 
     const categoryPrompt = basePrompts[photoCategory as keyof typeof basePrompts] || 'Dating profile photo';
     
-    const enhancementPrompt = `Please edit and enhance this image to create ${categoryPrompt}. User's specific request: "${customPrompt}". 
+    const enhancementPrompt = `Edit and enhance this image to create ${categoryPrompt}. User's specific request: "${customPrompt}".
+
+CRITICAL: You MUST return an enhanced version of this image, not text analysis.
 
 Enhancement instructions:
 - Improve lighting, contrast, and color balance for maximum visual appeal
@@ -78,7 +80,7 @@ Enhancement instructions:
 - Maintain authenticity - no artificial or fake appearance
 - Focus specifically on: ${customPrompt}
 
-Output: Return the enhanced image that will perform better on dating apps while keeping the person's natural appearance.`;
+IMPORTANT: Generate and return the enhanced image file directly. Do not provide text analysis or suggestions.`;
 
     const startTime = Date.now();
 
@@ -88,7 +90,7 @@ Output: Return the enhanced image that will perform better on dating apps while 
       throw new Error('GEMINI_API_KEY not configured');
     }
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
     
     // Handle both blob URLs and data URLs
     let base64Data: string;
@@ -170,41 +172,53 @@ Output: Return the enhanced image that will perform better on dating apps while 
       firstPartKeys: result.candidates?.[0]?.content?.parts?.[0] ? Object.keys(result.candidates[0].content.parts[0]) : []
     });
 
-    // Try different possible response structures for text analysis instead of image generation
+    // Try different possible response structures for image generation with 2.5-flash-image-preview
     let enhancedBase64 = null;
     let analysisResult = null;
     
+    console.log('Parsing Gemini 2.5 Flash Image Preview response...');
+    console.log('Full response structure:', JSON.stringify(result, null, 2));
+    
     if (result.candidates?.[0]?.content?.parts) {
       const parts = result.candidates[0].content.parts;
+      console.log(`Response has ${parts.length} parts`);
       
-      // Look for text response first (more likely with current model)
+      // Look for image data in any part (priority for image generation model)
       for (let i = 0; i < parts.length; i++) {
-        if (parts[i].text) {
-          analysisResult = parts[i].text;
-          console.log('Received text analysis:', analysisResult.substring(0, 200) + '...');
-          break;
-        }
-      }
-      
-      // Look for image data in any part (less likely but worth checking)
-      for (let i = 0; i < parts.length; i++) {
+        console.log(`Part ${i} structure:`, Object.keys(parts[i]));
+        
         if (parts[i].inlineData?.data) {
           enhancedBase64 = parts[i].inlineData.data;
-          console.log(`Found image data in part ${i}`);
+          console.log(`✅ Found enhanced image data in part ${i}, size: ${enhancedBase64.length} characters`);
           break;
+        }
+        
+        // Also check for alternative response structures
+        if (parts[i].image?.data) {
+          enhancedBase64 = parts[i].image.data;
+          console.log(`✅ Found enhanced image data in image field of part ${i}`);
+          break;
+        }
+        
+        if (parts[i].text) {
+          analysisResult = parts[i].text;
+          console.log(`⚠️ Found text in part ${i}:`, analysisResult.substring(0, 200) + '...');
         }
       }
     }
 
-    if (!enhancedBase64 && !analysisResult) {
-      console.error('Full Gemini response:', JSON.stringify(result, null, 2));
-      throw new Error('No enhanced image or analysis returned from Gemini API. Response structure: ' + JSON.stringify(Object.keys(result)));
+    if (!enhancedBase64) {
+      console.error('❌ No enhanced image returned from Gemini 2.5 Flash Image Preview');
+      console.error('Full response for debugging:', JSON.stringify(result, null, 2));
+      
+      if (analysisResult) {
+        throw new Error(`Model returned text analysis instead of enhanced image. This suggests the model may not support image editing or the prompt needs adjustment. Response: ${analysisResult.substring(0, 200)}...`);
+      }
+      
+      throw new Error('No enhanced image returned from Gemini 2.5 Flash Image Preview. Response structure: ' + JSON.stringify(result, null, 1).substring(0, 500));
     }
 
-    // If we only got analysis text, return error explaining the limitation
-    if (analysisResult && !enhancedBase64) {
-      throw new Error('Gemini returned analysis text instead of enhanced image. Current model configuration may not support image editing. Analysis received: ' + analysisResult.substring(0, 100) + '...');
-    }
+    console.log('✅ Successfully extracted enhanced image data');
 
     const enhancedImageUrl = `data:image/png;base64,${enhancedBase64}`;
     const processingTime = Date.now() - startTime;
