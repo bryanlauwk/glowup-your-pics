@@ -86,11 +86,43 @@ export type Database = {
         }
         Relationships: []
       }
+      trial_results: {
+        Row: {
+          conversion_date: string | null
+          converted_to_paid: boolean | null
+          created_at: string
+          enhanced_photo_url: string | null
+          id: string
+          original_photo_url: string
+          user_id: string
+        }
+        Insert: {
+          conversion_date?: string | null
+          converted_to_paid?: boolean | null
+          created_at?: string
+          enhanced_photo_url?: string | null
+          id?: string
+          original_photo_url: string
+          user_id: string
+        }
+        Update: {
+          conversion_date?: string | null
+          converted_to_paid?: boolean | null
+          created_at?: string
+          enhanced_photo_url?: string | null
+          id?: string
+          original_photo_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_credits: {
         Row: {
           created_at: string
           credits: number
           id: string
+          trial_date: string | null
+          trial_used: boolean
           updated_at: string
           user_id: string | null
         }
@@ -98,6 +130,8 @@ export type Database = {
           created_at?: string
           credits?: number
           id?: string
+          trial_date?: string | null
+          trial_used?: boolean
           updated_at?: string
           user_id?: string | null
         }
@@ -105,6 +139,8 @@ export type Database = {
           created_at?: string
           credits?: number
           id?: string
+          trial_date?: string | null
+          trial_used?: boolean
           updated_at?: string
           user_id?: string | null
         }
