@@ -134,8 +134,8 @@ CRITICAL: Generate and return only the enhanced image file.`;
       const processingTime = Date.now() - startTime;
       console.log(`✅ Enhancement completed in ${processingTime}ms`);
 
-      // Store enhanced image in Supabase Storage
-      const fileName = `enhanced_${enhancementId}.jpg`;
+      // Store enhanced image in Supabase Storage with user folder structure
+      const fileName = `${userId}/enhanced_${enhancementId}.jpg`;
       const imageBuffer = Uint8Array.from(atob(enhancedImageBase64), c => c.charCodeAt(0));
       
       console.log('💾 Uploading to storage:', fileName);
