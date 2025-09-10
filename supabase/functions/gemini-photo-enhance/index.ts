@@ -366,7 +366,10 @@ async function handleInternalTest(supabase: any): Promise<Response> {
     const testImageDataUrl = `data:image/jpeg;base64,${testImageBase64}`;
     
     console.log('🔬 Testing enhancement with minimal image...');
-    const result = await performImageEnhancement(testImageDataUrl, 'Simple test enhancement');
+    const explicitPrompt = `Generate an enhanced version of this image. Improve the lighting, contrast, and overall visual quality. Return only the enhanced image file, not text.
+
+CRITICAL: You must generate and return an enhanced image file as output. Do not respond with text analysis or questions.`;
+    const result = await performImageEnhancement(testImageDataUrl, explicitPrompt);
     
     console.log('✅ Internal test successful - received enhanced image');
     return new Response(JSON.stringify({
