@@ -27,7 +27,7 @@ export const usePhotoEnhancement = () => {
   const enhancePhoto = useCallback(async (
     imageDataUrl: string,
     photoCategory: string,
-    enhancementTheme: string
+    customPrompt: string
   ): Promise<PhotoEnhancementResult> => {
     if (!user) {
       throw new Error('User not authenticated');
@@ -47,7 +47,7 @@ export const usePhotoEnhancement = () => {
         body: {
           imageDataUrl,
           photoCategory,
-          enhancementTheme,
+          customPrompt,
           userId: user.id
         }
       });
