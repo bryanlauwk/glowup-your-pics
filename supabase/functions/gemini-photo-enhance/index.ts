@@ -204,7 +204,19 @@ CRITICAL: Generate and return only the enhanced image file.`;
         .update({ status: 'failed' })
         .eq('id', enhancementId);
         
-      throw enhancementError;
+      // Provide user-friendly error message based on error type
+      let userMessage = 'Enhancement failed. ';
+      if (enhancementError.message.includes('attempts')) {
+        userMessage += 'The AI service is temporarily unavailable. Please try again in a few minutes.';
+      } else if (enhancementError.message.includes('timeout')) {
+        userMessage += 'The enhancement took too long to process. Please try with a smaller image.';
+      } else if (enhancementError.message.includes('too large')) {
+        userMessage += 'Image is too large. Please use an image smaller than 20MB.';
+      } else {
+        userMessage += 'Please try again or contact support if the issue persists.';
+      }
+        
+      throw new Error(userMessage);
     }
 
   } catch (error) {
@@ -244,7 +256,14 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
     }
   }
 
+  // Validate image size (max 20MB for Gemini API)
+  const imageSizeBytes = (imageData.length * 3) / 4; // Base64 to bytes conversion
+  if (imageSizeBytes > 20 * 1024 * 1024) {
+    throw new Error('Image too large. Please use an image smaller than 20MB.');
+  }
+
   console.log('📸 Image data length:', imageData.length);
+  console.log('📸 Image size (MB):', (imageSizeBytes / (1024 * 1024)).toFixed(2));
   console.log('📝 Enhancement prompt length:', enhancementPrompt.length);
 
   // Use Gemini 2.5 Flash Image Preview model - correct for image editing
@@ -272,30 +291,84 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
     }
   };
 
-  console.log('🔄 Making Gemini Image Preview API request...');
-  console.log('📤 Request config:', {
-    url: apiUrl.replace(geminiApiKey, 'HIDDEN'),
-    model: 'gemini-2.5-flash-image-preview'
-  });
+  // Retry logic with exponential backoff
+  const maxRetries = 3;
+  let lastError: Error | null = null;
 
-  const geminiResponse = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestPayload)
-  });
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🔄 Making Gemini API request (attempt ${attempt}/${maxRetries})...`);
+      console.log('📤 Request config:', {
+        url: apiUrl.replace(geminiApiKey, 'HIDDEN'),
+        model: 'gemini-2.5-flash-image-preview'
+      });
 
-  console.log('📥 Gemini response status:', geminiResponse.status);
-  console.log('📥 Gemini response headers:', Object.fromEntries(geminiResponse.headers.entries()));
+      const geminiResponse = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload)
+      });
 
-  if (!geminiResponse.ok) {
-    const errorText = await geminiResponse.text();
-    console.error('❌ Gemini API error response:', errorText);
-    throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+      console.log(`📥 Gemini response status (attempt ${attempt}):`, geminiResponse.status);
+      console.log('📥 Gemini response headers:', Object.fromEntries(geminiResponse.headers.entries()));
+
+      if (!geminiResponse.ok) {
+        const errorText = await geminiResponse.text();
+        console.error(`❌ Gemini API error response (attempt ${attempt}):`, errorText);
+        
+        // Parse error to determine if it's retryable
+        const isRetryableError = geminiResponse.status >= 500 || geminiResponse.status === 429;
+        
+        if (!isRetryableError || attempt === maxRetries) {
+          // Don't retry on 4xx errors (except 429) or final attempt
+          throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+        }
+        
+        // Log retry attempt
+        const waitTime = Math.pow(2, attempt - 1) * 1000; // Exponential backoff: 1s, 2s, 4s
+        console.log(`🔄 Retryable error, waiting ${waitTime}ms before attempt ${attempt + 1}...`);
+        lastError = new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+        
+        // Wait before retry
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+
+      const geminiResult = await geminiResponse.json();
+      console.log(`✅ Successfully received response on attempt ${attempt}`);
+      return await parseGeminiResponse(geminiResult, apiUrl, requestPayload);
+      
+    } catch (error) {
+      console.error(`❌ Error on attempt ${attempt}:`, error.message);
+      lastError = error as Error;
+      
+      // Check if it's a network/timeout error (retryable)
+      const isNetworkError = error.message.includes('fetch') || 
+                           error.message.includes('timeout') || 
+                           error.message.includes('network');
+      
+      if (isNetworkError && attempt < maxRetries) {
+        const waitTime = Math.pow(2, attempt - 1) * 1000; // Exponential backoff
+        console.log(`🔄 Network error, waiting ${waitTime}ms before attempt ${attempt + 1}...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+      
+      // If not retryable or final attempt, throw the error
+      if (attempt === maxRetries) {
+        break;
+      }
+    }
   }
+  
+  // If we get here, all retries failed
+  console.error(`❌ All ${maxRetries} attempts failed. Last error:`, lastError?.message);
+  throw new Error(`Enhancement failed after ${maxRetries} attempts. ${lastError?.message || 'Unknown error'}`);
+}
 
-  const geminiResult = await geminiResponse.json();
+async function parseGeminiResponse(geminiResult: any, apiUrl: string, fallbackPayload: any): Promise<string> {
   console.log('📦 Gemini response structure:', {
     candidates: geminiResult.candidates ? geminiResult.candidates.length : 'none',
     hasContent: !!geminiResult.candidates?.[0]?.content,
@@ -337,7 +410,7 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
       console.log('🔄 Model suggests text-to-image generation, switching approach...');
       
       // Create a text-to-image prompt based on the enhancement request
-      const textToImagePrompt = `Generate a high-quality, enhanced dating profile photo. ${enhancementPrompt}`;
+      const textToImagePrompt = `Generate a high-quality, enhanced dating profile photo. ${fallbackPayload.contents[0].parts[0].text}`;
       
       // Make a new request for text-to-image generation
       const textToImagePayload = {
@@ -346,12 +419,7 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
             text: textToImagePrompt
           }]
         }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 32,
-          topP: 1,
-          maxOutputTokens: 8192
-        }
+        generationConfig: fallbackPayload.generationConfig
       };
       
       console.log('🔄 Making text-to-image request...');
