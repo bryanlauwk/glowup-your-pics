@@ -13,6 +13,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -31,7 +32,21 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth`,
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Check your email",
+          description: "We've sent you a password reset link.",
+        });
+        
+        setIsForgotPassword(false);
+        setIsLogin(true);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -80,18 +95,21 @@ const Auth = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            {isLogin ? 'Sign In' : 'Create Account'}
+            {isForgotPassword ? 'Reset Password' : (isLogin ? 'Sign In' : 'Create Account')}
           </CardTitle>
           <CardDescription className="text-center">
-            {isLogin 
-              ? 'Welcome back to SwipeBoost' 
-              : 'Join SwipeBoost and enhance your photos'
+            {isForgotPassword 
+              ? 'Enter your email to receive a password reset link'
+              : (isLogin 
+                ? 'Welcome back to SwipeBoost' 
+                : 'Join SwipeBoost and enhance your photos'
+              )
             }
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+            {!isLogin && !isForgotPassword && (
               <div className="space-y-2">
                 <label htmlFor="displayName" className="text-sm font-medium">
                   Display Name
@@ -102,7 +120,7 @@ const Auth = () => {
                   placeholder="Your name"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  required={!isLogin}
+                  required={!isLogin && !isForgotPassword}
                 />
               </div>
             )}
@@ -121,51 +139,76 @@ const Auth = () => {
               />
             </div>
             
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {isLogin && !isForgotPassword && (
+              <div className="text-right">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    setIsForgotPassword(true);
+                    setPassword('');
+                  }}
+                  className="text-sm text-muted-foreground hover:text-foreground underline"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  Forgot password?
                 </button>
               </div>
-            </div>
+            )}
             
             <Button
               type="submit"
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? 'Loading...' : (isForgotPassword ? 'Send Reset Link' : (isLogin ? 'Sign In' : 'Create Account'))}
             </Button>
           </form>
           
           <div className="mt-4 text-center">
             <button
               onClick={() => {
-                setIsLogin(!isLogin);
-                setEmail('');
-                setPassword('');
-                setDisplayName('');
+                if (isForgotPassword) {
+                  setIsForgotPassword(false);
+                  setEmail('');
+                } else {
+                  setIsLogin(!isLogin);
+                  setEmail('');
+                  setPassword('');
+                  setDisplayName('');
+                }
               }}
               className="text-sm text-muted-foreground hover:text-foreground underline"
             >
-              {isLogin 
-                ? "Don't have an account? Sign up" 
-                : 'Already have an account? Sign in'
+              {isForgotPassword 
+                ? 'Back to Sign In'
+                : (isLogin 
+                  ? "Don't have an account? Sign up" 
+                  : 'Already have an account? Sign in'
+                )
               }
             </button>
           </div>
