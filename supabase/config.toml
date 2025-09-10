@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.add-credits]
 verify_jwt = false
+
+[functions.admin-add-unlimited-credits]
+verify_jwt = false
