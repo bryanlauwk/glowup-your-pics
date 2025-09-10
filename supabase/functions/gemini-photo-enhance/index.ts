@@ -226,7 +226,7 @@ CRITICAL: Generate and return only the enhanced image file.`;
 });
 
 async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: string): Promise<string> {
-  console.log('🤖 === CALLING IMAGEN API ===');
+  console.log('🤖 === CALLING GEMINI IMAGE PREVIEW API ===');
   
   const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
   if (!geminiApiKey) {
@@ -247,80 +247,141 @@ async function performImageEnhancement(imageDataUrl: string, enhancementPrompt: 
   console.log('📸 Image data length:', imageData.length);
   console.log('📝 Enhancement prompt length:', enhancementPrompt.length);
 
-  // Use Imagen 4.0 API format
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict`;
+  // Use Gemini 2.5 Flash Image Preview model - correct for image editing
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
   
   const requestPayload = {
-    instances: [{
-      prompt: enhancementPrompt,
-      image: {
-        bytes_base64_encoded: imageData
-      }
+    contents: [{
+      parts: [
+        {
+          text: enhancementPrompt
+        },
+        {
+          inline_data: {
+            mime_type: "image/jpeg",
+            data: imageData
+          }
+        }
+      ]
     }],
-    parameters: {
-      sampleCount: 1,
-      sampleImageSize: "1K",
-      aspectRatio: "1:1"
+    generationConfig: {
+      temperature: 0.7,
+      topK: 32,
+      topP: 1,
+      maxOutputTokens: 8192
     }
   };
 
-  console.log('🔄 Making Imagen API request...');
+  console.log('🔄 Making Gemini Image Preview API request...');
   console.log('📤 Request config:', {
-    url: apiUrl,
-    model: 'imagen-4.0-generate-001'
+    url: apiUrl.replace(geminiApiKey, 'HIDDEN'),
+    model: 'gemini-2.5-flash-image-preview'
   });
 
-  const imagenResponse = await fetch(apiUrl, {
+  const geminiResponse = await fetch(apiUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-goog-api-key': geminiApiKey,
     },
     body: JSON.stringify(requestPayload)
   });
 
-  console.log('📥 Imagen response status:', imagenResponse.status);
-  console.log('📥 Imagen response headers:', Object.fromEntries(imagenResponse.headers.entries()));
+  console.log('📥 Gemini response status:', geminiResponse.status);
+  console.log('📥 Gemini response headers:', Object.fromEntries(geminiResponse.headers.entries()));
 
-  if (!imagenResponse.ok) {
-    const errorText = await imagenResponse.text();
-    console.error('❌ Imagen API error response:', errorText);
-    throw new Error(`Imagen API error (${imagenResponse.status}): ${errorText}`);
+  if (!geminiResponse.ok) {
+    const errorText = await geminiResponse.text();
+    console.error('❌ Gemini API error response:', errorText);
+    throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
   }
 
-  const imagenResult = await imagenResponse.json();
-  console.log('📦 Imagen response structure:', {
-    predictions: imagenResult.predictions ? imagenResult.predictions.length : 'none',
-    hasPrediction: !!imagenResult.predictions?.[0],
+  const geminiResult = await geminiResponse.json();
+  console.log('📦 Gemini response structure:', {
+    candidates: geminiResult.candidates ? geminiResult.candidates.length : 'none',
+    hasContent: !!geminiResult.candidates?.[0]?.content,
+    hasParts: !!geminiResult.candidates?.[0]?.content?.parts?.length
   });
 
-  // Parse response for image data - Imagen API format
+  // Parse response for image data - multiple strategies
   let enhancedImageBase64: string | null = null;
 
-  // Look for predictions format (Imagen API)
-  if (imagenResult.predictions && imagenResult.predictions[0]) {
-    const prediction = imagenResult.predictions[0];
+  // Strategy 1: Look for inline_data in parts (correct format)
+  if (geminiResult.candidates?.[0]?.content?.parts) {
+    for (const part of geminiResult.candidates[0].content.parts) {
+      if (part.inline_data?.data) {
+        console.log('✅ Found image in inline_data');
+        enhancedImageBase64 = part.inline_data.data;
+        break;
+      }
+    }
+  }
+
+  // Strategy 2: Look for inlineData (alternative format)
+  if (!enhancedImageBase64 && geminiResult.candidates?.[0]?.content?.parts) {
+    for (const part of geminiResult.candidates[0].content.parts) {
+      if (part.inlineData?.data) {
+        console.log('✅ Found image in inlineData');
+        enhancedImageBase64 = part.inlineData.data;
+        break;
+      }
+    }
+  }
+
+  // Strategy 3: Check if it returns text asking us to use text-to-image instead
+  if (!enhancedImageBase64 && geminiResult.candidates?.[0]?.content?.parts?.[0]?.text) {
+    const textContent = geminiResult.candidates[0].content.parts[0].text;
+    console.log('📄 Received text response:', textContent.substring(0, 200) + '...');
     
-    // Look for image data in different possible formats
-    if (prediction.image && prediction.image.bytes_base64_encoded) {
-      console.log('✅ Found image in image.bytes_base64_encoded');
-      enhancedImageBase64 = prediction.image.bytes_base64_encoded;
-    } else if (prediction.bytes_base64_encoded) {
-      console.log('✅ Found image in bytes_base64_encoded');
-      enhancedImageBase64 = prediction.bytes_base64_encoded;
-    } else if (prediction.image_bytes) {
-      console.log('✅ Found image in image_bytes');
-      enhancedImageBase64 = prediction.image_bytes;
-    } else if (prediction.generated_images && prediction.generated_images[0]) {
-      console.log('✅ Found image in generated_images array');
-      enhancedImageBase64 = prediction.generated_images[0].image_bytes || prediction.generated_images[0];
+    // If the model suggests using text-to-image, we'll create a new prompt
+    if (textContent.toLowerCase().includes('cannot edit') || textContent.toLowerCase().includes('text-to-image')) {
+      console.log('🔄 Model suggests text-to-image generation, switching approach...');
+      
+      // Create a text-to-image prompt based on the enhancement request
+      const textToImagePrompt = `Generate a high-quality, enhanced dating profile photo. ${enhancementPrompt}`;
+      
+      // Make a new request for text-to-image generation
+      const textToImagePayload = {
+        contents: [{
+          parts: [{
+            text: textToImagePrompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 8192
+        }
+      };
+      
+      console.log('🔄 Making text-to-image request...');
+      const textToImageResponse = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(textToImagePayload)
+      });
+      
+      if (textToImageResponse.ok) {
+        const textToImageResult = await textToImageResponse.json();
+        if (textToImageResult.candidates?.[0]?.content?.parts) {
+          for (const part of textToImageResult.candidates[0].content.parts) {
+            if (part.inline_data?.data || part.inlineData?.data) {
+              enhancedImageBase64 = part.inline_data?.data || part.inlineData?.data;
+              console.log('✅ Generated new image via text-to-image');
+              break;
+            }
+          }
+        }
+      }
     }
   }
 
   if (!enhancedImageBase64) {
-    console.error('❌ No image data found in Imagen response');
-    console.error('Full response:', JSON.stringify(imagenResult, null, 2));
-    throw new Error('No enhanced image received from Imagen API');
+    console.error('❌ No image data found in Gemini response');
+    console.error('Full response:', JSON.stringify(geminiResult, null, 2));
+    throw new Error('No enhanced image received from Gemini API - model may not support image editing');
   }
 
   console.log('✅ Successfully extracted enhanced image data');
