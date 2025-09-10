@@ -61,16 +61,18 @@ serve(async (req) => {
 
     const categoryPrompt = basePrompts[photoCategory as keyof typeof basePrompts] || 'Dating profile photo';
     
-    const enhancementPrompt = `Transform this into ${categoryPrompt}. User's specific request: "${customPrompt}". 
+    const enhancementPrompt = `Please edit and enhance this image to create ${categoryPrompt}. User's specific request: "${customPrompt}". 
 
-Key requirements:
-- Enhance lighting, colors, and overall visual appeal
-- Make the person look more attractive and confident
-- Optimize for dating app success (clear face, good lighting, attractive composition)
-- Keep it natural and authentic - no over-processing
-- Focus on: ${customPrompt}
+Enhancement instructions:
+- Improve lighting, contrast, and color balance for maximum visual appeal
+- Enhance skin tone and texture naturally (avoid over-smoothing)
+- Optimize facial features and expressions for attractiveness
+- Improve composition and background if needed
+- Ensure the person looks confident and approachable
+- Maintain authenticity - no artificial or fake appearance
+- Focus specifically on: ${customPrompt}
 
-Return an enhanced version that will get more matches on dating apps.`;
+Output: Return the enhanced image that will perform better on dating apps while keeping the person's natural appearance.`;
 
     const startTime = Date.now();
 
@@ -80,7 +82,7 @@ Return an enhanced version that will get more matches on dating apps.`;
       throw new Error('GEMINI_API_KEY not configured');
     }
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`;
     
     // Handle both blob URLs and data URLs
     let base64Data: string;
@@ -117,7 +119,8 @@ Return an enhanced version that will get more matches on dating apps.`;
         ]
       }],
       generationConfig: {
-        responseMimeType: "image/png"
+        temperature: 0.7,
+        maxOutputTokens: 1024
       }
     };
 
@@ -150,14 +153,38 @@ Return an enhanced version that will get more matches on dating apps.`;
       hasCandidates: !!result.candidates,
       candidatesLength: result.candidates?.length,
       hasContent: !!result.candidates?.[0]?.content,
-      partsLength: result.candidates?.[0]?.content?.parts?.length
+      partsLength: result.candidates?.[0]?.content?.parts?.length,
+      firstPartType: typeof result.candidates?.[0]?.content?.parts?.[0],
+      firstPartKeys: result.candidates?.[0]?.content?.parts?.[0] ? Object.keys(result.candidates[0].content.parts[0]) : []
     });
 
-    const enhancedBase64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    // Try different possible response structures
+    let enhancedBase64 = null;
+    
+    if (result.candidates?.[0]?.content?.parts) {
+      const parts = result.candidates[0].content.parts;
+      
+      // Look for image data in any part
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].inlineData?.data) {
+          enhancedBase64 = parts[i].inlineData.data;
+          console.log(`Found image data in part ${i}`);
+          break;
+        }
+      }
+    }
 
     if (!enhancedBase64) {
       console.error('Full Gemini response:', JSON.stringify(result, null, 2));
-      throw new Error('No enhanced image returned from Gemini API. Check response structure.');
+      
+      // Check if it's a text response that we need to handle differently
+      if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const textResponse = result.candidates[0].content.parts[0].text;
+        console.log('Received text response instead of image:', textResponse.substring(0, 200));
+        throw new Error('Gemini returned text instead of enhanced image. The model may not support image editing.');
+      }
+      
+      throw new Error('No enhanced image returned from Gemini API. Response structure: ' + JSON.stringify(Object.keys(result)));
     }
 
     const enhancedImageUrl = `data:image/png;base64,${enhancedBase64}`;
