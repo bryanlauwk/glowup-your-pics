@@ -125,7 +125,11 @@ IMPORTANT: Generate and return the enhanced image file directly. Do not provide 
             } 
           }
         ]
-      }]
+      }],
+      generationConfig: {
+        response_modalities: ["IMAGE"],
+        response_mime_type: "image/png"
+      }
     };
 
     console.log('Calling Gemini API with payload structure:', {
