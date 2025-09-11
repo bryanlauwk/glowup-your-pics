@@ -152,26 +152,26 @@ const DemoShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Clickable Magic Arrow */}
-        <div className="flex-shrink-0">
-          <button
+        {/* Transform Button */}
+        <div className="flex-shrink-0 flex items-center">
+          <Button
             onClick={handleTransform}
             disabled={!demoState.selectedCategory || demoState.isProcessing}
-            className={`
-              text-4xl transition-all duration-300 cursor-pointer
-              ${!demoState.selectedCategory || demoState.isProcessing 
-                ? 'text-muted-foreground/30 cursor-not-allowed' 
-                : 'text-primary hover:text-primary/80 hover:scale-110 active:scale-95'
-              }
-            `}
-            title={demoState.selectedCategory ? "Click to transform!" : "Select a style first"}
+            className="btn-professional px-6 py-3 text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            size="lg"
           >
             {demoState.isProcessing ? (
-              <div className="animate-spin">⚡</div>
+              <>
+                <div className="animate-spin mr-2">⚡</div>
+                Transforming...
+              </>
             ) : (
-              '✨'
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Try Magic ✨
+              </>
             )}
-          </button>
+          </Button>
         </div>
         
         {/* Result */}
