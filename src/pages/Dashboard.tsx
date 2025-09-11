@@ -56,29 +56,41 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="pt-20"> {/* Account for fixed header */}
         <div className="container mx-auto px-4 py-6">
-          {/* Clean Layout with Photo Processing */}
-          <PhotoLineupStationV2 
-            uploadedPhotos={uploadedPhotos} 
-            setUploadedPhotos={setUploadedPhotos} 
-            onNext={(photo, slotIndex) => {
-              logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
-            }} 
-            onIndividualTransform={(photo, slotIndex) => {
-              logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
-            }} 
-            onBulkTransform={photos => {
-              setBulkPhotos(photos);
-              logger.info('Bulk processing initiated', { photoCount: photos.length });
-            }} 
-          />
-          
-          {/* Credits Display */}
-          <div className="mt-8">
-            <CreditsDisplay />
-          </div>
+          {/* Dashboard Grid Layout */}
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            {/* Main Photo Processing Area */}
+            <div className="xl:col-span-3">
+              <PhotoLineupStationV2 
+                uploadedPhotos={uploadedPhotos} 
+                setUploadedPhotos={setUploadedPhotos} 
+                onNext={(photo, slotIndex) => {
+                  logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
+                }} 
+                onIndividualTransform={(photo, slotIndex) => {
+                  logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
+                }} 
+                onBulkTransform={photos => {
+                  setBulkPhotos(photos);
+                  logger.info('Bulk processing initiated', { photoCount: photos.length });
+                }} 
+              />
+              
+              {/* Credits Display */}
+              <div className="mt-8">
+                <CreditsDisplay />
+              </div>
 
-          {/* Dev Panel (admin only) */}
-          <DevPanel />
+              {/* Dev Panel (admin only) */}
+              <DevPanel />
+            </div>
+
+            {/* Rich Dating Tips Sidebar */}
+            <div className="xl:col-span-1">
+              <div className="sticky top-24">
+                <DatingTipsSidebar />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

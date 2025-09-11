@@ -15,7 +15,6 @@ import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { BackgroundEnhancer } from './BackgroundEnhancer';
-import { SmartTips } from './SmartTips';
 import DemoShowcase from './DemoShowcase';
 
 export interface UploadedPhoto {
@@ -337,10 +336,9 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
         </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-        {/* Photo Grid */}
-        <div className="xl:col-span-3">
+      {/* Photo Grid */}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {photoSlots.map((slot, index) => {
               const photo = uploadedPhotos[index];
@@ -538,13 +536,6 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
                 </Card>
               );
             })}
-          </div>
-        </div>
-
-        {/* Smart Tips Sidebar */}
-        <div className="xl:col-span-1">
-          <div className="sticky top-24">
-            <SmartTips activeCategory={activeCategory} uploadedCount={uploadedCount} />
           </div>
         </div>
       </div>
