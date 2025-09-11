@@ -327,7 +327,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
             <Button 
               onClick={handleBulkTransform} 
               disabled={credits < totalBulkCost} 
-              className="bg-gradient-primary text-white hover:bg-gradient-primary/90 shadow-lg"
+              className="btn-professional shadow-lg"
             >
               <Zap className="w-4 h-4 mr-2" />
               Transform All ({totalBulkCost})
@@ -337,10 +337,8 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
       </div>
 
       {/* Photo Grid */}
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {photoSlots.map((slot, index) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {photoSlots.map((slot, index) => {
               const photo = uploadedPhotos[index];
               const Icon = slot.icon;
               const isReady = photo && photo.customPrompt?.trim();
@@ -350,7 +348,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
               return (
                 <Card 
                   key={index} 
-                  className={`group hover:shadow-lg transition-all duration-300 border-2 ${
+                  className={`group photo-card enhancement-card ${
                     photo ? slot.borderColor : 'border-dashed border-muted-foreground/30'
                   }`}
                   onClick={() => photo && setActiveCategory(slot.category)}
@@ -513,7 +511,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
                         <Button 
                           onClick={() => handleEnhance(photo, index)}
                           disabled={!isReady || credits < 1 || isProcessing}
-                          className="w-full bg-gradient-primary text-white hover:bg-gradient-primary/90"
+                          className="w-full btn-professional"
                           size="sm"
                         >
                           {isProcessing ? (
@@ -535,9 +533,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
                   </CardContent>
                 </Card>
               );
-            })}
-          </div>
-        </div>
+        })}
       </div>
 
       {/* Processing Modal */}

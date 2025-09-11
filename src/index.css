@@ -200,4 +200,44 @@
     50% { width: 70%; }
     100% { width: 100%; }
   }
+
+  /* Professional UI Components */
+  .dropdown-content {
+    @apply bg-card/95 backdrop-blur-sm border border-border/50 shadow-xl rounded-lg;
+    @apply z-50 min-w-[200px];
+  }
+  
+  .dropdown-item {
+    @apply px-4 py-2 text-sm text-card-foreground hover:bg-accent/80 hover:text-accent-foreground;
+    @apply transition-all duration-200 cursor-pointer;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/60 z-50 backdrop-blur-sm;
+  }
+  
+  .modal-content {
+    @apply bg-card/95 backdrop-blur-sm border border-border/50 rounded-lg shadow-2xl;
+    @apply z-[60] relative;
+  }
+
+  .photo-card {
+    @apply bg-card/90 backdrop-blur-sm border border-border/40;
+    @apply transition-all duration-300 hover:shadow-lg hover:border-primary/30;
+    @apply hover:bg-card/95;
+  }
+
+  .btn-professional {
+    @apply bg-gradient-to-r from-primary/90 to-accent/90;
+    @apply text-primary-foreground font-medium;
+    @apply shadow-md hover:shadow-lg transition-all duration-300;
+    @apply border border-primary/20 backdrop-blur-sm;
+    @apply hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .enhancement-card {
+    @apply bg-gradient-to-br from-card/80 to-card/60 backdrop-blur-sm;
+    @apply border border-border/30 hover:border-primary/40;
+    @apply transition-all duration-300 hover:shadow-xl;
+  }
 }
