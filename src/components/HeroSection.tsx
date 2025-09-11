@@ -84,21 +84,21 @@ export const HeroSection = () => {
           </div>
 
           {/* Main Headline */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h1 className="text-5xl md:text-7xl font-black tracking-tight">
               <span className="block text-gradient-primary">
-                💕 Try FREE Now -
+                Get 3x More Matches
               </span>
               <span className="block text-gradient-primary">
-                See The Magic! ✨
+                In 30 Seconds ✨
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Transform your first photo <span className="text-love-pink font-bold">100% FREE</span> and watch the matches pour in on <span className="text-passionate-pink font-semibold">Tinder</span>, <span className="text-enchanting-purple font-semibold">Bumble</span> & <span className="text-romance-rose font-semibold">Hinge</span> 
+              AI photo enhancement that looks <span className="text-love-pink font-bold">100% natural</span> on Tinder, Bumble & Hinge
             </p>
             <div className="bg-love-pink/10 border border-love-pink/20 rounded-lg p-4 mx-auto max-w-lg">
               <p className="text-lg font-semibold text-love-pink">
-                🔥 See Results in 30 Seconds • No Risk, Pure Magic
+                🔥 Try FREE Now • See Instant Results
               </p>
             </div>
           </div>
@@ -122,24 +122,21 @@ export const HeroSection = () => {
           </div>
 
           {/* Social Proof */}
-          <div className="pt-8 space-y-4">
-            <p className="text-sm text-muted-foreground uppercase tracking-wide">
-              Join thousands finding their soulmate daily 💘
-            </p>
-            <div className="flex flex-wrap justify-center gap-8 items-center text-xl font-semibold text-gradient-accent">
+          <div className="pt-6 space-y-4">
+            <div className="flex flex-wrap justify-center gap-6 items-center text-lg font-semibold text-gradient-accent">
               <span className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-love-pink fill-current" />
-                3x More Soulmate Matches
+                Natural Enhancement
               </span>
               <span>•</span>
               <span className="flex items-center gap-2">
                 <Zap className="w-5 h-5 text-enchanting-purple" />
-                Invisible Love Magic
+                30-Second Magic
               </span>
               <span>•</span>
               <span className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-passionate-pink fill-current" />
-                Instant Confidence Glow
+                More Matches Guaranteed
               </span>
             </div>
           </div>
