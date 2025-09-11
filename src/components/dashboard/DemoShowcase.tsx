@@ -6,8 +6,7 @@ import { Sparkles, RefreshCw } from 'lucide-react';
 import { useIntelligentRouter } from '@/hooks/useIntelligentRouter';
 import { toast } from 'sonner';
 
-// Import demo image - upgraded professional portrait
-import demoImage from '@/assets/demo-photo-professional.jpg';
+// Using uploaded demo image
 
 export type PhotoCategory = 'hook' | 'passion-hobbies' | 'social-proof' | 'adventure-travel' | 'professional' | 'custom';
 
@@ -19,7 +18,7 @@ interface DemoState {
 
 const DEMO_PHOTO = {
   id: 'professional-portrait',
-  src: demoImage,
+  src: '/lovable-uploads/257c150c-524a-4655-904c-d3913f29ab6c.png',
   alt: 'Professional portrait for dating transformation demo'
 };
 
