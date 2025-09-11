@@ -376,7 +376,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
                       <div className="space-y-3">
                         {/* Quick Enhancement Options */}
                         <div className="space-y-2">
-                          <p className="text-xs font-medium text-muted-foreground">Quick Enhancement:</p>
+                          <p className="text-xs font-medium text-muted-foreground">Custom prompt:</p>
                           <div className="space-y-1">
                             {categoryPromptSuggestions[photo.category!]?.map((suggestion, suggIndex) => (
                               <Button
