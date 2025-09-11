@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 // Import demo image
 import demoAsianCasual from '@/assets/demo/demo-asian-casual.jpg';
 
-export type PhotoCategory = 'passion-hobbies' | 'social-proof' | 'lifestyle-adventure' | 'professional';
+export type PhotoCategory = 'hook' | 'passion-hobbies' | 'social-proof' | 'adventure-travel' | 'professional' | 'custom';
 
 interface DemoState {
   selectedCategory: PhotoCategory | null;
@@ -25,24 +25,40 @@ const DEMO_PHOTO = {
 
 const CATEGORIES = [
   { 
+    value: 'hook' as PhotoCategory, 
+    label: 'First Impression Winner', 
+    description: 'Instant attraction with magnetic appeal',
+    icon: '✨'
+  },
+  { 
     value: 'passion-hobbies' as PhotoCategory, 
     label: 'Passion & Hobbies', 
-    description: 'Transform into sports & hobby scenes' 
+    description: 'Transform into sports & hobby scenes',
+    icon: '🏃'
   },
   { 
     value: 'social-proof' as PhotoCategory, 
     label: 'Social Proof', 
-    description: 'Show yourself with friends socializing' 
+    description: 'Show yourself with friends socializing',
+    icon: '👥'
   },
   { 
-    value: 'lifestyle-adventure' as PhotoCategory, 
+    value: 'adventure-travel' as PhotoCategory, 
     label: 'Adventure & Travel', 
-    description: 'Create epic outdoor lifestyle shots' 
+    description: 'Create epic outdoor lifestyle shots',
+    icon: '🏔️'
   },
   { 
     value: 'professional' as PhotoCategory, 
-    label: 'Professional Scene', 
-    description: 'Executive presence in business settings' 
+    label: 'Professional Authority', 
+    description: 'Executive presence in business settings',
+    icon: '💼'
+  },
+  { 
+    value: 'custom' as PhotoCategory, 
+    label: 'Custom Transformation', 
+    description: 'Your unique vision brought to life',
+    icon: '🎨'
   }
 ];
 
@@ -135,8 +151,8 @@ const DemoShowcase: React.FC = () => {
         )}
       </div>
 
-      {/* Horizontal Layout: Photo → Controls → Result */}
-      <div className="flex items-center gap-8">
+      {/* Horizontal Layout: Photo → Clickable Arrow → Result */}
+      <div className="flex items-center gap-6">
         
         {/* Demo Photo */}
         <div className="flex-shrink-0">
@@ -154,13 +170,19 @@ const DemoShowcase: React.FC = () => {
               value={demoState.selectedCategory || ''} 
               onValueChange={handleCategorySelect}
             >
-              <SelectTrigger className="w-24 h-9 text-xs">
-                <SelectValue placeholder="Pick style" />
+              <SelectTrigger className="w-48 h-10 text-xs bg-background border-border/50">
+                <SelectValue placeholder="Pick transformation style" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background border border-border z-50 max-h-80">
                 {CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value} className="text-xs">
-                    {category.label}
+                  <SelectItem key={category.value} value={category.value} className="text-xs py-3 cursor-pointer hover:bg-muted/50">
+                    <div className="flex items-center gap-3 w-full">
+                      <span className="text-lg">{category.icon}</span>
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium text-foreground">{category.label}</span>
+                        <span className="text-xs text-muted-foreground">{category.description}</span>
+                      </div>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -168,49 +190,45 @@ const DemoShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Arrow */}
-        <div className="flex-shrink-0 text-muted-foreground">
-          <div className="text-2xl">→</div>
-        </div>
-
-        {/* Controls */}
+        {/* Clickable Magic Arrow */}
         <div className="flex-shrink-0">
-          <Button
+          <button
             onClick={handleTransform}
             disabled={!demoState.selectedCategory || demoState.isProcessing}
-            className="h-12 px-6"
+            className={`
+              text-4xl transition-all duration-300 cursor-pointer
+              ${!demoState.selectedCategory || demoState.isProcessing 
+                ? 'text-muted-foreground/30 cursor-not-allowed' 
+                : 'text-primary hover:text-primary/80 hover:scale-110 active:scale-95'
+              }
+            `}
+            title={demoState.selectedCategory ? "Click to transform!" : "Select a style first"}
           >
             {demoState.isProcessing ? (
-              <>
-                <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                Processing...
-              </>
+              <div className="animate-spin">⚡</div>
             ) : (
-              <>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Create Scene
-              </>
+              '✨'
             )}
-          </Button>
-        </div>
-
-        {/* Arrow */}
-        <div className="flex-shrink-0 text-muted-foreground">
-          <div className="text-2xl">→</div>
+          </button>
         </div>
         
         {/* Result */}
         <div className="flex-shrink-0">
           {demoState.enhancedPhoto ? (
             <div className="text-center">
-              <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md">
+              <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md animate-scale-in">
                 <img
                   src={demoState.enhancedPhoto}
                   alt="Enhanced result"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-xs text-primary font-medium mt-2">Scene Created!</p>
+              <div className="mt-2 flex items-center justify-center gap-1">
+                <span className="text-xs text-primary font-medium">
+                  {CATEGORIES.find(c => c.value === demoState.selectedCategory)?.icon}
+                </span>
+                <p className="text-xs text-primary font-medium">Scene Created!</p>
+              </div>
             </div>
           ) : (
             <div className="w-24 h-24 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
@@ -224,7 +242,7 @@ const DemoShowcase: React.FC = () => {
       {demoState.enhancedPhoto && (
         <div className="mt-4 text-center">
           <p className="text-sm text-primary font-medium">
-            🚀 Mind-blown? Upload your headshot to create amazing lifestyle scenes!
+            🚀 Mind-blown? This is the same {CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label} engine our paid users get!
           </p>
         </div>
       )}
