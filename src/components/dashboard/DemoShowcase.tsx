@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sparkles, RefreshCw, ArrowRight } from 'lucide-react';
+import { Sparkles, RefreshCw } from 'lucide-react';
 import { useImageEnhancement } from '@/hooks/useImageEnhancement';
 import { toast } from 'sonner';
 
@@ -175,38 +174,44 @@ const DemoShowcase: React.FC = () => {
   };
 
   return (
-    <Card className="mb-8 bg-gradient-to-r from-violet-purple/5 to-electric-cyan/5 border-violet-purple/20">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg font-semibold text-gradient-primary flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
-              Try Our AI Demo
-            </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              Select a demo photo and category to see instant transformation
-            </p>
-          </div>
-          <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">
-            No Credits Required
+    <div className="mb-6 bg-muted/30 rounded-lg border border-border/50 p-4 max-h-[120px] overflow-hidden">
+      {/* Header with Demo Badge */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-xs px-2 py-0.5 bg-violet-purple/10 text-violet-purple border-violet-purple/30">
+            Demo
           </Badge>
+          <span className="text-xs text-muted-foreground">Try AI enhancement - no credits needed</span>
         </div>
-      </CardHeader>
-      
-      <CardContent>
-        {/* 3-Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Column 1: Photo Selection */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-medium text-foreground text-center">Pick a Photo</h4>
-            <div className="space-y-3">
+        {(demoState.selectedPhoto || demoState.selectedCategory) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleReset}
+            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <RefreshCw className="w-3 h-3 mr-1" />
+            Reset
+          </Button>
+        )}
+      </div>
+
+      {/* Compact 3-Step Flow */}
+      <div className="flex items-center gap-4 h-[80px]">
+        
+        {/* Step 1: Photo Selection - Horizontal thumbnails */}
+        <div className="flex-shrink-0">
+          <div className="flex items-center gap-1">
+            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium mr-2">
+              1
+            </div>
+            <div className="flex gap-2">
               {DEMO_PHOTOS.map((photo) => (
                 <div
                   key={photo.id}
-                  className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                  className={`relative cursor-pointer rounded-md overflow-hidden border-2 transition-all duration-200 w-12 h-12 ${
                     demoState.selectedPhoto?.id === photo.id
-                      ? 'border-violet-purple shadow-lg'
+                      ? 'border-violet-purple ring-2 ring-violet-purple/20'
                       : 'border-border hover:border-violet-purple/50'
                   }`}
                   onClick={() => handlePhotoSelect(photo)}
@@ -214,146 +219,124 @@ const DemoShowcase: React.FC = () => {
                   <img
                     src={photo.src}
                     alt={photo.alt}
-                    className="w-full h-24 object-cover"
+                    className="w-full h-full object-cover"
                   />
                   {demoState.selectedPhoto?.id === photo.id && (
                     <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
-                      <div className="w-6 h-6 bg-violet-purple rounded-full flex items-center justify-center">
-                        <ArrowRight className="w-3 h-3 text-white" />
-                      </div>
+                      <div className="w-3 h-3 bg-violet-purple rounded-full" />
                     </div>
                   )}
                 </div>
               ))}
             </div>
           </div>
+        </div>
 
-          {/* Column 2: Enhancement Controls */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-medium text-foreground text-center">Transform</h4>
-            
-            {/* Drag Area */}
-            <div className={`border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${
-              demoState.selectedPhoto 
-                ? 'border-violet-purple/50 bg-violet-purple/5' 
-                : 'border-border bg-muted/50'
-            }`}>
-              <div className="text-center space-y-3">
-                {demoState.selectedPhoto ? (
-                  <div className="space-y-2">
-                    <img
-                      src={demoState.selectedPhoto.src}
-                      alt="Selected"
-                      className="w-16 h-16 object-cover rounded-lg mx-auto border-2 border-violet-purple"
-                    />
-                    <p className="text-xs text-muted-foreground">Photo Selected!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <div className="w-16 h-16 bg-muted rounded-lg mx-auto flex items-center justify-center">
-                      <ArrowRight className="w-6 h-6 text-muted-foreground" />
-                    </div>
-                    <p className="text-xs text-muted-foreground">Pick a photo first</p>
-                  </div>
-                )}
-              </div>
+        {/* Step 2: Transform Controls - Inline */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium">
+              2
             </div>
-
-            {/* Category Selection */}
-            <Select value={demoState.selectedCategory || ''} onValueChange={handleCategorySelect}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose style..." />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{category.label}</span>
-                      <span className="text-xs text-muted-foreground">{category.description}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Transform Button */}
-            <Button
-              onClick={handleTransform}
-              disabled={!demoState.selectedPhoto || !demoState.selectedCategory || demoState.isProcessing}
-              className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-white"
-            >
-              {demoState.isProcessing ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Transforming...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Transform
-                </>
-              )}
-            </Button>
-
-            {(demoState.selectedPhoto || demoState.selectedCategory) && (
-              <Button variant="outline" onClick={handleReset} className="w-full">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Reset
+            <div className="flex items-center gap-2 flex-1">
+              <Select 
+                value={demoState.selectedCategory || ''} 
+                onValueChange={handleCategorySelect}
+                disabled={!demoState.selectedPhoto}
+              >
+                <SelectTrigger className="h-8 text-xs min-w-[140px]">
+                  <SelectValue placeholder="Pick style..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((category) => (
+                    <SelectItem key={category.value} value={category.value}>
+                      <span className="text-xs">{category.label}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Button
+                onClick={handleTransform}
+                disabled={!demoState.selectedPhoto || !demoState.selectedCategory || demoState.isProcessing}
+                size="sm"
+                className="h-8 px-3 text-xs bg-gradient-primary hover:bg-gradient-primary/90 text-white"
+              >
+                {demoState.isProcessing ? (
+                  <>
+                    <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Transform
+                  </>
+                )}
               </Button>
-            )}
+            </div>
           </div>
+        </div>
 
-          {/* Column 3: Results */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-medium text-foreground text-center">Results</h4>
-            
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground text-center">Before</p>
-                <div className="relative rounded-lg overflow-hidden border aspect-square">
+        {/* Step 3: Before/After Results - Side by side */}
+        <div className="flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium">
+              3
+            </div>
+            <div className="flex gap-2">
+              {/* Before */}
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">Before</p>
+                <div className="w-12 h-12 rounded-md overflow-hidden border bg-muted">
                   {demoState.selectedPhoto ? (
                     <img
                       src={demoState.selectedPhoto.src}
-                      alt="Original"
+                      alt="Before"
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Original</p>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-muted-foreground/30 rounded" />
                     </div>
                   )}
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground text-center">After</p>
-                <div className="relative rounded-lg overflow-hidden border aspect-square">
+              {/* After */}
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">After</p>
+                <div className="w-12 h-12 rounded-md overflow-hidden border bg-muted relative">
                   {demoState.enhancedPhoto ? (
                     <img
                       src={demoState.enhancedPhoto}
-                      alt="Enhanced"
+                      alt="After"
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Enhanced</p>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-muted-foreground/30 rounded" />
                     </div>
+                  )}
+                  {demoState.enhancedPhoto && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-background" />
                   )}
                 </div>
               </div>
             </div>
-            
-            {demoState.enhancedPhoto && (
-              <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                <p className="text-xs font-medium text-green-700 dark:text-green-400">
-                  ✨ Try with your photos below!
-                </p>
-              </div>
-            )}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Success message */}
+      {demoState.enhancedPhoto && (
+        <div className="mt-2 text-center">
+          <p className="text-xs text-green-600 font-medium">
+            ✨ Try with your photos below!
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 
