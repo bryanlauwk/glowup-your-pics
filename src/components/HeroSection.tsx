@@ -96,11 +96,7 @@ export const HeroSection = () => {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               AI photo enhancement that looks <span className="text-love-pink font-bold">100% natural</span> on Tinder, Bumble & Hinge
             </p>
-            <div className="bg-love-pink/10 border border-love-pink/20 rounded-lg p-4 mx-auto max-w-lg">
-              <p className="text-lg font-semibold text-love-pink">
-                🔥 Try FREE Now • See Instant Results
-              </p>
-            </div>
+            
           </div>
 
           {/* CTA Buttons */}
