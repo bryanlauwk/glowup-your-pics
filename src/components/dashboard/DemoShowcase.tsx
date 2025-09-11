@@ -6,8 +6,8 @@ import { Sparkles, RefreshCw } from 'lucide-react';
 import { useIntelligentRouter } from '@/hooks/useIntelligentRouter';
 import { toast } from 'sonner';
 
-// Import demo image
-import demoAsianCasual from '@/assets/demo/demo-asian-casual.jpg';
+// Import demo image - upgraded professional portrait
+const demoImage = '/lovable-uploads/3882b432-872f-429d-b994-d685f10c9b39.png';
 
 export type PhotoCategory = 'hook' | 'passion-hobbies' | 'social-proof' | 'adventure-travel' | 'professional' | 'custom';
 
@@ -18,9 +18,9 @@ interface DemoState {
 }
 
 const DEMO_PHOTO = {
-  id: 'asian-casual',
-  src: demoAsianCasual,
-  alt: 'Asian male casual portrait'
+  id: 'professional-portrait',
+  src: demoImage,
+  alt: 'Professional portrait for dating transformation demo'
 };
 
 const CATEGORIES = [
@@ -153,7 +153,7 @@ const DemoShowcase: React.FC = () => {
         
         {/* Demo Photo */}
         <div className="flex-shrink-0">
-          <div className="w-50 h-50 rounded-lg overflow-hidden border-2 border-border/50 shadow-sm">
+          <div className="w-[200px] h-[200px] rounded-lg overflow-hidden border-2 border-border/50 shadow-sm">
             <img
               src={DEMO_PHOTO.src}
               alt={DEMO_PHOTO.alt}
@@ -210,7 +210,7 @@ const DemoShowcase: React.FC = () => {
         <div className="flex-shrink-0">
           {demoState.enhancedPhoto ? (
             <div className="text-center">
-              <div className="w-50 h-50 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md animate-scale-in">
+              <div className="w-[200px] h-[200px] rounded-lg overflow-hidden border-2 border-primary/50 shadow-md animate-scale-in">
                 <img
                   src={demoState.enhancedPhoto}
                   alt="Enhanced result"
@@ -225,7 +225,7 @@ const DemoShowcase: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="w-50 h-50 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
+            <div className="w-[200px] h-[200px] rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
               <span className="text-sm text-muted-foreground">Result</span>
             </div>
           )}

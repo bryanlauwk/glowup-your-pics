@@ -7,89 +7,89 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// 6 Fine-tuned Transformation Engines for Different Dating Profile Goals
+// 6 Advanced Person-First Dating Transformation Engines - Optimized for Maximum Swipe Appeal
 const transformationEngines = {
-  // ENGINE 1: THE HOOK - First Impression Winner
+  // ENGINE 1: THE HOOK - Stop-the-Scroll Magnetism
   'hook': {
     highQuality: [
-      'Enhance this photo to maximize first impression impact - perfect lighting, magnetic eye contact, confident expression. This should be the photo that stops the scroll. Keep facial features identical.',
-      'Transform into an irresistible first impression shot - optimize everything for instant attraction and intrigue. Maintain exact facial features and identity.',
-      'Create the ultimate hook photo - whatever makes this person most magnetically appealing at first glance. Preserve their exact appearance.',
+      'Transform this person into an irresistible first impression photo that maximizes swipe-right potential. Perfect their attractiveness with ideal lighting, magnetic eye contact, confident posture. This must be the photo that stops scrolling. Keep facial features identical but make them captivating.',
+      'Create the ultimate hook shot that screams "swipe right immediately" - optimize everything for instant attraction and dating appeal. Enhance their natural magnetism while preserving exact identity.',
+      'Revolutionary first impression transformation: Make this person impossible to ignore - think cover model quality that guarantees right swipes. Maintain identical features but maximize their attractiveness.',
     ],
     lowQuality: [
-      'Completely transform this into a show-stopping first impression photo - could be a confident portrait in golden hour, professional headshot with perfect lighting, or charismatic candid moment. Keep their exact identity.',
-      'Revolutionary transformation: Create the perfect "hook" photo from this image - think magazine cover quality that immediately captures attention. Maintain identical facial features.',
-      'Transform this person into the kind of photo that gets instant right-swipes - perfect composition, lighting, and presence. Preserve their exact appearance.',
+      'Complete dating profile transformation: Turn this into a show-stopping first impression photo that maximizes matches. Could be golden hour portrait, professional headshot, or charismatic moment - whatever makes them most swipe-worthy. Keep exact identity.',
+      'Revolutionary hook transformation: Create the perfect "stop-the-scroll" photo that instantly attracts potential dates. Think magazine cover quality optimized for dating apps. Preserve their exact appearance but make it magnetic.',
+      'Transform into the ultimate swipe-right photo - whatever setting, lighting, or pose makes this person most attractive to potential matches. Maintain identical facial features while maximizing dating appeal.',
     ]
   },
 
-  // ENGINE 2: PASSION & HOBBIES - Lifestyle Magnetism  
+  // ENGINE 2: PASSION & HOBBIES - Attractive Lifestyle Magnetism  
   'passion-hobbies': {
     highQuality: [
-      'Enhance this photo to better showcase an engaging hobby or passion - add elements that make their lifestyle more attractive and interesting. Keep facial features identical.',
-      'Polish this into a compelling lifestyle shot that hints at their interests and passions. Maintain exact facial features.',
-      'Enhance to show this person engaged in an appealing hobby or interest that makes them more attractive. Preserve their exact identity.',
+      'Enhance this person to showcase attractive hobbies that boost dating appeal - activities that signal interesting personality and active lifestyle. Make them more swipe-worthy through engaging interests. Keep facial features identical.',
+      'Polish into compelling lifestyle shot that hints at attractive passions potential dates would love. Optimize for dating success and relationship appeal. Maintain exact facial features.',
+      'Transform to show this person engaged in swipe-worthy hobbies that make them irresistible - activities that signal they\'re interesting, active, and worth dating. Preserve exact identity.',
     ],
     lowQuality: [
-      'Completely transform this person into an engaging passion scene - playing guitar, painting, cooking gourmet meals, hiking scenic trails, or practicing photography. Keep their exact identity.',
-      'Revolutionary lifestyle transformation: Place this person in a dynamic hobby environment - art studio, climbing gym, cozy reading nook, or outdoor adventure. Maintain identical features.',
-      'Transform into a magnetic lifestyle shot - could be surfing, playing piano, gardening, or any hobby that makes them irresistibly interesting. Preserve exact appearance.',
+      'Complete lifestyle transformation: Place this person in attractive hobby scenes that maximize dating appeal - playing guitar seductively, cooking gourmet meals, hiking scenic trails, or artistic pursuits. Whatever makes them most dateable. Keep exact identity.',
+      'Revolutionary passion transformation: Create dynamic hobby environment that screams "relationship material" - art studio, climbing gym, cozy reading with wine, outdoor adventures. Make them irresistible to potential partners. Maintain identical features.',
+      'Transform into magnetic lifestyle shot optimized for dating success - surfing, piano playing, gardening, photography - whatever hobby makes them most attractive to potential matches. Preserve exact appearance.',
     ]
   },
 
-  // ENGINE 3: PROFESSIONAL AUTHORITY - Success & Status
+  // ENGINE 3: PROFESSIONAL AUTHORITY - Success is Sexy
   'professional': {
     highQuality: [
-      'Enhance this into a more polished professional look - better lighting, confident posture, successful appearance. Keep facial features identical.',
-      'Polish this photo to convey more professional success and authority. Maintain exact facial features.',
-      'Enhance to showcase professional confidence and achievement - perfect for showing success and ambition. Preserve their exact identity.',
+      'Transform this person into an attractively successful professional that maximizes dating appeal - success is incredibly sexy. Perfect lighting, confident posture, successful appearance that screams "relationship material". Keep facial features identical.',
+      'Polish into irresistibly successful professional look that boosts swipe-right potential. Authority and achievement are massive dating advantages. Maintain exact facial features while maximizing professional sex appeal.',
+      'Enhance to showcase professional success and ambition - key attractive qualities for dating. Make them look like the successful catch they are. Preserve exact identity while boosting dating value.',
     ],
     lowQuality: [
-      'Completely transform this person into an authoritative professional portrait - could be executive in corner office, confident business leader, or successful entrepreneur. Keep their exact identity.',
-      'Revolutionary professional transformation: Place in sophisticated business environment - modern office, boardroom, or upscale professional setting. Maintain identical features.',  
-      'Transform into the image of success - think CEO portrait, accomplished professional, or confident business leader. Preserve exact appearance.',
+      'Complete professional transformation optimized for dating success: Place as confident executive, successful entrepreneur, or accomplished leader. Success is incredibly attractive to potential partners. Keep exact identity.',
+      'Revolutionary authority transformation: Create sophisticated business environment that signals "great catch" - corner office, boardroom leadership, upscale professional setting. Make success look irresistibly attractive. Maintain identical features.',  
+      'Transform into image of attractive success - CEO portrait, accomplished professional, confident business leader who would be amazing to date. Optimize for relationship appeal. Preserve exact appearance.',
     ]
   },
 
-  // ENGINE 4: ADVENTURE & TRAVEL - Worldly & Exciting
+  // ENGINE 4: ADVENTURE & TRAVEL - Worldly and Irresistibly Exciting
   'adventure-travel': {
     highQuality: [
-      'Enhance this photo to suggest more adventure and travel experience - better outdoor lighting, adventurous vibe. Keep facial features identical.',
-      'Polish this to convey a more adventurous, worldly personality. Maintain exact facial features.',
-      'Enhance to showcase an adventurous spirit and love for travel and exploration. Preserve their exact identity.',
+      'Transform this person to showcase attractive adventure spirit that maximizes dating appeal - worldliness and excitement are incredibly sexy. Better outdoor lighting, adventurous confidence that screams "amazing partner". Keep facial features identical.',
+      'Polish to convey irresistibly adventurous personality that potential dates would love to explore the world with. Adventure signals amazing relationship potential. Maintain exact facial features.',
+      'Enhance to showcase attractive wanderlust and love for exploration - qualities that make someone incredibly dateable and exciting to be with. Preserve exact identity.',
     ],
     lowQuality: [
-      'Completely transform this person into an exciting adventure scene - hiking mountain peaks, exploring European cities, beach adventures, or exotic travel destinations. Keep their exact identity.',
-      'Revolutionary adventure transformation: Place in breathtaking outdoor locations - mountain summits, tropical beaches, bustling foreign markets, or scenic hiking trails. Maintain identical features.',
-      'Transform into the image of wanderlust - think world traveler, adventure seeker, or outdoor enthusiast in stunning locations. Preserve exact appearance.',
+      'Complete adventure transformation optimized for dating success: Place in breathtaking scenarios - mountain summits, exotic travel, beach adventures, or exploring cities. Make them look like the perfect adventure partner. Keep exact identity.',
+      'Revolutionary travel transformation: Create stunning outdoor locations that signal "incredible life partner" - tropical beaches, mountain peaks, bustling markets, scenic trails. Make adventure look irresistibly attractive. Maintain identical features.',
+      'Transform into ultimate adventure partner image - world traveler, outdoor enthusiast, explorer in stunning locations that make potential dates dream of adventures together. Preserve exact appearance.',
     ]
   },
 
-  // ENGINE 5: SOCIAL PROOF - Popular & Connected  
+  // ENGINE 5: SOCIAL PROOF - Popular and Magnetically Attractive  
   'social-proof': {
     highQuality: [
-      'Enhance this photo to suggest higher social status and popularity - better social context, confident energy. Keep facial features identical.',
-      'Polish this to convey social confidence and popularity without being obvious about it. Maintain exact facial features.',
-      'Enhance to subtly showcase social connections and likability. Preserve their exact identity.',
+      'Transform this person to subtly showcase attractive social status and popularity that boosts dating appeal - being desired by others is incredibly attractive. Enhanced social confidence and magnetic energy. Keep facial features identical.',
+      'Polish to convey irresistible social magnetism and popularity that makes them more dateable. Social proof is a powerful dating advantage. Maintain exact facial features while boosting social appeal.',
+      'Enhance to subtly showcase social connections and natural attractiveness that signals "everyone wants to date them". Make social confidence irresistible. Preserve exact identity.',
     ],
     lowQuality: [
-      'Completely transform this person into a vibrant social scene - trendy restaurant with friends, exclusive event, or popular social gathering. Keep their exact identity but add social context.',
-      'Revolutionary social transformation: Place in upscale social environments - rooftop parties, wine tastings, gallery openings, or trendy venues. Maintain identical features.',
-      'Transform into the image of social magnetism - think naturally popular person in their element at social events. Preserve exact appearance.',
+      'Complete social transformation optimized for dating appeal: Place in attractive social scenes - trendy restaurants, exclusive events, popular gatherings where they clearly belong and are desired. Keep exact identity.',
+      'Revolutionary social proof transformation: Create upscale social environments that signal "incredibly popular and dateable" - rooftop parties, wine tastings, gallery openings, trendy venues. Make popularity look magnetic. Maintain identical features.',
+      'Transform into image of social magnetism and desirability - naturally popular person who everyone wants to date, in their element at attractive social events. Preserve exact appearance.',
     ]
   },
 
-  // ENGINE 6: CUSTOM PROMPT - User-Directed Transformation
+  // ENGINE 6: CUSTOM PROMPT - User-Directed Maximum Appeal Transformation
   'custom': {
     highQuality: [
-      'Enhance this photo according to the user\'s specific vision while maintaining photorealistic quality. Keep facial features identical.',
-      'Polish and improve this image following the custom transformation request. Maintain exact facial features.',
-      'Enhance this photo with the requested modifications while preserving natural appearance. Preserve their exact identity.',
+      'Transform this person according to user vision while maximizing their dating appeal and swipe-right potential. Whatever the request, optimize for attractiveness and dating success. Keep facial features identical.',
+      'Polish and enhance following custom request while ensuring maximum dating appeal and relationship potential. Make them irresistibly attractive for their dating goals. Maintain exact facial features.',
+      'Enhance with requested modifications while optimizing for dating success and maximum swipe-right appeal. Whatever they want, make it incredibly attractive. Preserve exact identity.',
     ],
     lowQuality: [
-      'Completely transform this person according to the user\'s specific vision - revolutionary change while maintaining their exact identity and facial features.',
-      'Revolutionary custom transformation: Recreate this person in entirely new context as specified by user request. Maintain identical features.',
-      'Transform this image completely according to user specifications while preserving the person\'s exact appearance and identity.',
+      'Complete custom transformation optimized for maximum dating success: Follow user specifications while ensuring they look incredibly attractive and dateable. Revolutionary change focused on swipe-right appeal. Keep exact identity.',
+      'Revolutionary custom transformation: Recreate according to user vision while maximizing their attractiveness and dating potential. Make their specific request incredibly sexy and appealing. Maintain identical features.',
+      'Transform completely per user specifications while optimizing for dating app success and maximum attractiveness to potential partners. Make their vision irresistibly appealing. Preserve exact appearance.',
     ]
   }
 };
@@ -100,7 +100,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageDataUrl, category, userId, customPrompt } = await req.json();
+    const { imageDataUrl, category, userId, customPrompt, qualityLevel } = await req.json();
     
     if (!imageDataUrl || !category || !userId) {
       throw new Error('Missing required parameters: imageDataUrl, category, and userId are required');
@@ -116,8 +116,7 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check user credits (reduced to 2 credits for Gemini)
-    // Allow demo user to bypass credit checks
+    // Check user credits (2 credits for scene transformation)
     let userCredits = null;
     let isDemo = userId === 'demo-user';
     
@@ -140,30 +139,32 @@ serve(async (req) => {
       userCredits = creditsData;
     }
 
-    // Intelligent prompt selection based on photo quality and context
+    // Advanced prompt selection based on quality assessment
     const engine = transformationEngines[category as keyof typeof transformationEngines];
     if (!engine) {
       throw new Error(`Invalid transformation category: ${category}`);
     }
 
-    // For now, we'll use low-quality (revolutionary) prompts as default
-    // TODO: Integrate with photo intelligence to determine quality level
-    const qualityLevel = 'lowQuality'; // Default to revolutionary transformation
-    const prompts = engine[qualityLevel];
+    // Use provided quality level or default to revolutionary transformation
+    const selectedQualityLevel = qualityLevel || 'lowQuality';
+    const prompts = engine[selectedQualityLevel];
     
     let selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
     
-    // Append custom prompt if provided
+    // Append custom prompt with dating optimization
     if (customPrompt) {
-      selectedPrompt += ` Additional user request: ${customPrompt}`;
+      selectedPrompt += ` Additional dating-optimized request: ${customPrompt}. Ensure maximum attractiveness and swipe-right appeal.`;
     }
     
-    console.log('Generating scene transformation with Gemini prompt:', selectedPrompt);
+    // Add person-first emphasis to all prompts
+    selectedPrompt += ' CRITICAL: This is for dating app success - prioritize making the person maximally attractive, confident, and irresistible while preserving their exact facial features and identity. Focus on swipe-right optimization.';
+    
+    console.log('Generating person-first dating transformation with prompt:', selectedPrompt);
 
     // Convert base64 image to proper format for Gemini
     const imageBase64 = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
 
-    // Generate new scene with Gemini 2.5 Flash Image Preview
+    // Generate optimized dating photo with Gemini 2.5 Flash Image Preview
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
@@ -173,7 +174,7 @@ serve(async (req) => {
         contents: [{
           parts: [
             {
-              text: `${selectedPrompt}. Keep the person's facial features and identity intact. Generate a high-quality, professional photograph with realistic lighting and composition. Output as a single enhanced image.`
+              text: `${selectedPrompt}. Generate a high-quality, dating-optimized photograph with perfect lighting, composition, and maximum attractiveness. The person must look their absolute best for dating app success. Output as a single enhanced image.`
             },
             {
               inline_data: {
@@ -184,7 +185,7 @@ serve(async (req) => {
           ]
         }],
         generationConfig: {
-          temperature: 0.4,
+          temperature: 0.3, // Lower for more consistent attractive results
           topK: 32,
           topP: 1,
           maxOutputTokens: 4096,
@@ -220,7 +221,7 @@ serve(async (req) => {
       enhancedImageUrl = imageDataUrl;
     }
 
-    // Deduct credits (2 for Gemini scene transformation) - skip for demo
+    // Deduct credits (2 for scene transformation) - skip for demo
     if (!isDemo && userCredits) {
       const { error: updateError } = await supabase
         .from('user_credits')
@@ -233,38 +234,45 @@ serve(async (req) => {
       }
     }
 
-    // Log the enhancement
+    // Log the enhancement with dating optimization
     await supabase
       .from('photo_enhancements')
       .insert({
         user_id: userId,
         original_image_url: imageDataUrl,
         enhanced_image_url: enhancedImageUrl,
-        enhancement_type: 'scene_transformation_gemini',
+        enhancement_type: 'dating_optimized_transformation',
         category: category,
         status: 'completed',
-        processing_time: Date.now()
+        processing_time: Date.now(),
+        metadata: {
+          qualityLevel: selectedQualityLevel,
+          customPrompt: customPrompt,
+          datingOptimized: true
+        }
       });
 
     const remainingCredits = isDemo ? 999 : (userCredits?.credits ?? 0) - 2;
 
-    console.log('Gemini scene transformation completed successfully');
+    console.log('Person-first dating transformation completed successfully');
 
     return new Response(JSON.stringify({
       enhancedImageUrl,
       processingTime: Date.now(),
-      enhancementId: `scene_gemini_${Date.now()}`,
+      enhancementId: `dating_transform_${Date.now()}`,
       creditsRemaining: remainingCredits,
-      transformationType: 'scene_transformation_gemini',
-      category
+      transformationType: 'dating_optimized_transformation',
+      category,
+      qualityLevel: selectedQualityLevel,
+      datingOptimized: true
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in scene-transform-ai function:', error);
+    console.error('Error in person-first scene transformation:', error);
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Scene transformation failed' 
+      error: error instanceof Error ? error.message : 'Dating transformation failed' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
