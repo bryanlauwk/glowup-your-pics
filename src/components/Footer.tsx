@@ -1,9 +1,7 @@
 import React from 'react';
 import { Heart, Mail, Shield, Zap } from 'lucide-react';
-
 export const Footer = () => {
-  return (
-    <footer className="bg-gradient-to-t from-deep-purple/20 to-background border-t border-border/50">
+  return <footer className="bg-gradient-to-t from-deep-purple/20 to-background border-t border-border/50">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
@@ -21,15 +19,7 @@ export const Footer = () => {
             </div>
 
             {/* Product */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Product</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-muted-foreground hover:text-violet-purple transition-colors">How it Works</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-violet-purple transition-colors">Pricing</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-violet-purple transition-colors">Before & After</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-violet-purple transition-colors">API Access</a></li>
-              </ul>
-            </div>
+            
 
             {/* Support */}
             <div className="space-y-4">
@@ -66,10 +56,7 @@ export const Footer = () => {
               </div>
               
               <div className="flex items-center gap-4">
-                <a 
-                  href="mailto:support@swipeboost.ai" 
-                  className="flex items-center gap-2 text-muted-foreground hover:text-violet-purple transition-colors text-sm"
-                >
+                <a href="mailto:support@swipeboost.ai" className="flex items-center gap-2 text-muted-foreground hover:text-violet-purple transition-colors text-sm">
                   <Mail className="w-4 h-4" />
                   support@swipeboost.ai
                 </a>
@@ -85,6 +72,5 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
