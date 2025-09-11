@@ -7,7 +7,7 @@ import { useIntelligentRouter } from '@/hooks/useIntelligentRouter';
 import { toast } from 'sonner';
 
 // Import demo image - upgraded professional portrait
-const demoImage = '/lovable-uploads/3882b432-872f-429d-b994-d685f10c9b39.png';
+import demoImage from '@/assets/demo-photo-professional.jpg';
 
 export type PhotoCategory = 'hook' | 'passion-hobbies' | 'social-proof' | 'adventure-travel' | 'professional' | 'custom';
 
@@ -96,10 +96,11 @@ const DemoShowcase: React.FC = () => {
       ctx.drawImage(img, 0, 0);
       const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-      // Process photo with intelligent routing (forces Level 2 for demo impact)
+      // Process photo with intelligent routing and humanization (forces Level 2 for demo impact)
       const result = await processPhoto(imageDataUrl, {
         category: demoState.selectedCategory,
-        forceLevel: 2 // Always use transformation for demo to show maximum impact
+        forceLevel: 2, // Always use transformation for demo to show maximum impact
+        humanizationLevel: 0.6 // Natural authenticity for demo
       });
       
       setDemoState(prev => ({
@@ -173,10 +174,7 @@ const DemoShowcase: React.FC = () => {
               <SelectContent className="bg-background border border-border z-50 max-h-80">
                 {CATEGORIES.map((category) => (
                   <SelectItem key={category.value} value={category.value} className="text-xs py-3 cursor-pointer hover:bg-muted/50">
-                    <div className="flex items-center gap-3 w-full">
-                      <span className="text-lg">{category.icon}</span>
-                      <span className="font-medium text-foreground">{category.label}</span>
-                    </div>
+                    <span className="font-medium text-foreground">{category.label}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -217,10 +215,7 @@ const DemoShowcase: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="mt-2 flex items-center justify-center gap-1">
-                <span className="text-xs text-primary font-medium">
-                  {CATEGORIES.find(c => c.value === demoState.selectedCategory)?.icon}
-                </span>
+              <div className="mt-2 flex items-center justify-center">
                 <p className="text-xs text-primary font-medium">Scene Created!</p>
               </div>
             </div>
@@ -236,7 +231,7 @@ const DemoShowcase: React.FC = () => {
       {demoState.enhancedPhoto && (
         <div className="mt-4 text-center">
           <p className="text-sm text-primary font-medium">
-            🚀 Mind-blown? This is the same {CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label} engine our paid users get!
+            Mind-blown? This is the same {CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label} engine our paid users get!
           </p>
         </div>
       )}

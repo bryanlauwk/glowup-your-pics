@@ -10,6 +10,7 @@ export interface TransformationConfig {
   customPrompt?: string;
   forceLevel?: 1 | 2; // Override AI decision
   qualityThreshold?: number; // Minimum score to use Level 1
+  humanizationLevel?: number; // Controls authenticity factor (0-1, higher = more natural/less AI-polished)
 }
 
 export interface IntelligentResult {
@@ -131,7 +132,8 @@ export const useIntelligentRouter = () => {
             category: config.category,
             userId,
             customPrompt: config.customPrompt,
-            qualityLevel: 'lowQuality' // Revolutionary transformation
+            qualityLevel: 'lowQuality', // Revolutionary transformation
+            humanizationLevel: config.humanizationLevel || 0.5 // Natural authenticity
           }
         });
         
@@ -181,7 +183,8 @@ export const useIntelligentRouter = () => {
                 category: config.category,
                 userId,
                 customPrompt: `Final polish for maximum dating appeal: ${config.customPrompt || ''}`,
-                qualityLevel: 'highQuality' // Polish level
+                qualityLevel: 'highQuality', // Polish level
+                humanizationLevel: config.humanizationLevel || 0.3 // Less humanization for final polish
               }
             });
             
