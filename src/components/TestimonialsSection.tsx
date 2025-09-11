@@ -1,19 +1,28 @@
 import { Star, Heart, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useState, useEffect } from "react";
 
-const testimonials = [
+type Testimonial = {
+  id: number;
+  rating: number;
+  userName: string;
+  text: string;
+  benefit: string;
+  bgColor: string;
+  borderColor: string;
+};
+
+const baseTestimonials = [
   {
     id: 1,
-    rating: 5,
     text: "The AI enhancement made my photos look more professional while keeping them natural. I noticed more engagement on my profile.",
-    benefit: "More Profile Views",
+    benefit: "Better Photo Quality",
     bgColor: "from-love-pink/10 to-passionate-pink/10",
     borderColor: "border-love-pink/20"
   },
   {
     id: 2,
-    rating: 5,
     text: "I was hesitant about AI photo editing, but the results were subtle and authentic. The free trial let me test it risk-free.",
     benefit: "Authentic Enhancement",
     bgColor: "from-enchanting-purple/10 to-romance-rose/10",
@@ -21,7 +30,6 @@ const testimonials = [
   },
   {
     id: 3,
-    rating: 5,
     text: "The photo quality improvement was noticeable but not overdone. I appreciate that it enhanced my natural features.",
     benefit: "Natural Results",
     bgColor: "from-romance-rose/10 to-love-pink/10",
@@ -29,7 +37,22 @@ const testimonials = [
   }
 ];
 
+const userNames = ["Alex M.", "Jordan K.", "Sam R.", "Casey L.", "Morgan P.", "Taylor W.", "Riley B.", "Drew C."];
+const ratings = [4, 5];
+
 export const TestimonialsSection = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    // Randomize user names and ratings
+    const randomized: Testimonial[] = baseTestimonials.map(testimonial => ({
+      ...testimonial,
+      rating: ratings[Math.floor(Math.random() * ratings.length)],
+      userName: userNames[Math.floor(Math.random() * userNames.length)]
+    }));
+    setTestimonials(randomized);
+  }, []);
+
   return (
     <div className="py-20 relative overflow-hidden">
       {/* Romantic background effects */}
@@ -93,10 +116,10 @@ export const TestimonialsSection = () => {
                   </Avatar>
                   <div>
                     <p className="font-semibold text-foreground">
-                      Verified User
+                      {testimonial.userName}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      SwipeBoost Customer
+                      SwipeBoost User
                     </p>
                   </div>
                 </div>

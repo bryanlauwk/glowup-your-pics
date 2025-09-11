@@ -67,126 +67,50 @@ export const BeforeAfterCarousel = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-accent">
-              See The AI Enhancement
+              How AI Enhancement Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience how our AI subtly improves photo quality while maintaining authenticity ✨
+              Our AI technology subtly improves photo quality while maintaining authenticity ✨
             </p>
           </div>
 
-          {/* Carousel Container */}
-          <div className="relative">
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden">
-              <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                  {/* Before/After Images */}
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Before Image */}
-                      <div className="space-y-2">
-                        <div className="relative group">
-                          <img
-                            src={currentExample.before}
-                            alt="Before enhancement"
-                            className={cn(
-                              "w-full h-64 object-cover rounded-lg border-2 border-destructive/50 transition-all duration-500",
-                              isAnimating && "scale-95 opacity-50"
-                            )}
-                          />
-                          <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground px-2 py-1 rounded text-sm font-semibold">
-                            BEFORE
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* After Image */}
-                      <div className="space-y-2">
-                        <div className="relative group">
-                          <img
-                            src={currentExample.after}
-                            alt="After enhancement"
-                            className={cn(
-                              "w-full h-64 object-cover rounded-lg border-2 border-violet-purple shadow-glow-violet transition-all duration-500",
-                              isAnimating && "scale-105"
-                            )}
-                          />
-                          <div className="absolute top-2 left-2 bg-violet-purple text-primary-foreground px-2 py-1 rounded text-sm font-semibold">
-                            AFTER
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Improvement Stats */}
-                    <div className="text-center">
-                      <div className="inline-flex items-center gap-2 bg-violet-purple/20 text-violet-purple px-4 py-2 rounded-full font-bold text-lg">
-                        <Star className="w-5 h-5 fill-current" />
-                        {currentExample.improvement}
-                      </div>
-                    </div>
+          {/* Process Explanation */}
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-8">
+              <div className="grid md:grid-cols-3 gap-8 text-center">
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-violet-purple/20 rounded-full flex items-center justify-center mx-auto">
+                    <Star className="w-8 h-8 text-violet-purple" />
                   </div>
-
-                  {/* Testimonial */}
-                  <div className="space-y-6">
-                    <blockquote className="text-2xl md:text-3xl font-semibold leading-relaxed">
-                      "{currentExample.testimonial}"
-                    </blockquote>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center text-violet-purple">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 fill-current" />
-                        ))}
-                      </div>
-                      <span className="text-muted-foreground">— {currentExample.name}</span>
-                    </div>
-                  </div>
+                  <h3 className="text-xl font-semibold">Upload Your Photo</h3>
+                  <p className="text-muted-foreground">Simply upload your existing photo - no pose or setup required</p>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Navigation Arrows */}
-            <Button
-              variant="glow"
-              size="icon"
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full"
-              disabled={isAnimating}
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </Button>
-            <Button
-              variant="glow"
-              size="icon"
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full"
-              disabled={isAnimating}
-            >
-              <ChevronRight className="w-6 h-6" />
-            </Button>
-          </div>
-
-          {/* Carousel Indicators */}
-          <div className="flex justify-center gap-2">
-            {enhancementExamples.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (!isAnimating) {
-                    setIsAnimating(true);
-                    setCurrentIndex(index);
-                    setTimeout(() => setIsAnimating(false), 500);
-                  }
-                }}
-                className={cn(
-                  "w-3 h-3 rounded-full transition-all duration-300",
-                  index === currentIndex
-                    ? "bg-violet-purple shadow-glow-violet"
-                    : "bg-muted hover:bg-muted-foreground/50"
-                )}
-                disabled={isAnimating}
-              />
-            ))}
-          </div>
+                
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-violet-purple/20 rounded-full flex items-center justify-center mx-auto">
+                    <Star className="w-8 h-8 text-violet-purple" />
+                  </div>
+                  <h3 className="text-xl font-semibold">AI Magic Happens</h3>
+                  <p className="text-muted-foreground">Our AI analyzes and enhances lighting, clarity, and natural features</p>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="w-16 h-16 bg-violet-purple/20 rounded-full flex items-center justify-center mx-auto">
+                    <Star className="w-8 h-8 text-violet-purple" />
+                  </div>
+                  <h3 className="text-xl font-semibold">Get Enhanced Result</h3>
+                  <p className="text-muted-foreground">Receive a naturally enhanced version that looks authentically you</p>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center gap-2 bg-violet-purple/20 text-violet-purple px-6 py-3 rounded-full font-bold text-lg">
+                  <Star className="w-5 h-5 fill-current" />
+                  Enhancement in 30 Seconds
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
           {/* Disclaimer */}
           <div className="text-center">
