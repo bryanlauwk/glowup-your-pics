@@ -4,55 +4,31 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Diverse Asian representation in before/after examples
-const beforeAfterExamples = [
+// Demonstration examples for AI enhancement showcase
+const enhancementExamples = [
   {
     id: 1,
-    before: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=500&fit=crop&crop=face",
-    improvement: "3x more matches",
-    testimonial: "Confidence boosted instantly. Actually getting quality matches now!",
-    name: "Kevin, 26"
+    before: "/api/placeholder/400/500",
+    after: "/api/placeholder/400/500",
+    improvement: "Enhanced Lighting",
+    testimonial: "The AI subtly improved the lighting and clarity while keeping my natural look.",
+    name: "Demo Enhancement"
   },
   {
     id: 2,
-    before: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
-    improvement: "5x more likes",
-    testimonial: "Finally getting matches with people who actually message back!",
-    name: "Hiroshi, 29"
+    before: "/api/placeholder/400/500",
+    after: "/api/placeholder/400/500", 
+    improvement: "Professional Quality",
+    testimonial: "My photos now have that professional headshot quality without looking fake.",
+    name: "Sample Result"
   },
   {
     id: 3,
-    before: "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face",
-    improvement: "4x more conversations",
-    testimonial: "The changes are so natural. People say I look more approachable.",
-    name: "Chen Wei, 25"
-  },
-  {
-    id: 4,
-    before: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=400&h=500&fit=crop&crop=face",
-    improvement: "6x more dates",
-    testimonial: "My confidence went through the roof. Getting dates with amazing women!",
-    name: "Ryu Tanaka, 28"
-  },
-  {
-    id: 5,
-    before: "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=400&h=500&fit=crop&crop=face",
-    improvement: "8x more swipes",
-    testimonial: "Went from zero matches to choosing who I want to date. Life changing!",
-    name: "Kim Min-jun, 26"
-  },
-  {
-    id: 6,
-    before: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face",
-    after: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face",
-    improvement: "4x more quality matches",
-    testimonial: "The AI made me look like the best version of myself. Incredible results!",
-    name: "Li Zhang, 30"
+    before: "/api/placeholder/400/500",
+    after: "/api/placeholder/400/500",
+    improvement: "Natural Enhancement",
+    testimonial: "The enhancement was so natural that friends couldn't tell it was AI-edited.",
+    name: "User Example"
   }
 ];
 
@@ -63,7 +39,7 @@ export const BeforeAfterCarousel = () => {
   const nextSlide = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    setCurrentIndex((prev) => (prev + 1) % beforeAfterExamples.length);
+    setCurrentIndex((prev) => (prev + 1) % enhancementExamples.length);
     setTimeout(() => setIsAnimating(false), 500);
   };
 
@@ -71,18 +47,18 @@ export const BeforeAfterCarousel = () => {
     if (isAnimating) return;
     setIsAnimating(true);
     setCurrentIndex((prev) => 
-      prev === 0 ? beforeAfterExamples.length - 1 : prev - 1
+      prev === 0 ? enhancementExamples.length - 1 : prev - 1
     );
     setTimeout(() => setIsAnimating(false), 500);
   };
 
   // Auto-advance carousel
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
+    const interval = setInterval(nextSlide, 8000); // Slower auto-advance
     return () => clearInterval(interval);
   }, []);
 
-  const currentExample = beforeAfterExamples[currentIndex];
+  const currentExample = enhancementExamples[currentIndex];
 
   return (
     <div className="py-20 bg-gradient-dark">
@@ -91,11 +67,10 @@ export const BeforeAfterCarousel = () => {
           {/* Section Header */}
           <div className="text-center space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient-accent">
-              Real Men, Real Results
+              See The AI Enhancement
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              See how our AI enhancement helps men like you win the dating game.
-              From ignored to choosy - your transformation starts here.
+              Experience how our AI subtly improves photo quality while maintaining authenticity ✨
             </p>
           </div>
 
@@ -192,7 +167,7 @@ export const BeforeAfterCarousel = () => {
 
           {/* Carousel Indicators */}
           <div className="flex justify-center gap-2">
-            {beforeAfterExamples.map((_, index) => (
+            {enhancementExamples.map((_, index) => (
               <button
                 key={index}
                 onClick={() => {
@@ -211,6 +186,13 @@ export const BeforeAfterCarousel = () => {
                 disabled={isAnimating}
               />
             ))}
+          </div>
+          
+          {/* Disclaimer */}
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground/70">
+              *Demo images for illustration purposes. Actual results may vary.
+            </p>
           </div>
         </div>
       </div>

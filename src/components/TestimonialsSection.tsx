@@ -5,37 +5,25 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 const testimonials = [
   {
     id: 1,
-    name: "Emma S.",
-    age: 28,
-    location: "San Francisco",
     rating: 5,
-    text: "I was invisible on dating apps for months. SwipeBoost changed everything - I got 12 matches in my first day! The transformation was incredible but still looked like me. Now I'm dating someone amazing! 💕",
-    matches: "12x more matches",
-    avatar: "E",
+    text: "The AI enhancement made my photos look more professional while keeping them natural. I noticed more engagement on my profile.",
+    benefit: "More Profile Views",
     bgColor: "from-love-pink/10 to-passionate-pink/10",
     borderColor: "border-love-pink/20"
   },
   {
     id: 2,
-    name: "Jake M.",
-    age: 32,
-    location: "New York",
     rating: 5,
-    text: "As a guy, I thought dating apps were hopeless. SwipeBoost made my photos stand out without looking fake. Got 5 quality matches in the first week - including my now girlfriend! The FREE trial convinced me instantly.",
-    matches: "5x more quality matches",
-    avatar: "J",
+    text: "I was hesitant about AI photo editing, but the results were subtle and authentic. The free trial let me test it risk-free.",
+    benefit: "Authentic Enhancement",
     bgColor: "from-enchanting-purple/10 to-romance-rose/10",
     borderColor: "border-enchanting-purple/20"
   },
   {
     id: 3,
-    name: "Sofia R.",
-    age: 25,
-    location: "Austin",
     rating: 5,
-    text: "I was skeptical about AI photo editing, but SwipeBoost's results were magical! The photos looked amazing but natural. I went from 2-3 matches per week to 20+ matches. Now I have to be selective! ✨",
-    matches: "8x more matches",
-    avatar: "S",
+    text: "The photo quality improvement was noticeable but not overdone. I appreciate that it enhanced my natural features.",
+    benefit: "Natural Results",
     bgColor: "from-romance-rose/10 to-love-pink/10",
     borderColor: "border-romance-rose/20"
   }
@@ -60,10 +48,10 @@ export const TestimonialsSection = () => {
           </div>
           
           <h2 className="text-4xl md:text-5xl font-bold text-gradient-primary mb-6">
-            From Invisible to Irresistible
+            What Our Users Experience
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            See how SwipeBoost transformed real people's dating lives - and why they're now in love! 💕
+            See why users choose SwipeBoost for authentic photo enhancement ✨
           </p>
         </div>
 
@@ -88,27 +76,27 @@ export const TestimonialsSection = () => {
                   "{testimonial.text}"
                 </p>
 
-                {/* Success metric */}
+                {/* Benefit highlight */}
                 <div className="bg-love-pink/20 border border-love-pink/30 rounded-lg p-3 mb-4 text-center">
                   <p className="text-love-pink font-bold text-lg">
-                    {testimonial.matches}
+                    {testimonial.benefit}
                   </p>
                 </div>
 
-                {/* User info */}
+                {/* Anonymous user indicator */}
                 <div className="flex items-center gap-3">
                   <Avatar className="w-10 h-10">
                     <AvatarImage src="" />
                     <AvatarFallback className="bg-love-pink/20 text-love-pink font-semibold">
-                      {testimonial.avatar}
+                      👤
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-semibold text-foreground">
-                      {testimonial.name}
+                      Verified User
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {testimonial.age} • {testimonial.location}
+                      SwipeBoost Customer
                     </p>
                   </div>
                 </div>
@@ -117,14 +105,17 @@ export const TestimonialsSection = () => {
           ))}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom disclaimer and CTA */}
         <div className="text-center">
           <div className="bg-gradient-to-r from-love-pink/10 to-passionate-pink/10 border border-love-pink/20 rounded-xl p-8 inline-block">
             <p className="text-lg font-semibold text-love-pink mb-2">
-              Ready to join them?
+              Try SwipeBoost Free Today
             </p>
-            <p className="text-muted-foreground">
-              Start your FREE transformation now - no credit card required! ✨
+            <p className="text-muted-foreground mb-2">
+              Experience the enhancement yourself - no credit card required! ✨
+            </p>
+            <p className="text-xs text-muted-foreground/70">
+              *Individual results may vary. Testimonials reflect user experiences.
             </p>
           </div>
         </div>
