@@ -7,27 +7,91 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const scenePrompts = {
-  'passion-hobbies': [
-    "Edit this photo to show the person in action playing basketball in a modern gym with dynamic pose and professional sports photography lighting",
-    "Transform the scene to show this person rock climbing outdoors with determination, adventure setting, cinematic lighting",
-    "Change the background and context to show this person cooking passionately in a beautiful modern kitchen with chef-like confidence"
-  ],
-  'social-proof': [
-    "Edit this photo to place the person laughing with friends at a trendy rooftop bar during golden hour with warm social atmosphere",
-    "Transform the scene to show this person as the center of attention at a stylish coffee shop having engaging conversations",
-    "Change the setting to a fun social event where this person stands out naturally among friends"
-  ],
-  'lifestyle-adventure': [
-    "Edit this photo to show the person on an epic hiking adventure with mountain backdrop during golden hour",
-    "Transform the scene to a beautiful beach location during sunset with relaxed confidence and travel vibes",
-    "Change the background to an exotic travel destination with wanderlust adventure photography style"
-  ],
-  'professional': [
-    "Edit this photo to show the person as a confident business professional in a modern office with executive presence",
-    "Transform the scene to show this person as a successful entrepreneur in a startup environment looking innovative and approachable",
-    "Change the setting to a corporate environment with modern professional headshot aesthetics"
-  ]
+// 6 Fine-tuned Transformation Engines for Different Dating Profile Goals
+const transformationEngines = {
+  // ENGINE 1: THE HOOK - First Impression Winner
+  'hook': {
+    highQuality: [
+      'Enhance this photo to maximize first impression impact - perfect lighting, magnetic eye contact, confident expression. This should be the photo that stops the scroll. Keep facial features identical.',
+      'Transform into an irresistible first impression shot - optimize everything for instant attraction and intrigue. Maintain exact facial features and identity.',
+      'Create the ultimate hook photo - whatever makes this person most magnetically appealing at first glance. Preserve their exact appearance.',
+    ],
+    lowQuality: [
+      'Completely transform this into a show-stopping first impression photo - could be a confident portrait in golden hour, professional headshot with perfect lighting, or charismatic candid moment. Keep their exact identity.',
+      'Revolutionary transformation: Create the perfect "hook" photo from this image - think magazine cover quality that immediately captures attention. Maintain identical facial features.',
+      'Transform this person into the kind of photo that gets instant right-swipes - perfect composition, lighting, and presence. Preserve their exact appearance.',
+    ]
+  },
+
+  // ENGINE 2: PASSION & HOBBIES - Lifestyle Magnetism  
+  'passion-hobbies': {
+    highQuality: [
+      'Enhance this photo to better showcase an engaging hobby or passion - add elements that make their lifestyle more attractive and interesting. Keep facial features identical.',
+      'Polish this into a compelling lifestyle shot that hints at their interests and passions. Maintain exact facial features.',
+      'Enhance to show this person engaged in an appealing hobby or interest that makes them more attractive. Preserve their exact identity.',
+    ],
+    lowQuality: [
+      'Completely transform this person into an engaging passion scene - playing guitar, painting, cooking gourmet meals, hiking scenic trails, or practicing photography. Keep their exact identity.',
+      'Revolutionary lifestyle transformation: Place this person in a dynamic hobby environment - art studio, climbing gym, cozy reading nook, or outdoor adventure. Maintain identical features.',
+      'Transform into a magnetic lifestyle shot - could be surfing, playing piano, gardening, or any hobby that makes them irresistibly interesting. Preserve exact appearance.',
+    ]
+  },
+
+  // ENGINE 3: PROFESSIONAL AUTHORITY - Success & Status
+  'professional': {
+    highQuality: [
+      'Enhance this into a more polished professional look - better lighting, confident posture, successful appearance. Keep facial features identical.',
+      'Polish this photo to convey more professional success and authority. Maintain exact facial features.',
+      'Enhance to showcase professional confidence and achievement - perfect for showing success and ambition. Preserve their exact identity.',
+    ],
+    lowQuality: [
+      'Completely transform this person into an authoritative professional portrait - could be executive in corner office, confident business leader, or successful entrepreneur. Keep their exact identity.',
+      'Revolutionary professional transformation: Place in sophisticated business environment - modern office, boardroom, or upscale professional setting. Maintain identical features.',  
+      'Transform into the image of success - think CEO portrait, accomplished professional, or confident business leader. Preserve exact appearance.',
+    ]
+  },
+
+  // ENGINE 4: ADVENTURE & TRAVEL - Worldly & Exciting
+  'adventure-travel': {
+    highQuality: [
+      'Enhance this photo to suggest more adventure and travel experience - better outdoor lighting, adventurous vibe. Keep facial features identical.',
+      'Polish this to convey a more adventurous, worldly personality. Maintain exact facial features.',
+      'Enhance to showcase an adventurous spirit and love for travel and exploration. Preserve their exact identity.',
+    ],
+    lowQuality: [
+      'Completely transform this person into an exciting adventure scene - hiking mountain peaks, exploring European cities, beach adventures, or exotic travel destinations. Keep their exact identity.',
+      'Revolutionary adventure transformation: Place in breathtaking outdoor locations - mountain summits, tropical beaches, bustling foreign markets, or scenic hiking trails. Maintain identical features.',
+      'Transform into the image of wanderlust - think world traveler, adventure seeker, or outdoor enthusiast in stunning locations. Preserve exact appearance.',
+    ]
+  },
+
+  // ENGINE 5: SOCIAL PROOF - Popular & Connected  
+  'social-proof': {
+    highQuality: [
+      'Enhance this photo to suggest higher social status and popularity - better social context, confident energy. Keep facial features identical.',
+      'Polish this to convey social confidence and popularity without being obvious about it. Maintain exact facial features.',
+      'Enhance to subtly showcase social connections and likability. Preserve their exact identity.',
+    ],
+    lowQuality: [
+      'Completely transform this person into a vibrant social scene - trendy restaurant with friends, exclusive event, or popular social gathering. Keep their exact identity but add social context.',
+      'Revolutionary social transformation: Place in upscale social environments - rooftop parties, wine tastings, gallery openings, or trendy venues. Maintain identical features.',
+      'Transform into the image of social magnetism - think naturally popular person in their element at social events. Preserve exact appearance.',
+    ]
+  },
+
+  // ENGINE 6: CUSTOM PROMPT - User-Directed Transformation
+  'custom': {
+    highQuality: [
+      'Enhance this photo according to the user\'s specific vision while maintaining photorealistic quality. Keep facial features identical.',
+      'Polish and improve this image following the custom transformation request. Maintain exact facial features.',
+      'Enhance this photo with the requested modifications while preserving natural appearance. Preserve their exact identity.',
+    ],
+    lowQuality: [
+      'Completely transform this person according to the user\'s specific vision - revolutionary change while maintaining their exact identity and facial features.',
+      'Revolutionary custom transformation: Recreate this person in entirely new context as specified by user request. Maintain identical features.',
+      'Transform this image completely according to user specifications while preserving the person\'s exact appearance and identity.',
+    ]
+  }
 };
 
 serve(async (req) => {
@@ -36,7 +100,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageDataUrl, category, userId } = await req.json();
+    const { imageDataUrl, category, userId, customPrompt } = await req.json();
     
     if (!imageDataUrl || !category || !userId) {
       throw new Error('Missing required parameters: imageDataUrl, category, and userId are required');
@@ -68,13 +132,23 @@ serve(async (req) => {
       throw new Error('Insufficient credits. Scene transformation requires 2 credits.');
     }
 
-    // Get random prompt for the category
-    const categoryPrompts = scenePrompts[category as keyof typeof scenePrompts];
-    if (!categoryPrompts) {
-      throw new Error(`Invalid category: ${category}`);
+    // Intelligent prompt selection based on photo quality and context
+    const engine = transformationEngines[category as keyof typeof transformationEngines];
+    if (!engine) {
+      throw new Error(`Invalid transformation category: ${category}`);
     }
 
-    const selectedPrompt = categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)];
+    // For now, we'll use low-quality (revolutionary) prompts as default
+    // TODO: Integrate with photo intelligence to determine quality level
+    const qualityLevel = 'lowQuality'; // Default to revolutionary transformation
+    const prompts = engine[qualityLevel];
+    
+    let selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+    
+    // Append custom prompt if provided
+    if (customPrompt) {
+      selectedPrompt += ` Additional user request: ${customPrompt}`;
+    }
     
     console.log('Generating scene transformation with Gemini prompt:', selectedPrompt);
 
