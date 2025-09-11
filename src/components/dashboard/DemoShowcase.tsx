@@ -155,53 +155,48 @@ const DemoShowcase: React.FC = () => {
   };
 
   return (
-    <div className="mb-6 bg-muted/30 rounded-lg border border-border/50 p-4 max-h-[120px] overflow-hidden">
+    <div className="mb-6 bg-muted/30 rounded-lg border border-border/50 p-6">
       {/* Header with Demo Badge */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="text-xs px-2 py-0.5 bg-violet-purple/10 text-violet-purple border-violet-purple/30">
             Demo
           </Badge>
-          <span className="text-xs text-muted-foreground">Try AI enhancement - no credits needed</span>
+          <span className="text-sm text-muted-foreground">Try AI enhancement - no credits needed</span>
         </div>
         {demoState.selectedCategory && (
           <Button
             variant="ghost"
             size="sm"
             onClick={handleReset}
-            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+            className="h-8 px-3 text-sm text-muted-foreground hover:text-foreground"
           >
-            <RefreshCw className="w-3 h-3 mr-1" />
+            <RefreshCw className="w-4 h-4 mr-1" />
             Reset
           </Button>
         )}
       </div>
 
-      {/* Simplified 2-Step Flow */}
-      <div className="flex items-start gap-6 h-[80px]">
+      {/* Horizontal Layout: Photo → Controls → Result */}
+      <div className="flex items-center gap-8">
         
-        {/* Step 1: Demo Photo with Style Selection */}
+        {/* Demo Photo */}
         <div className="flex-shrink-0">
-          <div className="flex items-center gap-1 mb-2">
-            <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">1</div>
-            <span className="text-xs text-muted-foreground">Sample photo</span>
+          <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-border/50 shadow-sm">
+            <img
+              src={DEMO_PHOTO.src}
+              alt={DEMO_PHOTO.alt}
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="space-y-2">
-            {/* Demo Photo */}
-            <div className="w-16 h-16 rounded-md overflow-hidden border-2 border-border/50">
-              <img
-                src={DEMO_PHOTO.src}
-                alt={DEMO_PHOTO.alt}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            
-            {/* Category Selection underneath */}
+          
+          {/* Category Selection underneath */}
+          <div className="mt-3">
             <Select 
               value={demoState.selectedCategory || ''} 
               onValueChange={handleCategorySelect}
             >
-              <SelectTrigger className="w-36 h-8 text-xs">
+              <SelectTrigger className="w-24 h-9 text-xs">
                 <SelectValue placeholder="Pick style" />
               </SelectTrigger>
               <SelectContent>
@@ -215,60 +210,63 @@ const DemoShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 2: Transform Button & Result */}
-        <div className="flex-1">
-          <div className="flex items-center gap-1 mb-2">
-            <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">2</div>
-            <span className="text-xs text-muted-foreground">Transform & result</span>
-          </div>
-          
-          <div className="flex items-start gap-3">
-            {/* Transform Button */}
-            <Button
-              onClick={handleTransform}
-              disabled={!demoState.selectedCategory || demoState.isProcessing}
-              size="sm"
-              className="h-8 px-3 text-xs"
-            >
-              {demoState.isProcessing ? (
-                <>
-                  <RefreshCw className="h-3 w-3 animate-spin mr-1" />
-                  Processing
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Transform
-                </>
-              )}
-            </Button>
-            
-            {/* After Result Only */}
-            {demoState.enhancedPhoto ? (
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">Enhanced</p>
-                <div className="w-16 h-16 rounded-md overflow-hidden border-2 border-primary/50 shadow-sm">
-                  <img
-                    src={demoState.enhancedPhoto}
-                    alt="Enhanced result"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+        {/* Arrow */}
+        <div className="flex-shrink-0 text-muted-foreground">
+          <div className="text-2xl">→</div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex-shrink-0">
+          <Button
+            onClick={handleTransform}
+            disabled={!demoState.selectedCategory || demoState.isProcessing}
+            className="h-12 px-6"
+          >
+            {demoState.isProcessing ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                Processing...
+              </>
             ) : (
-              <div className="w-16 h-16 rounded-md border-2 border-dashed border-border/30 flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">Result</span>
-              </div>
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Transform
+              </>
             )}
-          </div>
+          </Button>
+        </div>
+
+        {/* Arrow */}
+        <div className="flex-shrink-0 text-muted-foreground">
+          <div className="text-2xl">→</div>
+        </div>
+        
+        {/* Result */}
+        <div className="flex-shrink-0">
+          {demoState.enhancedPhoto ? (
+            <div className="text-center">
+              <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md">
+                <img
+                  src={demoState.enhancedPhoto}
+                  alt="Enhanced result"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-xs text-primary font-medium mt-2">Enhanced!</p>
+            </div>
+          ) : (
+            <div className="w-24 h-24 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
+              <span className="text-sm text-muted-foreground">Result</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Success message */}
       {demoState.enhancedPhoto && (
-        <div className="mt-2 text-center">
-          <p className="text-xs text-green-600 font-medium">
-            ✨ Try with your photos below!
+        <div className="mt-4 text-center">
+          <p className="text-sm text-primary font-medium">
+            ✨ Ready to enhance your own photos? Upload below!
           </p>
         </div>
       )}
