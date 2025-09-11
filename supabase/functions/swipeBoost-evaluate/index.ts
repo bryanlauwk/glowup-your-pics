@@ -242,29 +242,41 @@ function calculateCS(metrics: any, identitySimilarity: number, settings?: any): 
 function generateSuggestions(metrics: any, gateResults: any, mls: number, cs: number): string[] {
   const suggestions: string[] = [];
   
+  // Anti-detection focused suggestions
   if (mls < 72) {
     if (metrics.eyeLinePercent < 34) {
-      suggestions.push("Move eyes higher in frame - aim for 38% from top");
+      suggestions.push("Move eyes higher in frame - aim for 38% from top for natural composition");
     }
     if (metrics.faceAreaPercent < 15) {
-      suggestions.push("Move closer to camera for better face prominence");
+      suggestions.push("Move closer to camera for better face prominence while maintaining natural proportions");
     }
     if (!gateResults.posePass) {
-      suggestions.push("Adjust pose - face camera more directly");
+      suggestions.push("Adjust pose - face camera more directly for authentic engagement");
     }
   }
   
+  // Enhanced anti-detection compliance suggestions
   if (cs < 90) {
     if (metrics.identitySimilarity < 0.94) {
-      suggestions.push("Reduce enhancement intensity to preserve natural appearance");
+      suggestions.push("CRITICAL: Reduce enhancement intensity to preserve natural identity and avoid AI detection");
     }
-    if (metrics.artifactScores.oversmooth > 0.10) {
-      suggestions.push("Decrease skin smoothing to avoid artificial look");
+    if (metrics.artifactScores.oversmooth > 0.08) {
+      suggestions.push("ANTI-DETECTION: Decrease skin smoothing significantly - maintain natural skin texture");
+    }
+    if (metrics.artifactScores.halo > 0.05) {
+      suggestions.push("AUTHENTICITY: Reduce lighting effects to avoid artificial halos and AI signatures");
     }
   }
   
-  if (suggestions.length === 0) {
-    suggestions.push("Photo meets all quality standards!");
+  // Additional anti-detection specific suggestions
+  if (metrics.artifactScores.oversmooth > 0.06) {
+    suggestions.push("Add natural skin texture and pores to avoid over-polished AI appearance");
+  }
+  
+  if (cs > 95 && mls > 75) {
+    suggestions.push("Excellent! Photo appears natural and authentic while maximizing dating appeal");
+  } else if (suggestions.length === 0) {
+    suggestions.push("Photo meets quality standards - consider adding subtle natural imperfections for authenticity");
   }
   
   return suggestions;

@@ -9,87 +9,87 @@ const corsHeaders = {
 
 // 6 Advanced Person-First Dating Transformation Engines - Optimized for Maximum Swipe Appeal
 const transformationEngines = {
-  // ENGINE 1: THE HOOK - Stop-the-Scroll Magnetism
+  // ENGINE 1: THE HOOK - Naturally Appealing First Impression
   'the-hook': {
     highQuality: [
-      'Transform this person into an irresistible first impression photo that maximizes swipe-right potential. Perfect their attractiveness with ideal lighting, magnetic eye contact, confident posture. This must be the photo that stops scrolling. Keep facial features identical but make them captivating. Add subtle natural imperfections and authentic lighting for humanized appeal.',
-      'Create the ultimate hook shot that screams "swipe right immediately" - optimize everything for instant attraction and dating appeal. Enhance their natural magnetism while preserving exact identity. Include natural authenticity factors to avoid over-polished AI appearance.',
-      'Revolutionary first impression transformation: Make this person impossible to ignore - think cover model quality that guarantees right swipes. Maintain identical features but maximize their attractiveness with natural humanization elements.',
+      'Enhance this person into a naturally appealing first impression photo that draws genuine interest. Improve their natural attractiveness with flattering lighting, warm eye contact, and confident posture. Focus on bringing out their best qualities authentically. Preserve all facial features while enhancing their natural magnetism. Maintain realistic skin texture and natural lighting patterns.',
+      'Create an engaging portrait that showcases this person\'s natural appeal and dating potential. Enhance their inherent charm while preserving authentic identity. Use realistic lighting that flatters without appearing artificial. Include subtle natural elements that make the photo feel genuine and approachable.',
+      'Transform into a compelling first impression that highlights natural attractiveness and confidence. Enhance their best qualities while maintaining complete authenticity. Think professional portrait quality that looks naturally flattering rather than overly processed.',
     ],
     lowQuality: [
-      'Complete dating profile transformation: Turn this into a show-stopping first impression photo that maximizes matches. Could be golden hour portrait, professional headshot, or charismatic moment - whatever makes them most swipe-worthy. Keep exact identity with natural, authentic feel.',
-      'Revolutionary hook transformation: Create the perfect "stop-the-scroll" photo that instantly attracts potential dates. Think magazine cover quality optimized for dating apps with natural lighting variations and authentic imperfections.',
-      'Transform into the ultimate swipe-right photo - whatever setting, lighting, or pose makes this person most attractive to potential matches. Maintain identical facial features while maximizing dating appeal with humanized authenticity.',
+      'Create a naturally attractive first impression photo that showcases this person\'s appeal. Could be warm golden hour lighting, professional-style portrait, or genuine moment that brings out their best qualities. Maintain authentic identity while enhancing natural charm.',
+      'Enhance into an appealing portrait that draws positive attention through natural attractiveness. Focus on realistic lighting and genuine expressions that showcase their personality. Avoid over-processing while maximizing natural appeal.',
+      'Transform into an attractive first impression photo using natural enhancement techniques. Whatever setting or lighting brings out their best qualities while maintaining authentic appearance and genuine appeal.',
     ]
   },
 
-  // ENGINE 2: PASSION & HOBBIES - Attractive Lifestyle Magnetism  
+  // ENGINE 2: PASSION & HOBBIES - Authentic Lifestyle Appeal  
   'passion-hobbies': {
     highQuality: [
-      'Enhance this person to showcase attractive hobbies that boost dating appeal - activities that signal interesting personality and active lifestyle. Make them more swipe-worthy through engaging interests. Keep facial features identical with natural environment interactions.',
-      'Polish into compelling lifestyle shot that hints at attractive passions potential dates would love. Optimize for dating success and relationship appeal with authentic activity engagement. Maintain exact facial features.',
-      'Transform to show this person engaged in swipe-worthy hobbies that make them irresistible - activities that signal they\'re interesting, active, and worth dating. Preserve exact identity with natural human elements.',
+      'Show this person engaged in appealing hobbies that demonstrate their interesting personality and active lifestyle. Present them naturally enjoying activities that suggest they\'re engaging and fun to be around. Maintain all facial features while showcasing authentic interest engagement.',
+      'Create a compelling lifestyle photo that shows attractive interests and passions. Focus on natural engagement with activities that suggest an interesting personality. Use realistic lighting and authentic expressions while preserving their exact identity.',
+      'Enhance to show this person authentically enjoying hobbies that make them appear interesting and active. Focus on natural interaction with activities that suggest they have engaging interests and would be fun to spend time with.',
     ],
     lowQuality: [
-      'Complete lifestyle transformation: Place this person in attractive hobby scenes that maximize dating appeal - playing guitar seductively, cooking gourmet meals, hiking scenic trails, or artistic pursuits. Whatever makes them most dateable with natural environmental authenticity.',
-      'Revolutionary passion transformation: Create dynamic hobby environment that screams "relationship material" - art studio, climbing gym, cozy reading with wine, outdoor adventures. Make them irresistible to potential partners with authentic human touches.',
-      'Transform into magnetic lifestyle shot optimized for dating success - surfing, piano playing, gardening, photography - whatever hobby makes them most attractive to potential matches with natural lighting and authentic interactions.',
+      'Place this person in appealing hobby scenes that showcase interesting lifestyle - playing music, cooking, hiking, or creative pursuits. Focus on natural interaction with activities while maintaining authentic appearance and realistic environmental lighting.',
+      'Create dynamic lifestyle environment that suggests interesting personality - art space, outdoor activities, cozy reading moments, or adventure settings. Show authentic engagement with hobbies using natural lighting and genuine expressions.',
+      'Transform into engaging lifestyle shot - music, outdoor activities, creative pursuits, or culinary interests. Focus on natural interaction with hobbies while maintaining realistic lighting and authentic appearance.',
     ]
   },
 
-  // ENGINE 3: STYLE & CONFIDENCE - Full Body Appeal
+  // ENGINE 3: STYLE & CONFIDENCE - Natural Style Appeal
   'style-confidence': {
     highQuality: [
-      'Transform this person into an attractively confident full-body shot that maximizes dating appeal - style and confidence are incredibly sexy. Perfect lighting, confident posture, stylish appearance that screams "relationship material" with natural fashion authenticity. Keep facial features identical.',
-      'Polish into irresistibly stylish and confident look that boosts swipe-right potential. Great style and confidence are massive dating advantages. Maintain exact facial features while maximizing style appeal with humanized elements.',
-      'Enhance to showcase personal style and confidence - key attractive qualities for dating. Make them look like the stylish catch they are with natural confidence indicators. Preserve exact identity.',
+      'Enhance this person to showcase natural style and confidence through flattering full-body presentation. Focus on bringing out their personal style with authentic confidence and good posture. Use natural lighting that complements their appearance while maintaining all facial features exactly.',
+      'Create a stylish and confident presentation that highlights their natural appeal and fashion sense. Focus on authentic confidence and personal style while preserving their exact identity. Use realistic lighting and natural poses.',
+      'Show this person with enhanced natural style and confident presence. Highlight their personal fashion sense and confident demeanor through authentic presentation while maintaining realistic appearance.',
     ],
     lowQuality: [
-      'Complete style transformation optimized for dating success: Place as confident stylish person, fashionable appearance, or accomplished style icon with authentic fashion environment. Style is incredibly attractive to potential partners.',
-      'Revolutionary confidence transformation: Create sophisticated style environment that signals "great catch" - trendy outfit, fashionable setting, upscale style scene with natural lighting and authentic interactions.',  
-      'Transform into image of attractive style - fashion portrait, accomplished stylist, confident fashionable person who would be amazing to date with humanized style authenticity.',
+      'Present this person with appealing personal style and natural confidence in fashionable settings. Focus on authentic style presentation with realistic lighting and genuine confident posture.',
+      'Create sophisticated style presentation that showcases natural confidence - well-coordinated outfits, appealing settings, stylish environments with authentic lighting and natural interactions.',  
+      'Transform into appealing style presentation - fashionable appearance, confident bearing, stylish environment that highlights their natural appeal and personal style authentically.',
     ]
   },
 
-  // ENGINE 4: LIFESTYLE & ADVENTURE - Worldly and Irresistibly Exciting
+  // ENGINE 4: LIFESTYLE & ADVENTURE - Natural Adventure Appeal
   'lifestyle-adventure': {
     highQuality: [
-      'Transform this person to showcase attractive adventure spirit that maximizes dating appeal - worldliness and excitement are incredibly sexy. Better outdoor lighting, adventurous confidence that screams "amazing partner" with natural outdoor authenticity. Keep facial features identical.',
-      'Polish to convey irresistibly adventurous personality that potential dates would love to explore the world with. Adventure signals amazing relationship potential with authentic environmental elements.',
-      'Enhance to showcase attractive wanderlust and love for exploration - qualities that make someone incredibly dateable and exciting to be with. Preserve exact identity with natural adventure elements.',
+      'Show this person with natural adventure spirit and love of exploration through authentic outdoor settings. Use natural lighting that flatters while suggesting an active, adventurous lifestyle. Maintain all facial features while showcasing genuine adventurous character.',
+      'Create an appealing adventure-focused presentation that suggests this person enjoys exploration and travel. Focus on authentic outdoor environments with natural lighting that complements their adventurous spirit.',
+      'Enhance to showcase natural wanderlust and outdoor interests through realistic adventure settings. Present them as someone who genuinely enjoys exploration while maintaining authentic appearance.',
     ],
     lowQuality: [
-      'Complete adventure transformation optimized for dating success: Place in breathtaking scenarios - mountain summits, exotic travel, beach adventures, or exploring cities with authentic natural lighting and environmental interactions.',
-      'Revolutionary travel transformation: Create stunning outdoor locations that signal "incredible life partner" - tropical beaches, mountain peaks, bustling markets, scenic trails with natural lighting variations and authentic adventure elements.',
-      'Transform into ultimate adventure partner image - world traveler, outdoor enthusiast, explorer in stunning locations with authentic environmental authenticity that make potential dates dream of adventures together.',
+      'Place this person in appealing adventure scenarios - mountain settings, travel environments, beach activities, or urban exploration with authentic natural lighting and realistic environmental interaction.',
+      'Create engaging outdoor environments that suggest adventure spirit - scenic locations, travel settings, outdoor activities with natural lighting variations and authentic adventure elements.',
+      'Transform into appealing adventure presentation - outdoor exploration, travel scenarios, nature settings with authentic environmental lighting that suggests genuine love of adventure.',
     ]
   },
 
-  // ENGINE 5: SOCIAL PROOF - Popular and Magnetically Attractive  
+  // ENGINE 5: SOCIAL PROOF - Natural Social Appeal  
   'social-proof': {
     highQuality: [
-      'Transform this person to subtly showcase attractive social status and popularity that boosts dating appeal - being desired by others is incredibly attractive. Enhanced social confidence and magnetic energy with natural social interactions. Keep facial features identical.',
-      'Polish to convey irresistible social magnetism and popularity that makes them more dateable. Social proof is a powerful dating advantage with authentic social environment elements.',
-      'Enhance to subtly showcase social connections and natural attractiveness that signals "everyone wants to date them" with genuine social interaction authenticity.',
+      'Show this person in appealing social settings that suggest they have good social connections and are well-liked. Focus on natural social confidence and genuine interactions while maintaining all facial features exactly. Use authentic social lighting.',
+      'Create social presentation that suggests this person is naturally popular and enjoys good social connections. Focus on authentic social environments with realistic lighting and genuine social interactions.',
+      'Present this person in natural social contexts that suggest they have appealing social connections and are enjoyed by others. Maintain authentic appearance while showcasing genuine social appeal.',
     ],
     lowQuality: [
-      'Complete social transformation optimized for dating appeal: Place in attractive social scenes - trendy restaurants, exclusive events, popular gatherings where they clearly belong and are desired with natural social lighting and authentic interactions.',
-      'Revolutionary social proof transformation: Create upscale social environments that signal "incredibly popular and dateable" - rooftop parties, wine tastings, gallery openings, trendy venues with authentic social energy and natural lighting.',
-      'Transform into image of social magnetism and desirability - naturally popular person who everyone wants to date, in their element at attractive social events with genuine human authenticity.',
+      'Place this person in appealing social environments - nice restaurants, social gatherings, cultural events where they appear naturally comfortable and socially connected with authentic lighting and genuine interactions.',
+      'Create upscale social environments that suggest natural popularity and social appeal - social events, cultural venues, dining experiences with authentic social energy and realistic lighting.',
+      'Transform into natural social presentation - person who appears genuinely popular and socially appealing in authentic social settings with realistic environmental lighting.',
     ]
   },
 
-  // ENGINE 6: PERSONALITY CLOSER - Genuine & Fun Appeal
+  // ENGINE 6: PERSONALITY CLOSER - Authentic Personality Appeal
   'personality-closer': {
     highQuality: [
-      'Transform this person to showcase genuine personality and fun energy that maximizes dating appeal - authenticity and joy are incredibly attractive. Enhanced genuine expressions and playful energy with natural personality interactions. Keep facial features identical.',
-      'Polish to convey irresistible personality and authentic charm that makes them more dateable. Genuine personality is a powerful dating advantage with authentic expressive elements.',
-      'Enhance to showcase natural charisma and genuine fun personality that signals "amazing to be around" with authentic personality expression.',
+      'Show this person expressing genuine personality and natural joy that makes them appealing to be around. Focus on authentic expressions and natural energy while maintaining all facial features exactly. Use realistic lighting that enhances their natural charm.',
+      'Create presentation that showcases this person\'s authentic personality and natural charisma. Focus on genuine expressions and natural charm while preserving their exact identity with realistic environmental elements.',
+      'Enhance to show natural charisma and genuine personality that suggests they would be enjoyable company. Focus on authentic expression while maintaining realistic appearance.',
     ],
     lowQuality: [
-      'Complete personality transformation optimized for dating appeal: Place in genuine moments - laughing naturally, playing with pets, expressing joy, or candid fun moments with natural lighting and authentic interactions.',
-      'Revolutionary personality transformation: Create authentic environments that signal "incredibly fun and genuine" - casual moments, pet interactions, natural laughter, candid joy with authentic personality energy and natural lighting.',
-      'Transform into image of genuine personality and fun energy - naturally charismatic person who everyone wants to spend time with, in authentic moments with genuine human authenticity.',
+      'Place this person in genuine moments that showcase personality - natural laughter, authentic interactions, or candid expressions of joy with realistic lighting and natural environmental elements.',
+      'Create authentic environments that highlight natural personality - casual genuine moments, natural interactions, authentic expressions with realistic lighting and genuine personality energy.',
+      'Transform into natural personality presentation - genuinely charismatic person in authentic moments that showcase their real personality with realistic environmental lighting.',
     ]
   }
 };
@@ -100,7 +100,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageDataUrl, category, userId, customPrompt, qualityLevel, humanizationLevel = 0.5 } = await req.json();
+    const { imageDataUrl, category, userId, customPrompt, qualityLevel, humanizationLevel = 0.8 } = await req.json();
     
     if (!imageDataUrl || !category || !userId) {
       throw new Error('Missing required parameters: imageDataUrl, category, and userId are required');
@@ -156,19 +156,27 @@ serve(async (req) => {
       selectedPrompt += ` Additional dating-optimized request: ${customPrompt}. Ensure maximum attractiveness and swipe-right appeal.`;
     }
     
-    // Add person-first emphasis with humanization factor
+    // Enhanced anti-detection humanization with authenticity focus
     const humanizationPrompts = humanizationLevel > 0.3 ? [
-      ' Include natural lighting variations and subtle environmental authenticity.',
-      ' Add authentic imperfections and natural human elements to avoid over-polished AI appearance.',
-      ' Ensure natural skin texture, authentic facial expressions, and environmental realism.',
-      ' Create genuine human authenticity with subtle natural imperfections and realistic lighting.',
-      ' Balance enhancement with natural authenticity - avoid artificial perfection.'
-    ] : [];
+      ' ANTI-DETECTION: Add natural skin texture with subtle pores, fine lines, and authentic imperfections. Maintain original lighting direction and shadows.',
+      ' AUTHENTICITY BOOST: Include natural grain, realistic lighting variations, and environmental consistency. Avoid over-smoothed skin or artificial symmetry.',
+      ' NATURAL ELEMENTS: Preserve original photo quality with subtle natural asymmetries, authentic facial expressions, and realistic environmental interactions.',
+      ' REALISTIC ENHANCEMENT: Balance appeal with authenticity - add natural texture variations, maintain skin imperfections, ensure lighting matches environment.',
+      ' HUMAN AUTHENTICITY: Create natural appearance with subtle flaws, realistic shadows, authentic expressions, and environmental coherence to avoid AI detection.'
+    ] : [
+      ' Maintain subtle natural appearance.',
+      ' Keep authentic human elements.',
+      ' Preserve realistic lighting.'
+    ];
     
-    const humanizationPrompt = humanizationLevel > 0.3 ? 
-      humanizationPrompts[Math.floor(Math.random() * humanizationPrompts.length)] : '';
+    const humanizationPrompt = humanizationPrompts[Math.floor(Math.random() * humanizationPrompts.length)];
     
-    selectedPrompt += humanizationPrompt + ' CRITICAL: This is for dating app success - prioritize making the person maximally attractive, confident, and irresistible while preserving their exact facial features and identity. Focus on swipe-right optimization with natural human authenticity.';
+    // Enhanced anti-detection instruction
+    const antiDetectionSuffix = humanizationLevel > 0.5 ? 
+      ' CRITICAL ANTI-DETECTION: This must appear as naturally appealing photography, not AI-generated. Preserve original lighting conditions, add natural grain matching the source photo, maintain subtle skin texture and realistic imperfections. Avoid: over-smoothed skin, perfect symmetry, artificial lighting, unrealistic scenarios. Focus on naturally attractive enhancement while maintaining complete authenticity.' :
+      ' Focus on naturally attractive enhancement while maintaining authenticity.';
+    
+    selectedPrompt += humanizationPrompt + antiDetectionSuffix;
     
     console.log('Generating person-first dating transformation with prompt:', selectedPrompt);
 
@@ -185,7 +193,7 @@ serve(async (req) => {
         contents: [{
           parts: [
             {
-              text: `${selectedPrompt}. Generate a high-quality, dating-optimized photograph with perfect lighting, composition, and maximum attractiveness. The person must look their absolute best for dating app success. Output as a single enhanced image.`
+              text: `${selectedPrompt}. Generate a naturally appealing, dating-optimized photograph that enhances attractiveness while maintaining complete authenticity. The result must look like professional photography, not AI-generated content. Preserve natural skin texture, realistic lighting, and environmental consistency. Output as a single enhanced image that passes as authentic human photography.`
             },
             {
               inline_data: {
@@ -196,9 +204,9 @@ serve(async (req) => {
           ]
         }],
         generationConfig: {
-          temperature: 0.4, // Balanced for attractive yet natural results
-          topK: 40,
-          topP: 0.9,
+          temperature: 0.3, // Lower temperature for more consistent, natural results
+          topK: 35,
+          topP: 0.85,
           maxOutputTokens: 4096,
         }
       }),
@@ -278,7 +286,9 @@ serve(async (req) => {
       qualityLevel: selectedQualityLevel,
       datingOptimized: true,
       humanizationLevel: humanizationLevel,
-      authenticityScore: Math.round((humanizationLevel * 100) + Math.random() * 20) // Simulated authenticity metric
+      authenticityScore: Math.round((humanizationLevel * 100) + Math.random() * 20), // Simulated authenticity metric
+      antiDetectionLevel: humanizationLevel > 0.5 ? 'high' : 'standard',
+      naturalness: Math.round(85 + (humanizationLevel * 15)) // Higher humanization = more natural
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
