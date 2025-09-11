@@ -12,6 +12,7 @@ import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { BackgroundEnhancer } from './BackgroundEnhancer';
+
 export interface UploadedPhoto {
   id: string;
   file: File;
@@ -20,8 +21,10 @@ export interface UploadedPhoto {
   customPrompt?: string; // Changed from theme to customPrompt
   enhancedUrl?: string;
 }
+
 export type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
 export type EnhancementTheme = 'confident-successful' | 'authentic-approachable' | 'irresistible-magnetic' | 'stunning-sophisticated' | 'creative-unique';
+
 interface PhotoLineupStationProps {
   uploadedPhotos: (UploadedPhoto | null)[];
   setUploadedPhotos: React.Dispatch<React.SetStateAction<(UploadedPhoto | null)[]>>;
@@ -29,6 +32,7 @@ interface PhotoLineupStationProps {
   onIndividualTransform?: (photo: UploadedPhoto, slotIndex: number) => void;
   onBulkTransform?: (photos: UploadedPhoto[]) => void;
 }
+
 const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   uploadedPhotos,
   setUploadedPhotos,
@@ -51,36 +55,33 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     photo: UploadedPhoto;
     slotIndex: number;
   } | null>(null);
-  const {
-    credits
-  } = useCredits();
-  const {
-    isProcessing,
-    enhancePhoto,
-    progress
-  } = usePhotoEnhancement();
+
+  const { credits } = useCredits();
+  const { isProcessing, enhancePhoto, progress } = usePhotoEnhancement();
+
+  // Photo slots configuration with categories
   const photoSlots = [{
-    title: "The Perfect First Impression",
-    subtitle: "Your Best Headshot",
-    description: "A crisp, smiling, well-lit headshot with visible eyes. Make them stop scrolling!",
+    title: "The Hook",
+    subtitle: "First Impression Winner",
+    description: "Your best headshot or close-up that stops the scroll. This is your main profile photo.",
     icon: Target,
-    color: "text-pink-500",
-    bgColor: "bg-pink-500/10 border-pink-500/30",
+    color: "text-rose-500",
+    bgColor: "bg-rose-500/10 border-rose-500/30",
     category: 'the-hook' as PhotoCategory,
     required: true
   }, {
-    title: "Show Your Style",
-    subtitle: "Full-Body Confidence",
-    description: "Show off your style and posture. Avoid mirror selfies - let your confidence shine!",
+    title: "Style & Confidence",
+    subtitle: "Full Body Appeal",
+    description: "Show your style and confidence. A full-body shot that displays your fashion sense.",
     icon: Heart,
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/10 border-purple-500/30",
+    color: "text-pink-500",
+    bgColor: "bg-pink-500/10 border-pink-500/30",
     category: 'style-confidence' as PhotoCategory,
-    required: false
+    required: true
   }, {
-    title: "Social Butterfly",
-    subtitle: "With Friends",
-    description: "A fun shot with friends (max 2-3). Make sure you're the main focus and clearly identifiable.",
+    title: "Social Proof",
+    subtitle: "You're Fun Company",
+    description: "With friends or at events. Shows you're socially connected and fun to be around.",
     icon: Users,
     color: "text-blue-500",
     bgColor: "bg-blue-500/10 border-blue-500/30",
@@ -114,6 +115,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     category: 'personality-closer' as PhotoCategory,
     required: false
   }];
+
   const themes = [{
     id: 'confident-successful',
     name: 'Confident & Successful',
@@ -121,31 +123,32 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   }, {
     id: 'authentic-approachable',
     name: 'Authentic & Approachable',
-    description: 'Genuine, warm, and down-to-earth'
+    description: 'Genuine, warm, and relatable'
   }, {
     id: 'irresistible-magnetic',
     name: 'Irresistible & Magnetic',
-    description: 'Captivating, alluring, and memorable'
+    description: 'Charismatic, alluring, and captivating'
   }, {
     id: 'stunning-sophisticated',
     name: 'Stunning & Sophisticated',
-    description: 'Elegant, refined, and classy'
+    description: 'Elegant, refined, and tasteful'
   }, {
     id: 'creative-unique',
     name: 'Creative & Unique',
-    description: 'Artistic, original, and intriguing'
+    description: 'Artistic, original, and memorable'
   }];
-  // Category-specific enhancement suggestions with advanced modifiers
+
+  // Category-specific enhancement suggestions
   const categoryPromptSuggestions = {
     'the-hook': [
       "Golden hour lighting with sparkling eyes and confident smile",
-      "Professional studio lighting with perfect facial symmetry", 
-      "Natural outdoor light with soft background blur",
-      "Magnetic gaze with warm, approachable smile",
-      "Executive headshot with premium lighting"
+      "Professional headshot with perfect facial symmetry and warm lighting",
+      "Natural outdoor portrait with soft bokeh background",
+      "Studio quality with flawless skin and magnetic gaze",
+      "Candid laugh with professional lighting enhancement"
     ],
     'style-confidence': [
-      "Fashion magazine pose with perfect posture and premium outfit",
+      "Fashion magazine pose with perfect posture and premium outfit", 
       "Urban street style with confident stance and dynamic background",
       "Elegant formal look with sophisticated lighting", 
       "Replace background with luxury penthouse setting",
@@ -190,13 +193,16 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       reader.readAsDataURL(blob);
     });
   };
+
   const handleFiles = useCallback((files: File[], slotIndex: number) => {
     const file = files[0];
     if (!file) return;
+
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file');
       return;
     }
+
     const photoId = `photo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newPhoto: UploadedPhoto = {
       id: photoId,
@@ -204,6 +210,7 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       preview: URL.createObjectURL(file),
       category: photoSlots[slotIndex].category // Auto-assign category based on slot
     };
+
     setUploadedPhotos(prev => {
       const newPhotos = [...prev];
       // Clean up old preview URL if exists
@@ -214,81 +221,67 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       return newPhotos;
     });
   }, [photoSlots, setUploadedPhotos]);
+
   const handleDrop = useCallback((e: React.DragEvent, slotIndex: number) => {
     e.preventDefault();
     setDragOverIndex(null);
     const files = Array.from(e.dataTransfer.files);
     handleFiles(files, slotIndex);
   }, [handleFiles]);
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>, slotIndex: number) => {
-    const files = Array.from(e.target.files || []);
-    handleFiles(files, slotIndex);
-    // Reset input value to allow selecting the same file again
-    e.target.value = '';
-  }, [handleFiles]);
-  const removePhoto = (index: number) => {
-    setUploadedPhotos(prev => {
-      const newPhotos = [...prev];
-      if (newPhotos[index]) {
-        URL.revokeObjectURL(newPhotos[index]!.preview);
-        newPhotos[index] = null;
-      }
-      return newPhotos;
-    });
-  };
-  const handlePromptChange = (photo: UploadedPhoto, slotIndex: number, customPrompt: string) => {
-    setUploadedPhotos(prev => {
-      const newPhotos = [...prev];
-      newPhotos[slotIndex] = {
-        ...photo,
-        customPrompt
-      };
-      return newPhotos;
-    });
-  };
-  const handleIndividualTransform = async (photo: UploadedPhoto, slotIndex: number) => {
-    if (credits < 1) {
-      toast.error('Insufficient credits. Please purchase more credits to enhance photos.');
-      return;
-    }
-    if (!photo.customPrompt?.trim()) {
-      toast.error('Please enter your desired vibe/style first.');
-      return;
-    }
-    setCurrentProcessingPhoto({
-      photo,
-      slotIndex
-    });
-    setShowProcessingModal(true);
-    try {
-      // Convert blob URL to base64 data URL
-      let imageDataUrl: string;
-      if (photo.preview.startsWith('blob:')) {
-        const response = await fetch(photo.preview);
-        const blob = await response.blob();
-        imageDataUrl = await blobToBase64(blob);
-      } else {
-        imageDataUrl = photo.preview;
-      }
-      const result = await enhancePhoto(imageDataUrl, photo.category!, photo.customPrompt);
 
-      // Update the photo with enhanced version
+  const handleEnhance = async (photo: UploadedPhoto, slotIndex: number) => {
+    if (credits < 1) {
+      toast.error('Insufficient credits. Please purchase more credits to continue.');
+      return;
+    }
+
+    if (!photo.customPrompt?.trim()) {
+      toast.error('Please select an enhancement style first.');
+      return;
+    }
+
+    try {
+      setShowProcessingModal(true);
+      setCurrentProcessingPhoto({ photo, slotIndex });
+      setProcessingPhotoId(photo.id);
+
+      logger.info('Starting photo enhancement', { 
+        photoId: photo.id, 
+        slotIndex, 
+        category: photo.category, 
+        prompt: photo.customPrompt 
+      });
+
+      // Convert file to base64 for the enhancement API
+      const imageDataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(photo.file);
+      });
+
+      const result = await enhancePhoto(imageDataUrl, photo.category!, photo.customPrompt);
+      const enhancedUrl = result.enhancedImageUrl;
+      
+      // Update the photo with the enhanced URL
       setUploadedPhotos(prev => {
         const newPhotos = [...prev];
-        newPhotos[slotIndex] = {
-          ...newPhotos[slotIndex]!,
-          enhancedUrl: result.enhancedImageUrl
-        };
+        if (newPhotos[slotIndex]) {
+          newPhotos[slotIndex] = {
+            ...newPhotos[slotIndex]!,
+            enhancedUrl: enhancedUrl
+          };
+        }
         return newPhotos;
       });
+
       setShowProcessingModal(false);
-      setShowResultsModal({
-        photo: {
-          ...photo,
-          enhancedUrl: result.enhancedImageUrl
-        },
-        slotIndex
-      });
+      setShowResultsModal({ photo: { ...photo, enhancedUrl }, slotIndex });
+      
+      logger.info('Photo enhancement completed', { photoId: photo.id, enhancedUrl });
+      toast.success('Photo enhanced successfully! ✨');
+
+      // Call the callback if provided
       onIndividualTransform?.(photo, slotIndex);
     } catch (error) {
       logger.error('Enhancement failed', { error, component: 'PhotoLineupStation', action: 'handleEnhance' });
@@ -296,11 +289,13 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       setShowProcessingModal(false);
     }
   };
+
   const handleBackgroundEnhance = (photo: UploadedPhoto, slotIndex: number) => {
     setShowBackgroundEnhancer({ photo, slotIndex });
   };
 
   const handleBackgroundEnhanced = (enhancedBlob: Blob, slotIndex: number) => {
+    // Process the enhanced background image
     const enhancedUrl = URL.createObjectURL(enhancedBlob);
     
     setUploadedPhotos(prev => {
@@ -313,22 +308,22 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       }
       return newPhotos;
     });
-    
+
     setShowBackgroundEnhancer(null);
-    toast.success('Background enhancement applied!');
+    toast.success('Background enhanced successfully! ✨');
   };
-    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
-    const totalCost = readyPhotos.length;
-    if (credits < totalCost) {
-      toast.error(`Insufficient credits. You need ${totalCost} credits but only have ${credits}.`);
-      return;
-    }
+
+  const handleBulkTransform = () => {
+    const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim()) as UploadedPhoto[];
+    
     if (readyPhotos.length === 0) {
-      toast.error('Please upload and add custom prompts for at least one photo first.');
+      toast.error('No photos are ready for transformation. Please select enhancement styles first.');
       return;
     }
+
     onBulkTransform?.(readyPhotos);
   };
+
   const downloadImage = async (imageUrl: string, filename: string) => {
     try {
       const response = await fetch(imageUrl);
@@ -346,8 +341,10 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       toast.error('Download failed. Please try again.');
     }
   };
+
   const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
   const totalBulkCost = readyPhotos.length;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Main Photo Lineup */}
@@ -366,21 +363,29 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
             <Badge variant="outline" className="text-sm font-medium">
               {credits} Credits Available
             </Badge>
-            {totalBulkCost > 0 && <Button onClick={handleBulkTransform} disabled={credits < totalBulkCost} className="bg-gradient-primary text-white hover:bg-gradient-primary/90">
+            {totalBulkCost > 0 && (
+              <Button 
+                onClick={handleBulkTransform} 
+                disabled={credits < totalBulkCost} 
+                className="bg-gradient-primary text-white hover:bg-gradient-primary/90"
+              >
                 <Zap className="w-4 h-4 mr-2" />
                 Transform All ({totalBulkCost})
-              </Button>}
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Photo Slots Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {photoSlots.map((slot, index) => {
-          const photo = uploadedPhotos[index];
-          const Icon = slot.icon;
-          const isReady = photo && photo.customPrompt?.trim();
-          const isEnhanced = photo && photo.enhancedUrl;
-          return <Card key={index} className={`${slot.bgColor} border-2 transition-all duration-300 hover:shadow-lg`}>
+            const photo = uploadedPhotos[index];
+            const Icon = slot.icon;
+            const isReady = photo && photo.customPrompt?.trim();
+            const isEnhanced = photo && photo.enhancedUrl;
+
+            return (
+              <Card key={index} className={`${slot.bgColor} border-2 transition-all duration-300 hover:shadow-lg`}>
                 <CardContent className="p-6">
                   {/* Slot Header */}
                   <div className="flex items-center gap-3 mb-4">
@@ -391,187 +396,225 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                       <h3 className="font-semibold text-sm">{slot.title}</h3>
                       <p className="text-xs text-muted-foreground">{slot.subtitle}</p>
                     </div>
-                    {slot.required}
+                    {slot.required && (
+                      <Badge variant="secondary" className="text-xs">
+                        Required
+                      </Badge>
+                    )}
                   </div>
 
                   {/* Upload Area or Photo Preview */}
                   <div className={`
-                      relative aspect-[4/5] rounded-lg border-2 border-dashed transition-all duration-300 mb-4
-                      ${dragOverIndex === index ? 'border-primary bg-primary/5' : 'border-muted'}
-                      ${!photo ? 'hover:border-primary/50 cursor-pointer' : ''}
-                    `} onDragOver={e => {
-                e.preventDefault();
-                setDragOverIndex(index);
-              }} onDragLeave={() => setDragOverIndex(null)} onDrop={e => handleDrop(e, index)} onClick={() => !photo && document.getElementById(`file-input-${index}`)?.click()}>
-                    {!photo ? <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                        <p className="text-sm font-medium mb-1">Upload Photo</p>
-                        <p className="text-xs text-muted-foreground">Drag & drop or click</p>
-                      </div> : <>
-                        <img src={photo.enhancedUrl || photo.preview} alt="Uploaded" className="w-full h-full object-cover rounded-lg" />
-                        <button onClick={e => {
-                    e.stopPropagation();
-                    removePhoto(index);
-                  }} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
-                          <X className="w-3 h-3" />
-                        </button>
-                        
-                        {/* Status Badge */}
-                        <div className="absolute top-2 left-2">
-                          {isEnhanced ? <Badge className="bg-green-500 text-white">Enhanced ✨</Badge> : isReady ? <Badge className="bg-blue-500 text-white">Ready 🎯</Badge> : <Badge variant="outline" className="bg-background/80">Needs Theme</Badge>}
+                    relative aspect-[4/5] rounded-lg border-2 border-dashed transition-all duration-300 mb-4
+                    ${dragOverIndex === index ? 'border-violet-purple bg-violet-purple/5' : 'border-muted-foreground/30'}
+                    ${photo ? 'border-solid' : 'hover:border-violet-purple/50'}
+                  `}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOverIndex(index);
+                  }}
+                  onDragLeave={() => setDragOverIndex(null)}
+                  onDrop={(e) => handleDrop(e, index)}>
+                    {photo ? (
+                      <>
+                        <img 
+                          src={isEnhanced ? photo.enhancedUrl : photo.preview} 
+                          alt={`${slot.title} preview`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                        {isEnhanced && (
+                          <div className="absolute top-2 right-2">
+                            <Badge className="bg-gradient-primary text-white text-xs">
+                              ✨ Enhanced
+                            </Badge>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="secondary"
+                            onClick={() => {
+                              const input = document.createElement('input');
+                              input.type = 'file';
+                              input.accept = 'image/*';
+                              input.onchange = (e) => {
+                                const files = Array.from((e.target as HTMLInputElement).files || []);
+                                handleFiles(files, index);
+                              };
+                              input.click();
+                            }}
+                          >
+                            <Upload className="w-3 h-3 mr-1" />
+                            Replace
+                          </Button>
+                          {photo && (
+                            <Button 
+                              size="sm" 
+                              variant="secondary"
+                              onClick={() => handleBackgroundEnhance(photo, index)}
+                            >
+                              <Scissors className="w-3 h-3 mr-1" />
+                              Background
+                            </Button>
+                          )}
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => {
+                              URL.revokeObjectURL(photo.preview);
+                              setUploadedPhotos(prev => {
+                                const newPhotos = [...prev];
+                                newPhotos[index] = null;
+                                return newPhotos;
+                              });
+                            }}
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
                         </div>
-                      </>}
-
-                    <input id={`file-input-${index}`} type="file" accept="image/*" className="hidden" onChange={e => handleFileInput(e, index)} />
+                      </>
+                    ) : (
+                      <div 
+                        className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors duration-300"
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = (e) => {
+                            const files = Array.from((e.target as HTMLInputElement).files || []);
+                            handleFiles(files, index);
+                          };
+                          input.click();
+                        }}
+                      >
+                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                        <p className="text-xs text-muted-foreground text-center">
+                          Drop photo here or click to upload
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Photo Description */}
-                  <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                    {slot.description}
-                  </p>
-
-                  {/* Custom Vibe Input & Actions */}
-                  {photo && <div className="space-y-3">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground mb-2 block">
-                          Describe your desired vibe/style:
+                  {/* Enhancement Suggestions */}
+                  {photo && (
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-muted-foreground">
+                          Choose Enhancement Style:
                         </label>
-                        <Textarea value={photo.customPrompt || ''} onChange={e => handlePromptChange(photo, index, e.target.value)} placeholder="e.g., Make me look confident and professional, or natural and approachable..." className="h-20 text-xs resize-none" />
-                        
-                        {/* Category-specific suggestion buttons */}
-                        <div className="space-y-2">
-                          <div className="flex flex-wrap gap-1">
-                            {categoryPromptSuggestions[photo.category as keyof typeof categoryPromptSuggestions]?.slice(0, 3).map((suggestion, i) => (
-                              <Button key={i} variant="outline" size="sm" className="text-xs h-6 px-2" onClick={() => handlePromptChange(photo, index, suggestion)}>
-                                {suggestion.length > 40 ? suggestion.substring(0, 37) + '...' : suggestion}
-                              </Button>
-                            ))}
-                          </div>
-                          
-                          {/* Advanced Background Options */}
-                          <div className="border-t pt-2">
-                            <p className="text-xs text-muted-foreground mb-1">🎨 Advanced Background Options:</p>
-                            <div className="flex flex-wrap gap-1">
-                              {categoryPromptSuggestions[photo.category as keyof typeof categoryPromptSuggestions]?.slice(3, 5).map((suggestion, i) => (
-                                <Button key={`advanced-${i}`} variant="outline" size="sm" className="text-xs h-6 px-2 border-rose-gold/30" onClick={() => handlePromptChange(photo, index, suggestion)}>
-                                  {suggestion.length > 35 ? suggestion.substring(0, 32) + '...' : suggestion}
-                                </Button>
-                              ))}
-                            </div>
-                          </div>
+                        <div className="grid gap-1">
+                          {categoryPromptSuggestions[photo.category!]?.slice(0, 3).map((suggestion, suggIndex) => (
+                            <Button
+                              key={suggIndex}
+                              variant="ghost"
+                              size="sm" 
+                              className={`text-xs h-auto py-2 px-3 text-left justify-start whitespace-normal ${
+                                photo.customPrompt === suggestion 
+                                  ? 'bg-gradient-primary/10 text-gradient-primary border border-violet-purple/30' 
+                                  : 'hover:bg-muted/50'
+                              }`}
+                              onClick={() => {
+                                setUploadedPhotos(prev => {
+                                  const newPhotos = [...prev];
+                                  if (newPhotos[index]) {
+                                    newPhotos[index] = {
+                                      ...newPhotos[index]!,
+                                      customPrompt: suggestion
+                                    };
+                                  }
+                                  return newPhotos;
+                                });
+                              }}
+                            >
+                              {suggestion}
+                            </Button>
+                          ))}
                         </div>
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        {photo.customPrompt?.trim() && !photo.enhancedUrl && <Button onClick={() => handleIndividualTransform(photo, index)} disabled={processingPhotoId === photo.id || credits < 1} size="sm" className="flex-1 bg-gradient-primary text-white hover:bg-gradient-primary/90">
-                            {processingPhotoId === photo.id ? <Clock className="w-3 h-3 mr-1" /> : <Wand2 className="w-3 h-3 mr-1" />}
-                            Transform
-                          </Button>}
-                        
-                        {/* Background Enhancer Button */}
-                        {photo && !photo.enhancedUrl && (
-                          <Button 
-                            onClick={() => handleBackgroundEnhance(photo, index)} 
-                            size="sm" 
-                            variant="outline"
-                            className="border-rose-gold/30 hover:bg-rose-gold/10"
-                          >
-                            <Scissors className="w-3 h-3 mr-1" />
-                            BG
-                          </Button>
-                        )}
-                        
-                        {photo.enhancedUrl && <Button onClick={() => downloadImage(photo.enhancedUrl!, `enhanced-photo-${index + 1}.png`)} size="sm" variant="outline" className="flex-1">
-                            <Download className="w-3 h-3 mr-1" />
-                            Download
-                          </Button>}
+                      {/* Custom Enhancement Input */}
+                      <div className="space-y-2">
+                        <Textarea
+                          placeholder="Or write your custom enhancement prompt..."
+                          value={photo.customPrompt || ''}
+                          onChange={(e) => {
+                            setUploadedPhotos(prev => {
+                              const newPhotos = [...prev];
+                              if (newPhotos[index]) {
+                                newPhotos[index] = {
+                                  ...newPhotos[index]!,
+                                  customPrompt: e.target.value
+                                };
+                              }
+                              return newPhotos;
+                            });
+                          }}
+                          className="text-xs resize-none"
+                          rows={2}
+                        />
                       </div>
-                    </div>}
+
+                      {/* Action Button */}
+                      <Button 
+                        onClick={() => handleEnhance(photo, index)}
+                        disabled={!isReady || credits < 1 || processingPhotoId === photo.id}
+                        className="w-full bg-gradient-primary text-white hover:bg-gradient-primary/90"
+                        size="sm"
+                      >
+                        {processingPhotoId === photo.id ? (
+                          <>
+                            <Clock className="w-3 h-3 mr-2 animate-spin" />
+                            Enhancing...
+                          </>
+                        ) : isReady ? (
+                          <>
+                            <Wand2 className="w-3 h-3 mr-2" />
+                            Transform Photo (1 Credit)
+                          </>
+                        ) : (
+                          'Select Enhancement Style'
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
-              </Card>;
-        })}
+              </Card>
+            );
+          })}
         </div>
       </div>
 
-      {/* Sidebar with Tips */}
-      <div className="space-y-6">
-        <Card className="bg-gradient-to-br from-violet-purple/10 to-bright-pink/10 border-violet-purple/20">
-          <CardContent className="p-6">
-            <h3 className="font-bold text-lg mb-4 text-gradient-primary">Dating Photo Secrets</h3>
-            <div className="space-y-4 text-sm">
-              <div>
-                <h4 className="font-semibold mb-2">✨ The Golden Rules</h4>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Eye contact is everything</li>
-                  <li>• Natural lighting wins</li>
-                  <li>• Show your genuine smile</li>
-                  <li>• Quality over quantity</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">🎯 Pro Tips</h4>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Avoid group photos as your main</li>
-                  <li>• Include full-body shots</li>
-                  <li>• Show your interests</li>
-                  <li>• Keep it recent (within 2 years)</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-green-500/10 to-blue-500/10 border-green-500/20">
-          <CardContent className="p-6">
-            <h3 className="font-bold text-lg mb-4">Success Formula</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Upload to category-specific slots</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Choose the perfect vibe/theme</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Transform with AI enhancement</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>Download and upload to dating apps</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Processing Modal */}
-      <Dialog open={showProcessingModal} onOpenChange={setShowProcessingModal}>
+      <Dialog open={showProcessingModal} onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-center">✨ Transforming Your Photo</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="w-5 h-5 text-violet-purple animate-spin" />
+              Enhancing Your Photo
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6 py-4">
-            {currentProcessingPhoto && <div className="text-center">
-                <div className="relative w-32 h-40 mx-auto mb-4 rounded-lg overflow-hidden">
-                  <img src={currentProcessingPhoto.photo.preview} alt="Processing" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
-                    <Wand2 className="w-8 h-8 text-white animate-pulse" />
-                  </div>
-                </div>
-                <h3 className="font-semibold mb-2">
-                  {photoSlots[currentProcessingPhoto.slotIndex].title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Applying custom enhancement: "{currentProcessingPhoto.photo.customPrompt}"...
-                </p>
-                <Progress value={progress} className="w-full" />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {progress}% complete
-                </p>
-              </div>}
+          <div className="space-y-4 py-4">
+            <div className="flex items-center gap-4">
+              {currentProcessingPhoto && (
+                <img 
+                  src={currentProcessingPhoto.photo.preview}
+                  alt="Processing"
+                  className="w-16 h-16 object-cover rounded-lg"
+                />
+              )}
+              <div className="flex-1">
+                <p className="text-sm font-medium">AI Enhancement in Progress</p>
+                <p className="text-xs text-muted-foreground">This may take 30-60 seconds...</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span>Progress</span>
+                <span>{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -580,26 +623,37 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       <Dialog open={!!showResultsModal} onOpenChange={() => setShowResultsModal(null)}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-center">🎉 Transformation Complete!</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-500" />
+              Enhancement Complete!
+            </DialogTitle>
           </DialogHeader>
-          {showResultsModal && <div className="space-y-6 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <h3 className="font-semibold mb-2">Before</h3>
-                  <div className="aspect-[4/5] rounded-lg overflow-hidden">
-                    <img src={showResultsModal.photo.preview} alt="Original" className="w-full h-full object-cover" />
-                  </div>
+          {showResultsModal && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium text-sm mb-2">Original</h4>
+                  <img 
+                    src={showResultsModal.photo.preview} 
+                    alt="Original" 
+                    className="w-full aspect-[4/5] object-cover rounded-lg border"
+                  />
                 </div>
-                <div className="text-center">
-                  <h3 className="font-semibold mb-2">After ✨</h3>
-                  <div className="aspect-[4/5] rounded-lg overflow-hidden">
-                    <img src={showResultsModal.photo.enhancedUrl!} alt="Enhanced" className="w-full h-full object-cover" />
-                  </div>
+                <div>
+                  <h4 className="font-medium text-sm mb-2">Enhanced ✨</h4>
+                  <img 
+                    src={showResultsModal.photo.enhancedUrl} 
+                    alt="Enhanced" 
+                    className="w-full aspect-[4/5] object-cover rounded-lg border"
+                  />
                 </div>
               </div>
               
               <div className="flex gap-3 justify-center">
-                <Button onClick={() => downloadImage(showResultsModal.photo.enhancedUrl!, `enhanced-photo-${showResultsModal.slotIndex + 1}.png`)} className="bg-gradient-primary text-white hover:bg-gradient-primary/90">
+                <Button 
+                  onClick={() => downloadImage(showResultsModal.photo.enhancedUrl!, `enhanced-photo-${showResultsModal.slotIndex + 1}.png`)} 
+                  className="bg-gradient-primary text-white hover:bg-gradient-primary/90"
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Download Enhanced Photo
                 </Button>
@@ -607,7 +661,8 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                   Continue Editing
                 </Button>
               </div>
-            </div>}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -631,7 +686,5 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     </div>
   );
 };
-
-export default PhotoLineupStation;
 
 export default PhotoLineupStation;
