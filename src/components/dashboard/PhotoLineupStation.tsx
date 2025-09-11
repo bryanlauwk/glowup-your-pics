@@ -396,11 +396,6 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                       <h3 className="font-semibold text-sm">{slot.title}</h3>
                       <p className="text-xs text-muted-foreground">{slot.subtitle}</p>
                     </div>
-                    {slot.required && (
-                      <Badge variant="secondary" className="text-xs">
-                        Required
-                      </Badge>
-                    )}
                   </div>
 
                   {/* Upload Area or Photo Preview */}
