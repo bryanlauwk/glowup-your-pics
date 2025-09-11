@@ -5,12 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Target, Heart, Users, Activity, Mountain, Sparkles, Upload, X, Download, Wand2, Zap, Clock, CheckCircle } from 'lucide-react';
+import { Target, Heart, Users, Activity, Mountain, Sparkles, Upload, X, Download, Wand2, Zap, Clock, CheckCircle, Scissors } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import { logger } from '@/lib/logger';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import { BackgroundEnhancer } from './BackgroundEnhancer';
 export interface UploadedPhoto {
   id: string;
   file: File;
@@ -43,6 +44,10 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     slotIndex: number;
   } | null>(null);
   const [currentProcessingPhoto, setCurrentProcessingPhoto] = useState<{
+    photo: UploadedPhoto;
+    slotIndex: number;
+  } | null>(null);
+  const [showBackgroundEnhancer, setShowBackgroundEnhancer] = useState<{
     photo: UploadedPhoto;
     slotIndex: number;
   } | null>(null);
@@ -130,7 +135,51 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
     name: 'Creative & Unique',
     description: 'Artistic, original, and intriguing'
   }];
-  const promptSuggestions = ["Make me look confident and successful", "Natural and approachable vibe", "Professional but friendly", "Mysterious and intriguing", "Fun and energetic personality", "Sophisticated and elegant", "Creative and artistic look"];
+  // Category-specific enhancement suggestions with advanced modifiers
+  const categoryPromptSuggestions = {
+    'the-hook': [
+      "Golden hour lighting with sparkling eyes and confident smile",
+      "Professional studio lighting with perfect facial symmetry", 
+      "Natural outdoor light with soft background blur",
+      "Magnetic gaze with warm, approachable smile",
+      "Executive headshot with premium lighting"
+    ],
+    'style-confidence': [
+      "Fashion magazine pose with perfect posture and premium outfit",
+      "Urban street style with confident stance and dynamic background",
+      "Elegant formal look with sophisticated lighting", 
+      "Replace background with luxury penthouse setting",
+      "High-fashion editorial with dramatic shadows"
+    ],
+    'social-proof': [
+      "Make me the clear focal point with enhanced lighting on my face",
+      "Boost my presence while keeping friends naturally lit",
+      "Premium event atmosphere with me as the standout star",
+      "Replace background with upscale rooftop party setting",
+      "Natural group interaction with perfect composition"
+    ],
+    'passion-hobbies': [
+      "Dynamic action shot with professional sports photography lighting",
+      "Expert-level skill display with enhanced equipment and dramatic background",
+      "Peak performance moment with motion blur and intensity",
+      "Replace background with epic stadium or premium gym setting",
+      "Adventure gear enhancement with outdoor lighting perfection"
+    ],
+    'lifestyle-adventure': [
+      "Epic landscape with dramatic sky and perfect golden hour",
+      "Replace background with stunning mountain vista or tropical paradise", 
+      "Enhance to Maldives-level luxury resort background",
+      "National Geographic quality with enhanced natural colors",
+      "Adventure documentary style with cinematic lighting"
+    ],
+    'personality-closer': [
+      "Warm, cozy lighting with genuine laughter and connection",
+      "Perfect pet photography with enhanced colors and expressions",
+      "Candid moment with professional portrait quality",
+      "Replace background with cozy coffee shop or luxury home setting",
+      "Heartwarming scene with enhanced emotional connection"
+    ]
+  };
 
   // Helper function to convert blob URL to base64
   const blobToBase64 = (blob: Blob): Promise<string> => {
@@ -247,7 +296,27 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
       setShowProcessingModal(false);
     }
   };
-  const handleBulkTransform = () => {
+  const handleBackgroundEnhance = (photo: UploadedPhoto, slotIndex: number) => {
+    setShowBackgroundEnhancer({ photo, slotIndex });
+  };
+
+  const handleBackgroundEnhanced = (enhancedBlob: Blob, slotIndex: number) => {
+    const enhancedUrl = URL.createObjectURL(enhancedBlob);
+    
+    setUploadedPhotos(prev => {
+      const newPhotos = [...prev];
+      if (newPhotos[slotIndex]) {
+        newPhotos[slotIndex] = {
+          ...newPhotos[slotIndex]!,
+          enhancedUrl: enhancedUrl
+        };
+      }
+      return newPhotos;
+    });
+    
+    setShowBackgroundEnhancer(null);
+    toast.success('Background enhancement applied!');
+  };
     const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
     const totalCost = readyPhotos.length;
     if (credits < totalCost) {
@@ -279,7 +348,8 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
   };
   const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
   const totalBulkCost = readyPhotos.length;
-  return <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Main Photo Lineup */}
       <div className="lg:col-span-2 space-y-6">
         {/* Header with Credits and Bulk Action */}
@@ -368,11 +438,27 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                         </label>
                         <Textarea value={photo.customPrompt || ''} onChange={e => handlePromptChange(photo, index, e.target.value)} placeholder="e.g., Make me look confident and professional, or natural and approachable..." className="h-20 text-xs resize-none" />
                         
-                        {/* Suggestion buttons */}
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {promptSuggestions.slice(0, 3).map((suggestion, i) => <Button key={i} variant="outline" size="sm" className="text-xs h-6 px-2" onClick={() => handlePromptChange(photo, index, suggestion)}>
-                              {suggestion}
-                            </Button>)}
+                        {/* Category-specific suggestion buttons */}
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-1">
+                            {categoryPromptSuggestions[photo.category as keyof typeof categoryPromptSuggestions]?.slice(0, 3).map((suggestion, i) => (
+                              <Button key={i} variant="outline" size="sm" className="text-xs h-6 px-2" onClick={() => handlePromptChange(photo, index, suggestion)}>
+                                {suggestion.length > 40 ? suggestion.substring(0, 37) + '...' : suggestion}
+                              </Button>
+                            ))}
+                          </div>
+                          
+                          {/* Advanced Background Options */}
+                          <div className="border-t pt-2">
+                            <p className="text-xs text-muted-foreground mb-1">🎨 Advanced Background Options:</p>
+                            <div className="flex flex-wrap gap-1">
+                              {categoryPromptSuggestions[photo.category as keyof typeof categoryPromptSuggestions]?.slice(3, 5).map((suggestion, i) => (
+                                <Button key={`advanced-${i}`} variant="outline" size="sm" className="text-xs h-6 px-2 border-rose-gold/30" onClick={() => handlePromptChange(photo, index, suggestion)}>
+                                  {suggestion.length > 35 ? suggestion.substring(0, 32) + '...' : suggestion}
+                                </Button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -382,6 +468,19 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
                             {processingPhotoId === photo.id ? <Clock className="w-3 h-3 mr-1" /> : <Wand2 className="w-3 h-3 mr-1" />}
                             Transform
                           </Button>}
+                        
+                        {/* Background Enhancer Button */}
+                        {photo && !photo.enhancedUrl && (
+                          <Button 
+                            onClick={() => handleBackgroundEnhance(photo, index)} 
+                            size="sm" 
+                            variant="outline"
+                            className="border-rose-gold/30 hover:bg-rose-gold/10"
+                          >
+                            <Scissors className="w-3 h-3 mr-1" />
+                            BG
+                          </Button>
+                        )}
                         
                         {photo.enhancedUrl && <Button onClick={() => downloadImage(photo.enhancedUrl!, `enhanced-photo-${index + 1}.png`)} size="sm" variant="outline" className="flex-1">
                             <Download className="w-3 h-3 mr-1" />
@@ -511,6 +610,28 @@ const PhotoLineupStation: React.FC<PhotoLineupStationProps> = ({
             </div>}
         </DialogContent>
       </Dialog>
-    </div>;
+
+      {/* Background Enhancer Modal */}
+      <Dialog open={!!showBackgroundEnhancer} onOpenChange={() => setShowBackgroundEnhancer(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Scissors className="w-5 h-5 text-rose-gold" />
+              Advanced Background Enhancement
+            </DialogTitle>
+          </DialogHeader>
+          {showBackgroundEnhancer && (
+            <BackgroundEnhancer
+              imageFile={showBackgroundEnhancer.photo.file}
+              onEnhanced={(blob) => handleBackgroundEnhanced(blob, showBackgroundEnhancer.slotIndex)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 };
+
+export default PhotoLineupStation;
+
 export default PhotoLineupStation;
