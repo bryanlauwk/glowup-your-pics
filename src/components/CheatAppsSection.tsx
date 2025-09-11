@@ -5,22 +5,20 @@ import { Badge } from '@/components/ui/badge';
 import { Zap } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { 
-  TinderLogo, 
-  BumbleLogo, 
-  HingeLogo, 
-  CoffeeMeetsBagelLogo, 
-  OkCupidLogo, 
-  MatchLogo 
-} from '@/components/DatingAppLogos';
+import tinderLogo from '@/assets/logos/tinder-logo.png';
+import bumbleLogo from '@/assets/logos/bumble-logo.png';
+import hingeLogo from '@/assets/logos/hinge-logo.png';
+import cmb from '@/assets/logos/cmb-logo.png';
+import okcupidLogo from '@/assets/logos/okcupid-logo.png';
+import matchLogo from '@/assets/logos/match-logo.png';
 
 const apps = [
-  { name: 'Tinder', color: 'from-red-500 to-pink-500', logo: TinderLogo },
-  { name: 'Bumble', color: 'from-yellow-400 to-yellow-500', logo: BumbleLogo },
-  { name: 'Hinge', color: 'from-purple-500 to-purple-600', logo: HingeLogo },
-  { name: 'Coffee Meets Bagel', color: 'from-amber-600 to-amber-700', logo: CoffeeMeetsBagelLogo },
-  { name: 'OkCupid', color: 'from-blue-500 to-blue-600', logo: OkCupidLogo },
-  { name: 'Match', color: 'from-green-500 to-green-600', logo: MatchLogo }
+  { name: 'Tinder', color: 'from-red-500 to-pink-500', logo: tinderLogo },
+  { name: 'Bumble', color: 'from-yellow-400 to-yellow-500', logo: bumbleLogo },
+  { name: 'Hinge', color: 'from-purple-500 to-purple-600', logo: hingeLogo },
+  { name: 'Coffee Meets Bagel', color: 'from-amber-600 to-amber-700', logo: cmb },
+  { name: 'OkCupid', color: 'from-blue-500 to-blue-600', logo: okcupidLogo },
+  { name: 'Match', color: 'from-green-500 to-green-600', logo: matchLogo }
 ];
 
 
@@ -68,7 +66,11 @@ export const CheatAppsSection = () => {
               <Card key={index} className="group hover:shadow-love-glow transition-all duration-300 bg-card/50 backdrop-blur-sm border-border/50">
                 <CardContent className="p-6 text-center">
                   <div className="w-16 h-16 mx-auto mb-3 bg-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg p-2">
-                    <app.logo className="w-full h-full" />
+                    <img 
+                      src={app.logo} 
+                      alt={`${app.name} logo`}
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <h3 className="font-bold text-sm text-foreground group-hover:text-love-pink transition-colors">
                     {app.name}
