@@ -56,39 +56,29 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="pt-20"> {/* Account for fixed header */}
         <div className="container mx-auto px-4 py-6">
-          <div className="flex gap-6">
-            {/* Main Content Area */}
-            <div className="flex-1">
-              {/* Clean Layout with Photo Processing */}
-              <PhotoLineupStationV2 
-                uploadedPhotos={uploadedPhotos} 
-                setUploadedPhotos={setUploadedPhotos} 
-                onNext={(photo, slotIndex) => {
-                  logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
-                }} 
-                onIndividualTransform={(photo, slotIndex) => {
-                  logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
-                }} 
-                onBulkTransform={photos => {
-                  setBulkPhotos(photos);
-                  logger.info('Bulk processing initiated', { photoCount: photos.length });
-                }} 
-              />
-              
-              {/* Credits Display */}
-              <div className="mt-8">
-                <CreditsDisplay />
-              </div>
-
-              {/* Dev Panel (admin only) */}
-              <DevPanel />
-            </div>
-
-            {/* Dating Tips Sidebar */}
-            <div className="w-80 flex-shrink-0">
-              <DatingTipsSidebar />
-            </div>
+          {/* Clean Layout with Photo Processing */}
+          <PhotoLineupStationV2 
+            uploadedPhotos={uploadedPhotos} 
+            setUploadedPhotos={setUploadedPhotos} 
+            onNext={(photo, slotIndex) => {
+              logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
+            }} 
+            onIndividualTransform={(photo, slotIndex) => {
+              logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
+            }} 
+            onBulkTransform={photos => {
+              setBulkPhotos(photos);
+              logger.info('Bulk processing initiated', { photoCount: photos.length });
+            }} 
+          />
+          
+          {/* Credits Display */}
+          <div className="mt-8">
+            <CreditsDisplay />
           </div>
+
+          {/* Dev Panel (admin only) */}
+          <DevPanel />
         </div>
       </div>
     </div>
