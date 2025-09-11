@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sparkles, RefreshCw } from 'lucide-react';
-import { useImageEnhancement } from '@/hooks/useImageEnhancement';
+import { useSceneTransformation } from '@/hooks/useSceneTransformation';
 import { toast } from 'sonner';
 
 // Import demo image
 import demoAsianCasual from '@/assets/demo/demo-asian-casual.jpg';
 
-export type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
+export type PhotoCategory = 'passion-hobbies' | 'social-proof' | 'lifestyle-adventure' | 'professional';
 
 interface DemoState {
   selectedCategory: PhotoCategory | null;
@@ -25,34 +25,24 @@ const DEMO_PHOTO = {
 
 const CATEGORIES = [
   { 
-    value: 'the-hook' as PhotoCategory, 
-    label: 'The Hook', 
-    description: 'Eye-catching first impression' 
-  },
-  { 
-    value: 'style-confidence' as PhotoCategory, 
-    label: 'Style & Confidence', 
-    description: 'Sharp, sophisticated look' 
+    value: 'passion-hobbies' as PhotoCategory, 
+    label: 'Passion & Hobbies', 
+    description: 'Transform into sports & hobby scenes' 
   },
   { 
     value: 'social-proof' as PhotoCategory, 
     label: 'Social Proof', 
-    description: 'Fun, social situations' 
-  },
-  { 
-    value: 'passion-hobbies' as PhotoCategory, 
-    label: 'Passion & Hobbies', 
-    description: 'Showing interests & skills' 
+    description: 'Show yourself with friends socializing' 
   },
   { 
     value: 'lifestyle-adventure' as PhotoCategory, 
-    label: 'Lifestyle & Adventure', 
-    description: 'Active, adventurous spirit' 
+    label: 'Adventure & Travel', 
+    description: 'Create epic outdoor lifestyle shots' 
   },
   { 
-    value: 'personality-closer' as PhotoCategory, 
-    label: 'Personality Closer', 
-    description: 'Authentic, approachable vibe' 
+    value: 'professional' as PhotoCategory, 
+    label: 'Professional Scene', 
+    description: 'Executive presence in business settings' 
   }
 ];
 
@@ -63,7 +53,7 @@ const DemoShowcase: React.FC = () => {
     isProcessing: false,
   });
 
-  const { enhanceImage, isProcessing } = useImageEnhancement();
+  const { transformScene, isProcessing } = useSceneTransformation();
 
   const handleCategorySelect = useCallback((category: PhotoCategory) => {
     setDemoState(prev => ({
@@ -96,24 +86,22 @@ const DemoShowcase: React.FC = () => {
       ctx.drawImage(img, 0, 0);
       const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-      // Apply category-specific enhancement settings
-      const categorySettings = getCategorySettings(demoState.selectedCategory);
-      
-      const result = await enhanceImage(imageDataUrl, categorySettings, 'preview');
+      // Transform scene with AI
+      const result = await transformScene(imageDataUrl, demoState.selectedCategory);
       
       setDemoState(prev => ({
         ...prev,
-        enhancedPhoto: result.dataUrl,
+        enhancedPhoto: result.enhancedImageUrl,
         isProcessing: false,
       }));
 
-      toast.success(`Demo transformation complete! This is how "${CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label}" style looks.`);
+      toast.success(`🎉 Scene transformed! From headshot to "${CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label}" lifestyle photo!`);
     } catch (error) {
-      console.error('Demo enhancement failed:', error);
+      console.error('Demo scene transformation failed:', error);
       setDemoState(prev => ({ ...prev, isProcessing: false }));
       toast.error('Demo transformation failed. Please try again.');
     }
-  }, [demoState.selectedCategory, enhanceImage]);
+  }, [demoState.selectedCategory, transformScene]);
 
   const handleReset = useCallback(() => {
     setDemoState({
@@ -123,36 +111,6 @@ const DemoShowcase: React.FC = () => {
     });
   }, []);
 
-  const getCategorySettings = (category: PhotoCategory) => {
-    const baseSettings = {
-      lighting: 60,
-      skinSmoothing: 40,
-      eyeEnhancement: 50,
-      teethWhitening: 30,
-      backgroundBlur: 10,
-      saturation: 110,
-      contrast: 105,
-      brightness: 102,
-    };
-
-    // Customize based on category
-    switch (category) {
-      case 'the-hook':
-        return { ...baseSettings, eyeEnhancement: 70, teethWhitening: 50 };
-      case 'style-confidence':
-        return { ...baseSettings, contrast: 115, saturation: 120 };
-      case 'social-proof':
-        return { ...baseSettings, brightness: 108, backgroundBlur: 5 };
-      case 'passion-hobbies':
-        return { ...baseSettings, saturation: 115, lighting: 70 };
-      case 'lifestyle-adventure':
-        return { ...baseSettings, contrast: 110, brightness: 105 };
-      case 'personality-closer':
-        return { ...baseSettings, skinSmoothing: 30, eyeEnhancement: 40 };
-      default:
-        return baseSettings;
-    }
-  };
 
   return (
     <div className="mb-6 bg-muted/30 rounded-lg border border-border/50 p-6">
@@ -162,7 +120,7 @@ const DemoShowcase: React.FC = () => {
           <Badge variant="outline" className="text-xs px-2 py-0.5 bg-violet-purple/10 text-violet-purple border-violet-purple/30">
             Demo
           </Badge>
-          <span className="text-sm text-muted-foreground">Try AI enhancement - no credits needed</span>
+          <span className="text-sm text-muted-foreground">Try AI scene transformation - no credits needed</span>
         </div>
         {demoState.selectedCategory && (
           <Button
@@ -230,7 +188,7 @@ const DemoShowcase: React.FC = () => {
             ) : (
               <>
                 <Sparkles className="h-4 w-4 mr-2" />
-                Transform
+                Create Scene
               </>
             )}
           </Button>
@@ -252,7 +210,7 @@ const DemoShowcase: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-xs text-primary font-medium mt-2">Enhanced!</p>
+              <p className="text-xs text-primary font-medium mt-2">Scene Created!</p>
             </div>
           ) : (
             <div className="w-24 h-24 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
@@ -266,7 +224,7 @@ const DemoShowcase: React.FC = () => {
       {demoState.enhancedPhoto && (
         <div className="mt-4 text-center">
           <p className="text-sm text-primary font-medium">
-            ✨ Ready to enhance your own photos? Upload below!
+            🚀 Mind-blown? Upload your headshot to create amazing lifestyle scenes!
           </p>
         </div>
       )}

@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.admin-add-unlimited-credits]
 verify_jwt = false
+
+[functions.scene-transform-ai]
+verify_jwt = false
