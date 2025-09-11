@@ -10,7 +10,7 @@ const corsHeaders = {
 // 6 Advanced Person-First Dating Transformation Engines - Optimized for Maximum Swipe Appeal
 const transformationEngines = {
   // ENGINE 1: THE HOOK - Stop-the-Scroll Magnetism
-  'hook': {
+  'the-hook': {
     highQuality: [
       'Transform this person into an irresistible first impression photo that maximizes swipe-right potential. Perfect their attractiveness with ideal lighting, magnetic eye contact, confident posture. This must be the photo that stops scrolling. Keep facial features identical but make them captivating. Add subtle natural imperfections and authentic lighting for humanized appeal.',
       'Create the ultimate hook shot that screams "swipe right immediately" - optimize everything for instant attraction and dating appeal. Enhance their natural magnetism while preserving exact identity. Include natural authenticity factors to avoid over-polished AI appearance.',
@@ -37,22 +37,22 @@ const transformationEngines = {
     ]
   },
 
-  // ENGINE 3: PROFESSIONAL AUTHORITY - Success is Sexy
-  'professional': {
+  // ENGINE 3: STYLE & CONFIDENCE - Full Body Appeal
+  'style-confidence': {
     highQuality: [
-      'Transform this person into an attractively successful professional that maximizes dating appeal - success is incredibly sexy. Perfect lighting, confident posture, successful appearance that screams "relationship material" with natural workplace authenticity. Keep facial features identical.',
-      'Polish into irresistibly successful professional look that boosts swipe-right potential. Authority and achievement are massive dating advantages. Maintain exact facial features while maximizing professional sex appeal with humanized elements.',
-      'Enhance to showcase professional success and ambition - key attractive qualities for dating. Make them look like the successful catch they are with natural confidence indicators. Preserve exact identity.',
+      'Transform this person into an attractively confident full-body shot that maximizes dating appeal - style and confidence are incredibly sexy. Perfect lighting, confident posture, stylish appearance that screams "relationship material" with natural fashion authenticity. Keep facial features identical.',
+      'Polish into irresistibly stylish and confident look that boosts swipe-right potential. Great style and confidence are massive dating advantages. Maintain exact facial features while maximizing style appeal with humanized elements.',
+      'Enhance to showcase personal style and confidence - key attractive qualities for dating. Make them look like the stylish catch they are with natural confidence indicators. Preserve exact identity.',
     ],
     lowQuality: [
-      'Complete professional transformation optimized for dating success: Place as confident executive, successful entrepreneur, or accomplished leader with authentic workplace environment. Success is incredibly attractive to potential partners.',
-      'Revolutionary authority transformation: Create sophisticated business environment that signals "great catch" - corner office, boardroom leadership, upscale professional setting with natural lighting and authentic interactions.',  
-      'Transform into image of attractive success - CEO portrait, accomplished professional, confident business leader who would be amazing to date with humanized professional authenticity.',
+      'Complete style transformation optimized for dating success: Place as confident stylish person, fashionable appearance, or accomplished style icon with authentic fashion environment. Style is incredibly attractive to potential partners.',
+      'Revolutionary confidence transformation: Create sophisticated style environment that signals "great catch" - trendy outfit, fashionable setting, upscale style scene with natural lighting and authentic interactions.',  
+      'Transform into image of attractive style - fashion portrait, accomplished stylist, confident fashionable person who would be amazing to date with humanized style authenticity.',
     ]
   },
 
-  // ENGINE 4: ADVENTURE & TRAVEL - Worldly and Irresistibly Exciting
-  'adventure-travel': {
+  // ENGINE 4: LIFESTYLE & ADVENTURE - Worldly and Irresistibly Exciting
+  'lifestyle-adventure': {
     highQuality: [
       'Transform this person to showcase attractive adventure spirit that maximizes dating appeal - worldliness and excitement are incredibly sexy. Better outdoor lighting, adventurous confidence that screams "amazing partner" with natural outdoor authenticity. Keep facial features identical.',
       'Polish to convey irresistibly adventurous personality that potential dates would love to explore the world with. Adventure signals amazing relationship potential with authentic environmental elements.',
@@ -79,17 +79,17 @@ const transformationEngines = {
     ]
   },
 
-  // ENGINE 6: CUSTOM PROMPT - User-Directed Maximum Appeal Transformation
-  'custom': {
+  // ENGINE 6: PERSONALITY CLOSER - Genuine & Fun Appeal
+  'personality-closer': {
     highQuality: [
-      'Transform this person according to user vision while maximizing their dating appeal and swipe-right potential. Whatever the request, optimize for attractiveness and dating success with natural authenticity elements. Keep facial features identical.',
-      'Polish and enhance following custom request while ensuring maximum dating appeal and relationship potential. Make them irresistibly attractive for their dating goals with humanized authenticity factors.',
-      'Enhance with requested modifications while optimizing for dating success and maximum swipe-right appeal with natural imperfections and authentic elements. Whatever they want, make it incredibly attractive.',
+      'Transform this person to showcase genuine personality and fun energy that maximizes dating appeal - authenticity and joy are incredibly attractive. Enhanced genuine expressions and playful energy with natural personality interactions. Keep facial features identical.',
+      'Polish to convey irresistible personality and authentic charm that makes them more dateable. Genuine personality is a powerful dating advantage with authentic expressive elements.',
+      'Enhance to showcase natural charisma and genuine fun personality that signals "amazing to be around" with authentic personality expression.',
     ],
     lowQuality: [
-      'Complete custom transformation optimized for maximum dating success: Follow user specifications while ensuring they look incredibly attractive and dateable with natural authenticity factors.',
-      'Revolutionary custom transformation: Recreate according to user vision while maximizing their attractiveness and dating potential with authentic environmental elements and natural lighting variations.',
-      'Transform completely per user specifications while optimizing for dating app success and maximum attractiveness to potential partners with humanized authenticity elements.',
+      'Complete personality transformation optimized for dating appeal: Place in genuine moments - laughing naturally, playing with pets, expressing joy, or candid fun moments with natural lighting and authentic interactions.',
+      'Revolutionary personality transformation: Create authentic environments that signal "incredibly fun and genuine" - casual moments, pet interactions, natural laughter, candid joy with authentic personality energy and natural lighting.',
+      'Transform into image of genuine personality and fun energy - naturally charismatic person who everyone wants to spend time with, in authentic moments with genuine human authenticity.',
     ]
   }
 };
