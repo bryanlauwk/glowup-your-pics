@@ -27,37 +27,31 @@ const CATEGORIES = [
   { 
     value: 'hook' as PhotoCategory, 
     label: 'First Impression Winner', 
-    description: 'Instant attraction with magnetic appeal',
     icon: '✨'
   },
   { 
     value: 'passion-hobbies' as PhotoCategory, 
     label: 'Passion & Hobbies', 
-    description: 'Transform into sports & hobby scenes',
     icon: '🏃'
   },
   { 
     value: 'social-proof' as PhotoCategory, 
     label: 'Social Proof', 
-    description: 'Show yourself with friends socializing',
     icon: '👥'
   },
   { 
     value: 'adventure-travel' as PhotoCategory, 
     label: 'Adventure & Travel', 
-    description: 'Create epic outdoor lifestyle shots',
     icon: '🏔️'
   },
   { 
     value: 'professional' as PhotoCategory, 
     label: 'Professional Authority', 
-    description: 'Executive presence in business settings',
     icon: '💼'
   },
   { 
     value: 'custom' as PhotoCategory, 
     label: 'Custom Transformation', 
-    description: 'Your unique vision brought to life',
     icon: '🎨'
   }
 ];
@@ -114,11 +108,11 @@ const DemoShowcase: React.FC = () => {
         isProcessing: false,
       }));
 
-      toast.success(`🎉 Scene transformed! From headshot to "${CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label}" lifestyle photo!`);
+      // Silent success - no toast notifications during demo
     } catch (error) {
       console.error('Demo intelligent processing failed:', error);
       setDemoState(prev => ({ ...prev, isProcessing: false }));
-      toast.error('Demo transformation failed. Please try again.');
+      // Silent error - no toast during demo
     }
   }, [demoState.selectedCategory, processPhoto]);
 
@@ -159,7 +153,7 @@ const DemoShowcase: React.FC = () => {
         
         {/* Demo Photo */}
         <div className="flex-shrink-0">
-          <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-border/50 shadow-sm">
+          <div className="w-50 h-50 rounded-lg overflow-hidden border-2 border-border/50 shadow-sm">
             <img
               src={DEMO_PHOTO.src}
               alt={DEMO_PHOTO.alt}
@@ -181,10 +175,7 @@ const DemoShowcase: React.FC = () => {
                   <SelectItem key={category.value} value={category.value} className="text-xs py-3 cursor-pointer hover:bg-muted/50">
                     <div className="flex items-center gap-3 w-full">
                       <span className="text-lg">{category.icon}</span>
-                      <div className="flex flex-col items-start">
-                        <span className="font-medium text-foreground">{category.label}</span>
-                        <span className="text-xs text-muted-foreground">{category.description}</span>
-                      </div>
+                      <span className="font-medium text-foreground">{category.label}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -219,7 +210,7 @@ const DemoShowcase: React.FC = () => {
         <div className="flex-shrink-0">
           {demoState.enhancedPhoto ? (
             <div className="text-center">
-              <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md animate-scale-in">
+              <div className="w-50 h-50 rounded-lg overflow-hidden border-2 border-primary/50 shadow-md animate-scale-in">
                 <img
                   src={demoState.enhancedPhoto}
                   alt="Enhanced result"
@@ -234,7 +225,7 @@ const DemoShowcase: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="w-24 h-24 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
+            <div className="w-50 h-50 rounded-lg border-2 border-dashed border-border/30 flex items-center justify-center bg-muted/20">
               <span className="text-sm text-muted-foreground">Result</span>
             </div>
           )}

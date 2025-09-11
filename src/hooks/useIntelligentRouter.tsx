@@ -94,7 +94,7 @@ export const useIntelligentRouter = () => {
       if (useLevel2) {
         // Level 2: Scene Transformation (Revolutionary change)
         processingPath = 'transformation';
-        toast.info('🚀 Using Level 2: Scene Transformation for maximum impact!');
+        // Silent processing - no toast notifications
         
         // For demo, use demo-user as userId
         const userId = 'demo-user';
@@ -113,7 +113,7 @@ export const useIntelligentRouter = () => {
       } else {
         // Level 1: Enhancement (Polish existing photo)
         processingPath = 'enhancement';
-        toast.info('✨ Using Level 1: Enhancement to polish your photo!');
+        // Silent processing - no toast notifications
         
         // Build enhancement prompt based on assessment
         const enhancementPrompt = buildEnhancementPrompt(assessment, config);
