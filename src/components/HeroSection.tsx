@@ -75,13 +75,7 @@ export const HeroSection = () => {
       <div className="relative z-10 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* FREE Trial Badge */}
-          <div className="bg-gradient-to-r from-love-pink/20 to-passionate-pink/20 backdrop-blur-sm border border-love-pink/30 rounded-full px-6 py-3 mx-auto w-fit mb-6">
-            <div className="flex items-center gap-2 text-love-pink font-semibold">
-              <Sparkles className="w-5 h-5 animate-pulse" />
-              <span className="text-lg">FREE TRIAL • No Credit Card Required</span>
-              <Sparkles className="w-5 h-5 animate-pulse" />
-            </div>
-          </div>
+          
 
           {/* Main Headline */}
           <div className="space-y-6">
