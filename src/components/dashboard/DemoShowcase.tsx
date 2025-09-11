@@ -25,7 +25,7 @@ const CATEGORIES = photoSlots
   .filter(slot => DEMO_CATEGORIES.includes(slot.category))
   .map(slot => ({
     value: slot.category,
-    label: slot.subtitle,
+    label: slot.title,
     icon: slot.icon
   }));
 
