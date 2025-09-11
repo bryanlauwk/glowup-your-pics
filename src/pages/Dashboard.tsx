@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import PhotoLineupStation from "@/components/dashboard/PhotoLineupStation";
+import PhotoLineupStationV2 from "@/components/dashboard/PhotoLineupStationV2";
 import { CreditsDisplay } from '@/components/CreditsDisplay';
 import { DevPanel } from '@/components/DevPanel';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
@@ -67,37 +67,25 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* Main Layout: Photo Station + Tips Sidebar */}
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-            {/* Photo Station - Takes most of the space */}
-            <div className="xl:col-span-3">
-              <PhotoLineupStation 
-                uploadedPhotos={uploadedPhotos} 
-                setUploadedPhotos={setUploadedPhotos} 
-                onNext={(photo, slotIndex) => {
-                  logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
-                }} 
-                onIndividualTransform={(photo, slotIndex) => {
-                  logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
-                }} 
-                onBulkTransform={photos => {
-                  setBulkPhotos(photos);
-                  logger.info('Bulk processing initiated', { photoCount: photos.length });
-                }} 
-              />
-              
-              {/* Credits Display */}
-              <div className="mt-8">
-                <CreditsDisplay />
-              </div>
-            </div>
-
-            {/* Dating Tips Sidebar */}
-            <div className="xl:col-span-1">
-              <div className="sticky top-24"> {/* Sticky positioning below header */}
-                <DatingTipsSidebar />
-              </div>
-            </div>
+          {/* Redesigned Layout: Clean 2-Column with Contextual Tips */}
+          <PhotoLineupStationV2 
+            uploadedPhotos={uploadedPhotos} 
+            setUploadedPhotos={setUploadedPhotos} 
+            onNext={(photo, slotIndex) => {
+              logger.debug('Photo ready', { photoId: photo?.id, slotIndex });
+            }} 
+            onIndividualTransform={(photo, slotIndex) => {
+              logger.debug('Photo transformed', { photoId: photo?.id, slotIndex });
+            }} 
+            onBulkTransform={photos => {
+              setBulkPhotos(photos);
+              logger.info('Bulk processing initiated', { photoCount: photos.length });
+            }} 
+          />
+          
+          {/* Credits Display */}
+          <div className="mt-8">
+            <CreditsDisplay />
           </div>
 
           {/* Dev Panel (admin only) */}
