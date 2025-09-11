@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Progress } from '@/components/ui/progress';
 import { BackgroundEnhancer } from './BackgroundEnhancer';
 import { SmartTips } from './SmartTips';
+import DemoShowcase from './DemoShowcase';
 
 export interface UploadedPhoto {
   id: string;
@@ -308,6 +309,9 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
 
   return (
     <div className="space-y-8">
+      {/* Interactive Demo Section */}
+      <DemoShowcase />
+      
       {/* Streamlined Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
