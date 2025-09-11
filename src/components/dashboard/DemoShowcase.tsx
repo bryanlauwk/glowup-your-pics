@@ -19,12 +19,15 @@ const DEMO_PHOTO = {
   alt: 'Professional portrait for dating transformation demo'
 };
 
-// Generate categories from photoSlots for consistency
-const CATEGORIES = photoSlots.map(slot => ({
-  value: slot.category,
-  label: slot.subtitle,
-  icon: slot.icon
-}));
+// Generate limited categories for demo - only the 3 core types
+const DEMO_CATEGORIES: PhotoCategory[] = ['the-hook', 'style-confidence', 'social-proof'];
+const CATEGORIES = photoSlots
+  .filter(slot => DEMO_CATEGORIES.includes(slot.category))
+  .map(slot => ({
+    value: slot.category,
+    label: slot.subtitle,
+    icon: slot.icon
+  }));
 
 const DemoShowcase: React.FC = () => {
   const [demoState, setDemoState] = useState<DemoState>({
