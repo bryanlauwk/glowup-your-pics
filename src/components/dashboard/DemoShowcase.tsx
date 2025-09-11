@@ -8,10 +8,9 @@ import { useImageEnhancement } from '@/hooks/useImageEnhancement';
 import { toast } from 'sonner';
 
 // Import demo images
-import demoMale1 from '@/assets/demo/demo-male-1.jpg';
-import demoMale2 from '@/assets/demo/demo-male-2.jpg';
-import demoMale3 from '@/assets/demo/demo-male-3.jpg';
-import demoMale4 from '@/assets/demo/demo-male-4.jpg';
+import demoAsian1 from '@/assets/demo/demo-asian-1.jpg';
+import demoAsian2 from '@/assets/demo/demo-asian-2.jpg';
+import demoAsian3 from '@/assets/demo/demo-asian-3.jpg';
 
 export type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
 
@@ -29,10 +28,9 @@ interface DemoState {
 }
 
 const DEMO_PHOTOS: DemoPhoto[] = [
-  { id: 'demo1', src: demoMale1, alt: 'Professional headshot' },
-  { id: 'demo2', src: demoMale2, alt: 'Casual outdoor' },
-  { id: 'demo3', src: demoMale3, alt: 'Business portrait' },
-  { id: 'demo4', src: demoMale4, alt: 'Lifestyle casual' },
+  { id: 'demo1', src: demoAsian1, alt: 'Casual selfie' },
+  { id: 'demo2', src: demoAsian2, alt: 'Street photo' },
+  { id: 'demo3', src: demoAsian3, alt: 'Indoor shot' },
 ];
 
 const CATEGORIES = [
@@ -195,115 +193,150 @@ const DemoShowcase: React.FC = () => {
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-6">
-        {/* Demo Photo Selection */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">1. Choose Demo Photo</h4>
-          <div className="grid grid-cols-4 gap-3">
-            {DEMO_PHOTOS.map((photo) => (
-              <div
-                key={photo.id}
-                className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                  demoState.selectedPhoto?.id === photo.id
-                    ? 'border-violet-purple shadow-lg scale-105'
-                    : 'border-border hover:border-violet-purple/50'
-                }`}
-                onClick={() => handlePhotoSelect(photo)}
-              >
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  className="w-full h-20 object-cover"
-                />
-                {demoState.selectedPhoto?.id === photo.id && (
-                  <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
-                    <div className="w-6 h-6 bg-violet-purple rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-3 h-3 text-white" />
+      <CardContent>
+        {/* 3-Column Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Column 1: Photo Selection */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-medium text-foreground text-center">Pick a Photo</h4>
+            <div className="space-y-3">
+              {DEMO_PHOTOS.map((photo) => (
+                <div
+                  key={photo.id}
+                  className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                    demoState.selectedPhoto?.id === photo.id
+                      ? 'border-violet-purple shadow-lg'
+                      : 'border-border hover:border-violet-purple/50'
+                  }`}
+                  onClick={() => handlePhotoSelect(photo)}
+                >
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="w-full h-24 object-cover"
+                  />
+                  {demoState.selectedPhoto?.id === photo.id && (
+                    <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
+                      <div className="w-6 h-6 bg-violet-purple rounded-full flex items-center justify-center">
+                        <ArrowRight className="w-3 h-3 text-white" />
+                      </div>
                     </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Column 2: Enhancement Controls */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-medium text-foreground text-center">Transform</h4>
+            
+            {/* Drag Area */}
+            <div className={`border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${
+              demoState.selectedPhoto 
+                ? 'border-violet-purple/50 bg-violet-purple/5' 
+                : 'border-border bg-muted/50'
+            }`}>
+              <div className="text-center space-y-3">
+                {demoState.selectedPhoto ? (
+                  <div className="space-y-2">
+                    <img
+                      src={demoState.selectedPhoto.src}
+                      alt="Selected"
+                      className="w-16 h-16 object-cover rounded-lg mx-auto border-2 border-violet-purple"
+                    />
+                    <p className="text-xs text-muted-foreground">Photo Selected!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="w-16 h-16 bg-muted rounded-lg mx-auto flex items-center justify-center">
+                      <ArrowRight className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">Pick a photo first</p>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Category Selection */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">2. Pick Enhancement Style</h4>
-          <Select value={demoState.selectedCategory || ''} onValueChange={handleCategorySelect}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select enhancement category..." />
-            </SelectTrigger>
-            <SelectContent>
-              {CATEGORIES.map((category) => (
-                <SelectItem key={category.value} value={category.value}>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{category.label}</span>
-                    <span className="text-xs text-muted-foreground">{category.description}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            {/* Category Selection */}
+            <Select value={demoState.selectedCategory || ''} onValueChange={handleCategorySelect}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose style..." />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{category.label}</span>
+                      <span className="text-xs text-muted-foreground">{category.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-        {/* Transform Action */}
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={handleTransform}
-            disabled={!demoState.selectedPhoto || !demoState.selectedCategory || demoState.isProcessing}
-            className="flex-1 bg-gradient-primary hover:bg-gradient-primary/90 text-white"
-          >
-            {demoState.isProcessing ? (
-              <>
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                Transforming...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                See Demo Magic
-              </>
-            )}
-          </Button>
-          
-          {(demoState.selectedPhoto || demoState.selectedCategory) && (
-            <Button variant="outline" onClick={handleReset} size="icon">
-              <RefreshCw className="w-4 h-4" />
+            {/* Transform Button */}
+            <Button
+              onClick={handleTransform}
+              disabled={!demoState.selectedPhoto || !demoState.selectedCategory || demoState.isProcessing}
+              className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-white"
+            >
+              {demoState.isProcessing ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Transforming...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Transform
+                </>
+              )}
             </Button>
-          )}
-        </div>
 
-        {/* Results Display */}
-        {(demoState.selectedPhoto || demoState.enhancedPhoto) && (
+            {(demoState.selectedPhoto || demoState.selectedCategory) && (
+              <Button variant="outline" onClick={handleReset} className="w-full">
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Reset
+              </Button>
+            )}
+          </div>
+
+          {/* Column 3: Results */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-foreground">3. See The Results</h4>
-            <div className="grid grid-cols-2 gap-4">
+            <h4 className="text-sm font-medium text-foreground text-center">Results</h4>
+            
+            <div className="space-y-3">
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground text-center">Before</p>
-                <div className="relative rounded-lg overflow-hidden border">
-                  {demoState.selectedPhoto && (
+                <div className="relative rounded-lg overflow-hidden border aspect-square">
+                  {demoState.selectedPhoto ? (
                     <img
                       src={demoState.selectedPhoto.src}
                       alt="Original"
-                      className="w-full h-32 object-cover"
+                      className="w-full h-full object-cover"
                     />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground">Original</p>
+                    </div>
                   )}
                 </div>
               </div>
               
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground text-center">After</p>
-                <div className="relative rounded-lg overflow-hidden border">
+                <div className="relative rounded-lg overflow-hidden border aspect-square">
                   {demoState.enhancedPhoto ? (
                     <img
                       src={demoState.enhancedPhoto}
                       alt="Enhanced"
-                      className="w-full h-32 object-cover"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-32 bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Enhanced photo will appear here</p>
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground">Enhanced</p>
                     </div>
                   )}
                 </div>
@@ -312,13 +345,13 @@ const DemoShowcase: React.FC = () => {
             
             {demoState.enhancedPhoto && (
               <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                  ✨ Ready to transform your own photos? Upload them below!
+                <p className="text-xs font-medium text-green-700 dark:text-green-400">
+                  ✨ Try with your photos below!
                 </p>
               </div>
             )}
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
