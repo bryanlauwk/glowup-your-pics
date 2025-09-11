@@ -62,6 +62,10 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
   const { isProcessing, enhancePhoto, progress } = usePhotoEnhancement();
 
   // Using shared photo slots and category prompt suggestions from constants
+  // Debug: Check if photoSlots is properly loaded
+  if (!photoSlots || photoSlots.length === 0) {
+    console.error('PhotoSlots not loaded from constants');
+  }
 
   const handleFiles = useCallback((files: File[], slotIndex: number) => {
     const file = files[0];
@@ -72,12 +76,19 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
       return;
     }
 
+    // Ensure photoSlots is available
+    if (!photoSlots || photoSlots.length === 0) {
+      console.error('PhotoSlots not available');
+      toast.error('Configuration error - please refresh the page');
+      return;
+    }
+
     const photoId = `photo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newPhoto: UploadedPhoto = {
       id: photoId,
       file,
       preview: URL.createObjectURL(file),
-      category: photoSlots[slotIndex].category
+      category: photoSlots[slotIndex]?.category
     };
 
     setUploadedPhotos(prev => {
@@ -90,8 +101,10 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
     });
 
     // Set active category for tips
-    setActiveCategory(photoSlots[slotIndex].category);
-  }, [photoSlots, setUploadedPhotos]);
+    if (photoSlots[slotIndex]) {
+      setActiveCategory(photoSlots[slotIndex].category);
+    }
+  }, [setUploadedPhotos]);
 
   const handleDrop = useCallback((e: React.DragEvent, slotIndex: number) => {
     e.preventDefault();
@@ -247,7 +260,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
 
       {/* Photo Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {photoSlots.map((slot, index) => {
+        {photoSlots?.map((slot, index) => {
               const photo = uploadedPhotos[index];
               const Icon = slot.icon;
               const isReady = photo && photo.customPrompt?.trim();
