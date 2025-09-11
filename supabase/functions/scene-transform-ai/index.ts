@@ -9,24 +9,24 @@ const corsHeaders = {
 
 const scenePrompts = {
   'passion-hobbies': [
-    "Transform this person into an action shot playing basketball in a modern gym, dynamic pose, professional sports photography",
-    "Show this person rock climbing with determination and skill, outdoor adventure, cinematic lighting",
-    "Create a shot of this person cooking passionately in a beautiful modern kitchen, chef-like confidence"
+    "Edit this photo to show the person in action playing basketball in a modern gym with dynamic pose and professional sports photography lighting",
+    "Transform the scene to show this person rock climbing outdoors with determination, adventure setting, cinematic lighting",
+    "Change the background and context to show this person cooking passionately in a beautiful modern kitchen with chef-like confidence"
   ],
   'social-proof': [
-    "Place this person laughing with friends at a trendy rooftop bar, social gathering, warm evening light",
-    "Show this person as the center of attention at a stylish coffee shop, engaging conversation with friends",
-    "Create a fun group photo where this person stands out naturally at a social event"
+    "Edit this photo to place the person laughing with friends at a trendy rooftop bar during golden hour with warm social atmosphere",
+    "Transform the scene to show this person as the center of attention at a stylish coffee shop having engaging conversations",
+    "Change the setting to a fun social event where this person stands out naturally among friends"
   ],
   'lifestyle-adventure': [
-    "Transform into an epic hiking photo with mountain backdrop, adventure explorer, golden hour lighting",
-    "Show this person at a beautiful beach location during sunset, travel lifestyle, relaxed confidence",
-    "Create a travel adventure shot in an exotic destination, wanderlust vibes, professional travel photography"
+    "Edit this photo to show the person on an epic hiking adventure with mountain backdrop during golden hour",
+    "Transform the scene to a beautiful beach location during sunset with relaxed confidence and travel vibes",
+    "Change the background to an exotic travel destination with wanderlust adventure photography style"
   ],
   'professional': [
-    "Transform into a confident business professional in a modern office setting, executive presence",
-    "Show this person as a successful entrepreneur in a startup environment, innovative and approachable",
-    "Create a professional headshot in a corporate setting with modern aesthetics"
+    "Edit this photo to show the person as a confident business professional in a modern office with executive presence",
+    "Transform the scene to show this person as a successful entrepreneur in a startup environment looking innovative and approachable",
+    "Change the setting to a corporate environment with modern professional headshot aesthetics"
   ]
 };
 
@@ -42,9 +42,9 @@ serve(async (req) => {
       throw new Error('Missing required parameters: imageDataUrl, category, and userId are required');
     }
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (!OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    if (!GEMINI_API_KEY) {
+      throw new Error('Gemini API key not configured');
     }
 
     // Initialize Supabase client
@@ -52,7 +52,7 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check user credits
+    // Check user credits (reduced to 2 credits for Gemini)
     const { data: userCredits, error: creditsError } = await supabase
       .from('user_credits')
       .select('credits')
@@ -64,8 +64,8 @@ serve(async (req) => {
       throw new Error('Failed to check user credits');
     }
 
-    if (!userCredits || userCredits.credits < 3) {
-      throw new Error('Insufficient credits. Scene transformation requires 3 credits.');
+    if (!userCredits || userCredits.credits < 2) {
+      throw new Error('Insufficient credits. Scene transformation requires 2 credits.');
     }
 
     // Get random prompt for the category
@@ -76,38 +76,72 @@ serve(async (req) => {
 
     const selectedPrompt = categoryPrompts[Math.floor(Math.random() * categoryPrompts.length)];
     
-    console.log('Generating scene transformation with prompt:', selectedPrompt);
+    console.log('Generating scene transformation with Gemini prompt:', selectedPrompt);
 
-    // Generate new scene with OpenAI
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    // Convert base64 image to proper format for Gemini
+    const imageBase64 = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
+
+    // Generate new scene with Gemini 2.5 Flash Image
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt: `${selectedPrompt}. Maintain the person's facial features and characteristics from the reference image. High quality, professional photography, realistic lighting and composition.`,
-        n: 1,
-        size: '1024x1024',
-        quality: 'high',
-        response_format: 'b64_json'
+        contents: [{
+          parts: [
+            {
+              text: `${selectedPrompt}. Keep the person's facial features and identity intact. Generate a high-quality, professional photograph with realistic lighting and composition. Output as a single enhanced image.`
+            },
+            {
+              inline_data: {
+                mime_type: "image/jpeg",
+                data: imageBase64
+              }
+            }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.4,
+          topK: 32,
+          topP: 1,
+          maxOutputTokens: 4096,
+        }
       }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
+      const errorData = await response.text();
+      console.error('Gemini API error:', errorData);
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    const enhancedImageUrl = `data:image/png;base64,${data.data[0].b64_json}`;
+    
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      console.error('Invalid Gemini response:', data);
+      throw new Error('Invalid response from Gemini API');
+    }
 
-    // Deduct credits (3 for scene transformation)
+    // Extract the generated image from Gemini response
+    const candidate = data.candidates[0];
+    let enhancedImageUrl = '';
+
+    // Check if there's inline data in the response
+    if (candidate.content.parts && candidate.content.parts[0] && candidate.content.parts[0].inline_data) {
+      const imageData = candidate.content.parts[0].inline_data.data;
+      const mimeType = candidate.content.parts[0].inline_data.mime_type || 'image/jpeg';
+      enhancedImageUrl = `data:${mimeType};base64,${imageData}`;
+    } else {
+      // Fallback: return original image if generation failed
+      console.warn('No image generated by Gemini, using original');
+      enhancedImageUrl = imageDataUrl;
+    }
+
+    // Deduct credits (2 for Gemini scene transformation)
     const { error: updateError } = await supabase
       .from('user_credits')
-      .update({ credits: userCredits.credits - 3 })
+      .update({ credits: userCredits.credits - 2 })
       .eq('user_id', userId);
 
     if (updateError) {
@@ -122,22 +156,22 @@ serve(async (req) => {
         user_id: userId,
         original_image_url: imageDataUrl,
         enhanced_image_url: enhancedImageUrl,
-        enhancement_type: 'scene_transformation',
+        enhancement_type: 'scene_transformation_gemini',
         category: category,
         status: 'completed',
         processing_time: Date.now()
       });
 
-    const remainingCredits = userCredits.credits - 3;
+    const remainingCredits = userCredits.credits - 2;
 
-    console.log('Scene transformation completed successfully');
+    console.log('Gemini scene transformation completed successfully');
 
     return new Response(JSON.stringify({
       enhancedImageUrl,
       processingTime: Date.now(),
-      enhancementId: `scene_${Date.now()}`,
+      enhancementId: `scene_gemini_${Date.now()}`,
       creditsRemaining: remainingCredits,
-      transformationType: 'scene_transformation',
+      transformationType: 'scene_transformation_gemini',
       category
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
