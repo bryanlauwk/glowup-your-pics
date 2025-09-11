@@ -6,31 +6,22 @@ import { Sparkles, RefreshCw } from 'lucide-react';
 import { useImageEnhancement } from '@/hooks/useImageEnhancement';
 import { toast } from 'sonner';
 
-// Import demo images
-import demoAsian1 from '@/assets/demo/demo-asian-1.jpg';
-import demoAsian2 from '@/assets/demo/demo-asian-2.jpg';
-import demoAsian3 from '@/assets/demo/demo-asian-3.jpg';
+// Import demo image
+import demoAsianCasual from '@/assets/demo/demo-asian-casual.jpg';
 
 export type PhotoCategory = 'the-hook' | 'style-confidence' | 'social-proof' | 'passion-hobbies' | 'lifestyle-adventure' | 'personality-closer';
 
-interface DemoPhoto {
-  id: string;
-  src: string;
-  alt: string;
-}
-
 interface DemoState {
-  selectedPhoto: DemoPhoto | null;
   selectedCategory: PhotoCategory | null;
   enhancedPhoto: string | null;
   isProcessing: boolean;
 }
 
-const DEMO_PHOTOS: DemoPhoto[] = [
-  { id: 'demo1', src: demoAsian1, alt: 'Casual selfie' },
-  { id: 'demo2', src: demoAsian2, alt: 'Street photo' },
-  { id: 'demo3', src: demoAsian3, alt: 'Indoor shot' },
-];
+const DEMO_PHOTO = {
+  id: 'asian-casual',
+  src: demoAsianCasual,
+  alt: 'Asian male casual portrait'
+};
 
 const CATEGORIES = [
   { 
@@ -67,21 +58,12 @@ const CATEGORIES = [
 
 const DemoShowcase: React.FC = () => {
   const [demoState, setDemoState] = useState<DemoState>({
-    selectedPhoto: null,
     selectedCategory: null,
     enhancedPhoto: null,
     isProcessing: false,
   });
 
   const { enhanceImage, isProcessing } = useImageEnhancement();
-
-  const handlePhotoSelect = useCallback((photo: DemoPhoto) => {
-    setDemoState(prev => ({
-      ...prev,
-      selectedPhoto: photo,
-      enhancedPhoto: null,
-    }));
-  }, []);
 
   const handleCategorySelect = useCallback((category: PhotoCategory) => {
     setDemoState(prev => ({
@@ -92,7 +74,7 @@ const DemoShowcase: React.FC = () => {
   }, []);
 
   const handleTransform = useCallback(async () => {
-    if (!demoState.selectedPhoto || !demoState.selectedCategory) return;
+    if (!demoState.selectedCategory) return;
 
     setDemoState(prev => ({ ...prev, isProcessing: true }));
 
@@ -104,7 +86,7 @@ const DemoShowcase: React.FC = () => {
       await new Promise((resolve, reject) => {
         img.onload = resolve;
         img.onerror = reject;
-        img.src = demoState.selectedPhoto!.src;
+        img.src = DEMO_PHOTO.src;
       });
 
       const canvas = document.createElement('canvas');
@@ -131,11 +113,10 @@ const DemoShowcase: React.FC = () => {
       setDemoState(prev => ({ ...prev, isProcessing: false }));
       toast.error('Demo transformation failed. Please try again.');
     }
-  }, [demoState.selectedPhoto, demoState.selectedCategory, enhanceImage]);
+  }, [demoState.selectedCategory, enhanceImage]);
 
   const handleReset = useCallback(() => {
     setDemoState({
-      selectedPhoto: null,
       selectedCategory: null,
       enhancedPhoto: null,
       isProcessing: false,
@@ -183,7 +164,7 @@ const DemoShowcase: React.FC = () => {
           </Badge>
           <span className="text-xs text-muted-foreground">Try AI enhancement - no credits needed</span>
         </div>
-        {(demoState.selectedPhoto || demoState.selectedCategory) && (
+        {demoState.selectedCategory && (
           <Button
             variant="ghost"
             size="sm"
@@ -196,134 +177,89 @@ const DemoShowcase: React.FC = () => {
         )}
       </div>
 
-      {/* Compact 3-Step Flow */}
-      <div className="flex items-center gap-4 h-[80px]">
+      {/* Simplified 2-Step Flow */}
+      <div className="flex items-start gap-6 h-[80px]">
         
-        {/* Step 1: Photo Selection - Horizontal thumbnails */}
+        {/* Step 1: Demo Photo with Style Selection */}
         <div className="flex-shrink-0">
-          <div className="flex items-center gap-1">
-            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium mr-2">
-              1
+          <div className="flex items-center gap-1 mb-2">
+            <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">1</div>
+            <span className="text-xs text-muted-foreground">Sample photo</span>
+          </div>
+          <div className="space-y-2">
+            {/* Demo Photo */}
+            <div className="w-16 h-16 rounded-md overflow-hidden border-2 border-border/50">
+              <img
+                src={DEMO_PHOTO.src}
+                alt={DEMO_PHOTO.alt}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <div className="flex gap-2">
-              {DEMO_PHOTOS.map((photo) => (
-                <div
-                  key={photo.id}
-                  className={`relative cursor-pointer rounded-md overflow-hidden border-2 transition-all duration-200 w-12 h-12 ${
-                    demoState.selectedPhoto?.id === photo.id
-                      ? 'border-violet-purple ring-2 ring-violet-purple/20'
-                      : 'border-border hover:border-violet-purple/50'
-                  }`}
-                  onClick={() => handlePhotoSelect(photo)}
-                >
+            
+            {/* Category Selection underneath */}
+            <Select 
+              value={demoState.selectedCategory || ''} 
+              onValueChange={handleCategorySelect}
+            >
+              <SelectTrigger className="w-36 h-8 text-xs">
+                <SelectValue placeholder="Pick style" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value} className="text-xs">
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Step 2: Transform Button & Result */}
+        <div className="flex-1">
+          <div className="flex items-center gap-1 mb-2">
+            <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">2</div>
+            <span className="text-xs text-muted-foreground">Transform & result</span>
+          </div>
+          
+          <div className="flex items-start gap-3">
+            {/* Transform Button */}
+            <Button
+              onClick={handleTransform}
+              disabled={!demoState.selectedCategory || demoState.isProcessing}
+              size="sm"
+              className="h-8 px-3 text-xs"
+            >
+              {demoState.isProcessing ? (
+                <>
+                  <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+                  Processing
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Transform
+                </>
+              )}
+            </Button>
+            
+            {/* After Result Only */}
+            {demoState.enhancedPhoto ? (
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground mb-1">Enhanced</p>
+                <div className="w-16 h-16 rounded-md overflow-hidden border-2 border-primary/50 shadow-sm">
                   <img
-                    src={photo.src}
-                    alt={photo.alt}
+                    src={demoState.enhancedPhoto}
+                    alt="Enhanced result"
                     className="w-full h-full object-cover"
                   />
-                  {demoState.selectedPhoto?.id === photo.id && (
-                    <div className="absolute inset-0 bg-violet-purple/20 flex items-center justify-center">
-                      <div className="w-3 h-3 bg-violet-purple rounded-full" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Step 2: Transform Controls - Inline */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium">
-              2
-            </div>
-            <div className="flex items-center gap-2 flex-1">
-              <Select 
-                value={demoState.selectedCategory || ''} 
-                onValueChange={handleCategorySelect}
-                disabled={!demoState.selectedPhoto}
-              >
-                <SelectTrigger className="h-8 text-xs min-w-[140px]">
-                  <SelectValue placeholder="Pick style..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      <span className="text-xs">{category.label}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Button
-                onClick={handleTransform}
-                disabled={!demoState.selectedPhoto || !demoState.selectedCategory || demoState.isProcessing}
-                size="sm"
-                className="h-8 px-3 text-xs bg-gradient-primary hover:bg-gradient-primary/90 text-white"
-              >
-                {demoState.isProcessing ? (
-                  <>
-                    <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-3 h-3 mr-1" />
-                    Transform
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 3: Before/After Results - Side by side */}
-        <div className="flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xs font-medium">
-              3
-            </div>
-            <div className="flex gap-2">
-              {/* Before */}
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">Before</p>
-                <div className="w-12 h-12 rounded-md overflow-hidden border bg-muted">
-                  {demoState.selectedPhoto ? (
-                    <img
-                      src={demoState.selectedPhoto.src}
-                      alt="Before"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-muted-foreground/30 rounded" />
-                    </div>
-                  )}
                 </div>
               </div>
-              
-              {/* After */}
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">After</p>
-                <div className="w-12 h-12 rounded-md overflow-hidden border bg-muted relative">
-                  {demoState.enhancedPhoto ? (
-                    <img
-                      src={demoState.enhancedPhoto}
-                      alt="After"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-muted-foreground/30 rounded" />
-                    </div>
-                  )}
-                  {demoState.enhancedPhoto && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-background" />
-                  )}
-                </div>
+            ) : (
+              <div className="w-16 h-16 rounded-md border-2 border-dashed border-border/30 flex items-center justify-center">
+                <span className="text-xs text-muted-foreground">Result</span>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
