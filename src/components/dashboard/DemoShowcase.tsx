@@ -5,10 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sparkles, RefreshCw } from 'lucide-react';
 import { useIntelligentRouter } from '@/hooks/useIntelligentRouter';
 import { toast } from 'sonner';
-
-// Using uploaded demo image
-
-export type PhotoCategory = 'hook' | 'passion-hobbies' | 'social-proof' | 'adventure-travel' | 'professional' | 'custom';
+import { PhotoCategory, photoSlots } from '@/constants/photoCategories';
 
 interface DemoState {
   selectedCategory: PhotoCategory | null;
@@ -22,38 +19,12 @@ const DEMO_PHOTO = {
   alt: 'Professional portrait for dating transformation demo'
 };
 
-const CATEGORIES = [
-  { 
-    value: 'hook' as PhotoCategory, 
-    label: 'First Impression Winner', 
-    icon: '✨'
-  },
-  { 
-    value: 'passion-hobbies' as PhotoCategory, 
-    label: 'Passion & Hobbies', 
-    icon: '🏃'
-  },
-  { 
-    value: 'social-proof' as PhotoCategory, 
-    label: 'Social Proof', 
-    icon: '👥'
-  },
-  { 
-    value: 'adventure-travel' as PhotoCategory, 
-    label: 'Adventure & Travel', 
-    icon: '🏔️'
-  },
-  { 
-    value: 'professional' as PhotoCategory, 
-    label: 'Professional Authority', 
-    icon: '💼'
-  },
-  { 
-    value: 'custom' as PhotoCategory, 
-    label: 'Custom Transformation', 
-    icon: '🎨'
-  }
-];
+// Generate categories from photoSlots for consistency
+const CATEGORIES = photoSlots.map(slot => ({
+  value: slot.category,
+  label: slot.subtitle,
+  icon: slot.icon
+}));
 
 const DemoShowcase: React.FC = () => {
   const [demoState, setDemoState] = useState<DemoState>({
@@ -170,10 +141,10 @@ const DemoShowcase: React.FC = () => {
               <SelectTrigger className="w-48 h-10 text-xs bg-background border-border/50">
                 <SelectValue placeholder="Pick transformation style" />
               </SelectTrigger>
-              <SelectContent className="bg-background border border-border z-50 max-h-80">
+              <SelectContent className="dropdown-content">
                 {CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value} className="text-xs py-3 cursor-pointer hover:bg-muted/50">
-                    <span className="font-medium text-foreground">{category.label}</span>
+                  <SelectItem key={category.value} value={category.value} className="dropdown-item">
+                    <span className="font-medium">{category.label}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
