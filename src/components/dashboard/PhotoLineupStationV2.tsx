@@ -308,27 +308,23 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Header Section */}
-      <div className="text-center space-y-4">
+      {/* Streamlined Header */}
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-3xl font-bold text-gradient-primary mb-2">
-            Build Your Perfect Dating Lineup
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Upload photos to each category and let our AI transform them into profile pics that get more matches
-          </p>
+          <h1 className="text-2xl font-bold text-gradient-primary">Perfect Dating Lineup</h1>
+          <p className="text-sm text-muted-foreground">Upload 6 photos, pick styles, transform with AI</p>
         </div>
         
-        {/* Action Bar */}
-        <div className="flex items-center justify-center gap-4 flex-wrap">
-          <Badge variant="outline" className="text-sm font-medium">
-            {credits} Credits Available
+        {/* Action Controls */}
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="text-sm font-medium bg-violet-purple/10 border-violet-purple/30">
+            {credits} Credits
           </Badge>
           {totalBulkCost > 0 && (
             <Button 
               onClick={handleBulkTransform} 
               disabled={credits < totalBulkCost} 
-              className="bg-gradient-primary text-white hover:bg-gradient-primary/90"
+              className="bg-gradient-primary text-white hover:bg-gradient-primary/90 shadow-lg"
             >
               <Zap className="w-4 h-4 mr-2" />
               Transform All ({totalBulkCost})

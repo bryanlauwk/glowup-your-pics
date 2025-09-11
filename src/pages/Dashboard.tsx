@@ -53,21 +53,10 @@ export default function Dashboard() {
       {/* Floating Header */}
       <DashboardHeader />
       
-      {/* Main Content with Sidebar Layout */}
+      {/* Main Content */}
       <div className="pt-20"> {/* Account for fixed header */}
         <div className="container mx-auto px-4 py-6">
-          {/* Page Header */}
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-gradient-primary mb-2">
-              Build Your Perfect Dating Profile
-            </h1>
-            <p className="text-muted-foreground">
-              6 photos can make or break your dating success. We curate a winning lineup tailored to you, 
-              you pick your favorites, then we work our magic to maximize your matches.
-            </p>
-          </div>
-
-          {/* Redesigned Layout: Clean 2-Column with Contextual Tips */}
+          {/* Clean Layout with Integrated Smart Tips */}
           <PhotoLineupStationV2 
             uploadedPhotos={uploadedPhotos} 
             setUploadedPhotos={setUploadedPhotos} 
