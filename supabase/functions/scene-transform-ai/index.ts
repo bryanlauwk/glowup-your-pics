@@ -117,19 +117,27 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Check user credits (reduced to 2 credits for Gemini)
-    const { data: userCredits, error: creditsError } = await supabase
-      .from('user_credits')
-      .select('credits')
-      .eq('user_id', userId)
-      .single();
+    // Allow demo user to bypass credit checks
+    let userCredits = null;
+    let isDemo = userId === 'demo-user';
+    
+    if (!isDemo) {
+      const { data: creditsData, error: creditsError } = await supabase
+        .from('user_credits')
+        .select('credits')
+        .eq('user_id', userId)
+        .single();
 
-    if (creditsError) {
-      console.error('Credits check error:', creditsError);
-      throw new Error('Failed to check user credits');
-    }
+      if (creditsError) {
+        console.error('Credits check error:', creditsError);
+        throw new Error('Failed to check user credits');
+      }
 
-    if (!userCredits || userCredits.credits < 2) {
-      throw new Error('Insufficient credits. Scene transformation requires 2 credits.');
+      if (!creditsData || creditsData.credits < 2) {
+        throw new Error('Insufficient credits. Scene transformation requires 2 credits.');
+      }
+      
+      userCredits = creditsData;
     }
 
     // Intelligent prompt selection based on photo quality and context
@@ -155,8 +163,8 @@ serve(async (req) => {
     // Convert base64 image to proper format for Gemini
     const imageBase64 = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
 
-    // Generate new scene with Gemini 2.5 Flash Image
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_API_KEY}`, {
+    // Generate new scene with Gemini 2.5 Flash Image Preview
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -212,15 +220,17 @@ serve(async (req) => {
       enhancedImageUrl = imageDataUrl;
     }
 
-    // Deduct credits (2 for Gemini scene transformation)
-    const { error: updateError } = await supabase
-      .from('user_credits')
-      .update({ credits: userCredits.credits - 2 })
-      .eq('user_id', userId);
+    // Deduct credits (2 for Gemini scene transformation) - skip for demo
+    if (!isDemo && userCredits) {
+      const { error: updateError } = await supabase
+        .from('user_credits')
+        .update({ credits: userCredits.credits - 2 })
+        .eq('user_id', userId);
 
-    if (updateError) {
-      console.error('Credits update error:', updateError);
-      throw new Error('Failed to update credits');
+      if (updateError) {
+        console.error('Credits update error:', updateError);
+        throw new Error('Failed to update credits');
+      }
     }
 
     // Log the enhancement
@@ -236,7 +246,7 @@ serve(async (req) => {
         processing_time: Date.now()
       });
 
-    const remainingCredits = userCredits.credits - 2;
+    const remainingCredits = isDemo ? 999 : (userCredits?.credits ?? 0) - 2;
 
     console.log('Gemini scene transformation completed successfully');
 

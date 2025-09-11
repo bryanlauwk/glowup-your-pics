@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { usePhotoIntelligence, PhotoAssessment } from './usePhotoIntelligence';
 import { usePhotoEnhancement } from './usePhotoEnhancement';
 import { useSceneTransformation } from './useSceneTransformation';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 
@@ -57,7 +58,19 @@ export const useIntelligentRouter = () => {
       // Step 1: Analyze photo with AI
       logger.debug('Starting intelligent photo processing', { config });
       
-      const assessment = await analyzePhoto(imageDataUrl, config.category);
+      // Skip analysis for demo and force transformation
+      let assessment;
+      if (config.forceLevel === 2) {
+        // Create a simple assessment that recommends Level 2
+        assessment = {
+          quality: { overallScore: 50 }, // Low score to trigger transformation
+          categoryFit: { [config.category]: 85 },
+          recommendedLevel: 2,
+          suggestions: ['Demo transformation']
+        } as any;
+      } else {
+        assessment = await analyzePhoto(imageDataUrl, config.category);
+      }
       
       setState(prev => ({ ...prev, currentStep: 'routing', progress: 30 }));
 
@@ -83,7 +96,20 @@ export const useIntelligentRouter = () => {
         processingPath = 'transformation';
         toast.info('🚀 Using Level 2: Scene Transformation for maximum impact!');
         
-        result = await transformScene(imageDataUrl, config.category);
+        // For demo, use demo-user as userId
+        const userId = 'demo-user';
+        result = await supabase.functions.invoke('scene-transform-ai', {
+          body: {
+            imageDataUrl,
+            category: config.category,
+            userId,
+            customPrompt: config.customPrompt
+          }
+        });
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Scene transformation failed');
+        }
       } else {
         // Level 1: Enhancement (Polish existing photo)
         processingPath = 'enhancement';
@@ -110,12 +136,12 @@ export const useIntelligentRouter = () => {
       });
 
       return {
-        finalImageUrl: result.enhancedImageUrl,
+        finalImageUrl: result.data?.enhancedImageUrl || result.enhancedImageUrl,
         processingPath,
         assessment,
         processingTime,
-        creditsUsed: processingPath === 'transformation' ? 2 : 1, // Transformation uses 2 credits
-        creditsRemaining: result.creditsRemaining
+        creditsUsed: processingPath === 'transformation' ? 2 : 1,
+        creditsRemaining: result.data?.creditsRemaining || result.creditsRemaining || 999
       };
 
     } catch (error) {

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sparkles, RefreshCw } from 'lucide-react';
-import { useSceneTransformation } from '@/hooks/useSceneTransformation';
+import { useIntelligentRouter } from '@/hooks/useIntelligentRouter';
 import { toast } from 'sonner';
 
 // Import demo image
@@ -69,7 +69,7 @@ const DemoShowcase: React.FC = () => {
     isProcessing: false,
   });
 
-  const { transformScene, isProcessing } = useSceneTransformation();
+  const { processPhoto, isProcessing } = useIntelligentRouter();
 
   const handleCategorySelect = useCallback((category: PhotoCategory) => {
     setDemoState(prev => ({
@@ -102,22 +102,25 @@ const DemoShowcase: React.FC = () => {
       ctx.drawImage(img, 0, 0);
       const imageDataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-      // Transform scene with AI
-      const result = await transformScene(imageDataUrl, demoState.selectedCategory);
+      // Process photo with intelligent routing (forces Level 2 for demo impact)
+      const result = await processPhoto(imageDataUrl, {
+        category: demoState.selectedCategory,
+        forceLevel: 2 // Always use transformation for demo to show maximum impact
+      });
       
       setDemoState(prev => ({
         ...prev,
-        enhancedPhoto: result.enhancedImageUrl,
+        enhancedPhoto: result.finalImageUrl,
         isProcessing: false,
       }));
 
       toast.success(`🎉 Scene transformed! From headshot to "${CATEGORIES.find(c => c.value === demoState.selectedCategory)?.label}" lifestyle photo!`);
     } catch (error) {
-      console.error('Demo scene transformation failed:', error);
+      console.error('Demo intelligent processing failed:', error);
       setDemoState(prev => ({ ...prev, isProcessing: false }));
       toast.error('Demo transformation failed. Please try again.');
     }
-  }, [demoState.selectedCategory, transformScene]);
+  }, [demoState.selectedCategory, processPhoto]);
 
   const handleReset = useCallback(() => {
     setDemoState({
