@@ -6,12 +6,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { 
   Upload, X, Download, Wand2, Zap, Clock, CheckCircle, 
-  Scissors, Plus, Image as ImageIcon 
+  Scissors, Plus, Image as ImageIcon, RefreshCw
 } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
 import { logger } from '@/lib/logger';
 import { usePhotoEnhancement } from '@/hooks/usePhotoEnhancement';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Progress } from '@/components/ui/progress';
 import { BackgroundEnhancer } from './BackgroundEnhancer';
 import DemoShowcase from './DemoShowcase';
@@ -57,6 +58,7 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
     slotIndex: number;
   } | null>(null);
   const [activeCategory, setActiveCategory] = useState<PhotoCategory | undefined>();
+  const [showResetDialog, setShowResetDialog] = useState<boolean>(false);
 
   const { credits } = useCredits();
   const { isProcessing, enhancePhoto, progress } = usePhotoEnhancement();
@@ -224,6 +226,29 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
     }
   };
 
+  const handleLineupReset = () => {
+    // Clean up object URLs to prevent memory leaks
+    uploadedPhotos.forEach(photo => {
+      if (photo) {
+        URL.revokeObjectURL(photo.preview);
+        if (photo.enhancedUrl) {
+          URL.revokeObjectURL(photo.enhancedUrl);
+        }
+      }
+    });
+
+    // Reset all photos to null
+    setUploadedPhotos(new Array(6).fill(null));
+    
+    // Reset active category
+    setActiveCategory(undefined);
+    
+    setShowResetDialog(false);
+    toast.success('Lineup cleared successfully');
+    
+    logger.info('Photo lineup reset', { component: 'PhotoLineupStationV2' });
+  };
+
   const readyPhotos = uploadedPhotos.filter(photo => photo && photo.customPrompt?.trim());
   const totalBulkCost = readyPhotos.length;
   const uploadedCount = uploadedPhotos.filter(photo => photo).length;
@@ -245,6 +270,32 @@ const PhotoLineupStationV2: React.FC<PhotoLineupStationProps> = ({
           <Badge variant="outline" className="text-sm font-medium bg-violet-purple/10 border-violet-purple/30">
             {credits} Credits
           </Badge>
+          
+          {uploadedCount > 0 && (
+            <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Reset Lineup
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Photo Lineup?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will remove all {uploadedCount} uploaded photos from your lineup. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLineupReset} className="bg-destructive hover:bg-destructive/90">
+                    Reset Lineup
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+          
           {totalBulkCost > 0 && (
             <Button 
               onClick={handleBulkTransform} 
