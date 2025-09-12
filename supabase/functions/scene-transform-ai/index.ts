@@ -106,9 +106,9 @@ serve(async (req) => {
       throw new Error('Missing required parameters: imageDataUrl, category, and userId are required');
     }
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (!OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    if (!GEMINI_API_KEY) {
+      throw new Error('Gemini API key not configured');
     }
 
     // Initialize Supabase client
@@ -180,58 +180,12 @@ serve(async (req) => {
     
     console.log('Generating person-first dating transformation with prompt:', selectedPrompt);
 
-    // Use OpenAI's image generation API with the original image as reference
-    const finalPrompt = `Transform this dating profile photo: ${selectedPrompt}. Create a naturally appealing, dating-optimized photograph that enhances attractiveness while maintaining complete authenticity. The result must look like professional photography, not AI-generated content. Preserve natural skin texture, realistic lighting, and environmental consistency.`;
+    // Use Gemini's image generation API with the original image as reference
+    const finalPrompt = `Transform this dating profile photo: ${selectedPrompt}. Create a naturally appealing, dating-optimized photograph that enhances attractiveness while maintaining complete authenticity. The result must look like professional photography, not AI-generated content. Preserve natural skin texture, realistic lighting, and environmental consistency. CRITICAL: Generate and return only the enhanced image file.`;
 
-    const response = await fetch('https://api.openai.com/v1/images/edits', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: (() => {
-        const formData = new FormData();
-        
-        // Convert data URL to blob
-        const imageBase64 = imageDataUrl.replace(/^data:image\/[a-z]+;base64,/, '');
-        const imageBytes = Uint8Array.from(atob(imageBase64), c => c.charCodeAt(0));
-        const imageBlob = new Blob([imageBytes], { type: 'image/png' });
-        
-        formData.append('image', imageBlob, 'image.png');
-        formData.append('prompt', finalPrompt);
-        formData.append('n', '1');
-        formData.append('size', '1024x1024');
-        
-        return formData;
-      })(),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('OpenAI API error:', errorData);
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    
-    if (!data.data || !data.data[0] || !data.data[0].url) {
-      console.error('Invalid OpenAI response:', data);
-      throw new Error('Invalid response from OpenAI API');
-    }
-
-    // Get the generated image URL
-    let enhancedImageUrl = data.data[0].url;
-
-    // Convert the URL to base64 for consistency
-    try {
-      const imageResponse = await fetch(enhancedImageUrl);
-      const imageBuffer = await imageResponse.arrayBuffer();
-      const imageBase64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
-      enhancedImageUrl = `data:image/png;base64,${imageBase64}`;
-      console.log('Successfully generated enhanced image');
-    } catch (fetchError) {
-      console.warn('Failed to convert generated image to base64, using URL:', fetchError);
-      // Keep the original URL if conversion fails
-    }
+    const enhancedImageBase64 = await performGeminiImageEnhancement(imageDataUrl, finalPrompt, GEMINI_API_KEY);
+    const enhancedImageUrl = `data:image/png;base64,${enhancedImageBase64}`;
+    console.log('Successfully generated enhanced image with Gemini');
 
     // Deduct credits (2 for scene transformation) - skip for demo
     if (!isDemo && userCredits) {
@@ -296,3 +250,162 @@ serve(async (req) => {
     });
   }
 });
+
+async function performGeminiImageEnhancement(imageDataUrl: string, enhancementPrompt: string, geminiApiKey: string): Promise<string> {
+  console.log('🤖 === CALLING GEMINI IMAGE PREVIEW API ===');
+  
+  // Clean image data URL
+  let imageData = imageDataUrl;
+  if (imageData.startsWith('data:image/')) {
+    const base64Index = imageData.indexOf(';base64,');
+    if (base64Index !== -1) {
+      imageData = imageData.substring(base64Index + 8);
+    }
+  }
+
+  // Validate image size (max 20MB for Gemini API)
+  const imageSizeBytes = (imageData.length * 3) / 4; // Base64 to bytes conversion
+  if (imageSizeBytes > 20 * 1024 * 1024) {
+    throw new Error('Image too large. Please use an image smaller than 20MB.');
+  }
+
+  console.log('📸 Image data length:', imageData.length);
+  console.log('📸 Image size (MB):', (imageSizeBytes / (1024 * 1024)).toFixed(2));
+  console.log('📝 Enhancement prompt length:', enhancementPrompt.length);
+
+  // Use Gemini 2.5 Flash Image Preview model - same as gemini-photo-enhance
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${geminiApiKey}`;
+  
+  const requestPayload = {
+    contents: [{
+      parts: [
+        {
+          text: enhancementPrompt
+        },
+        {
+          inline_data: {
+            mime_type: "image/jpeg",
+            data: imageData
+          }
+        }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.7,
+      topK: 32,
+      topP: 1,
+      maxOutputTokens: 8192
+    }
+  };
+
+  // Retry logic with exponential backoff
+  const maxRetries = 3;
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🔄 Making Gemini API request (attempt ${attempt}/${maxRetries})...`);
+
+      const geminiResponse = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload)
+      });
+
+      console.log(`📥 Gemini response status (attempt ${attempt}):`, geminiResponse.status);
+
+      if (!geminiResponse.ok) {
+        const errorText = await geminiResponse.text();
+        console.error(`❌ Gemini API error response (attempt ${attempt}):`, errorText);
+        
+        // Parse error to determine if it's retryable
+        const isRetryableError = geminiResponse.status >= 500 || geminiResponse.status === 429;
+        
+        if (!isRetryableError || attempt === maxRetries) {
+          throw new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+        }
+        
+        // Wait before retry
+        const waitTime = Math.pow(2, attempt - 1) * 1000;
+        console.log(`🔄 Retryable error, waiting ${waitTime}ms before attempt ${attempt + 1}...`);
+        lastError = new Error(`Gemini API error (${geminiResponse.status}): ${errorText}`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+
+      const geminiResult = await geminiResponse.json();
+      console.log(`✅ Successfully received response on attempt ${attempt}`);
+      return await parseGeminiImageResponse(geminiResult);
+      
+    } catch (error) {
+      console.error(`❌ Error on attempt ${attempt}:`, error.message);
+      lastError = error as Error;
+      
+      // Check if it's a network/timeout error (retryable)
+      const isNetworkError = error.message.includes('fetch') || 
+                           error.message.includes('timeout') || 
+                           error.message.includes('network');
+      
+      if (isNetworkError && attempt < maxRetries) {
+        const waitTime = Math.pow(2, attempt - 1) * 1000;
+        console.log(`🔄 Network error, waiting ${waitTime}ms before attempt ${attempt + 1}...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+      
+      if (attempt === maxRetries) {
+        break;
+      }
+    }
+  }
+  
+  // If we get here, all retries failed
+  console.error(`❌ All ${maxRetries} attempts failed. Last error:`, lastError?.message);
+  throw new Error(`Enhancement failed after ${maxRetries} attempts. ${lastError?.message || 'Unknown error'}`);
+}
+
+async function parseGeminiImageResponse(geminiResult: any): Promise<string> {
+  console.log('📦 Parsing Gemini response for image data...');
+  
+  try {
+    // Check if we have candidates and content
+    if (!geminiResult.candidates || !geminiResult.candidates[0]) {
+      console.error('❌ No candidates in Gemini response:', JSON.stringify(geminiResult, null, 2));
+      throw new Error('No image generated by Gemini');
+    }
+
+    const candidate = geminiResult.candidates[0];
+    const content = candidate.content;
+    
+    if (!content || !content.parts || content.parts.length === 0) {
+      console.error('❌ No content parts in Gemini response:', JSON.stringify(candidate, null, 2));
+      throw new Error('No image content in Gemini response');
+    }
+
+    // Look for image data in parts
+    for (const part of content.parts) {
+      // Check for inline_data format
+      if (part.inline_data && part.inline_data.data) {
+        console.log('✅ Found image data in inline_data format');
+        return part.inline_data.data;
+      }
+      
+      // Check for inlineData format (alternative format)
+      if (part.inlineData && part.inlineData.data) {
+        console.log('✅ Found image data in inlineData format');
+        return part.inlineData.data;
+      }
+    }
+
+    // If no image found, log the response structure
+    console.error('❌ No image data found in any parts:', JSON.stringify(content.parts, null, 2));
+    throw new Error('No image data found in Gemini response');
+    
+  } catch (error) {
+    console.error('❌ Error parsing Gemini response:', error.message);
+    console.error('Full response:', JSON.stringify(geminiResult, null, 2));
+    throw new Error(`Failed to parse Gemini response: ${error.message}`);
+  }
+}
